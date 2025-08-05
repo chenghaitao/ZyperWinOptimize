@@ -684,9 +684,6 @@ echo [√] 清理: 系统崩溃dmp文件
 :: 回收站
 rd /s /q "%SystemDrive%\$Recycle.bin" >nul 2>&1
 echo [√] 清理: 回收站
-:: 使用DISM清理WinSxS
-echo [√] 清理: 被取代的WinSxS组件 (使用DISM)
-dism /Online /Cleanup-Image /StartComponentCleanup >nul 2>&1
 :: 清理损坏的Appx
 echo [√] 清理: 损坏的Appx应用
 powershell -Command "Get-AppxPackage -AllUsers | Where-Object {$_.Status -eq 'Error'} | Remove-AppxPackage -ErrorAction SilentlyContinue" >nul
@@ -727,7 +724,7 @@ echo.  [6]   日志设置
 echo.
 echo.  [7]   服务项优化
 echo.
-echo.  [8]   垃圾清理
+echo.  [8]   垃圾清理（需要在系统还原点创建前清理，无此需求可忽略）
 echo.
 echo.  [X]   返回
 echo.
@@ -2547,12 +2544,7 @@ del /f /s /q "%TEMP%\*" >nul 2>&1
 echo [√] 清理: 临时文件
 
 :: 缩略图缓存
-echo.
-echo 正在关闭资源管理器...
-taskkill /f /im explorer.exe >nul
 del /f /s /q "%LocalAppData%\Microsoft\Windows\Explorer\thumbcache_*.db" >nul 2>&1
-echo 正在启动资源管理器...
-start explorer.exe >nul
 echo [√] 清理: 缩略图缓存
 
 :: Windows Defender文件
@@ -2622,7 +2614,7 @@ echo [√] 清理: 回收站
 
 :: 使用DISM清理WinSxS
 echo [√] 清理: 被取代的WinSxS组件 (使用DISM)
-dism /Online /Cleanup-Image /StartComponentCleanup >nul 2>&1
+dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase >nul 2>&1
 
 :: 清理损坏的Appx
 echo [√] 清理: 损坏的Appx应用
