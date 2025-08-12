@@ -1,1 +1,0 @@
-@start /b "ZyperWin++ - TrustedInstaller" "%~dp0Bin\NSudoLG.exe" -U:T -P:E "%~dp0ZyperWin++.cmd"
