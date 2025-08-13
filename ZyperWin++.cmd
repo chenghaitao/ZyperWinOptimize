@@ -1,6 +1,6 @@
 @echo off
 
-title ZyperWin++ v2.0
+title ZyperWin++ v2.1
 
 :: 设置默认控制台背景和前景色
 color 1f
@@ -88,7 +88,7 @@ echo.
 echo.===============================================================================
 choice /C:AR /N /M "########################[ 按‘A’同意 / 按‘R’拒绝 ]#########################"
 if errorlevel 2 (
-	"%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKCU\Console\%%SystemRoot%%_system32_cmd.exe" /f >nul
+	"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKCU\Console\%%SystemRoot%%_system32_cmd.exe" /f >nul
 
 	color 00
 	endlocal
@@ -153,18 +153,28 @@ echo.
 echo.  注意：此过程可能此过程可能需要几分钟时间，请勿关闭窗口
 echo.
 echo.  ==============================================================================
-echo 请手动关闭Defender（Disable）
-"%~dp0Defender_Control.exe"
-pause
+sc query "wscsvc" | findstr /i "RUNNING" >nul
+if %errorlevel% equ 0 (
+    reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wscsvc" /v "Start" 2>nul | findstr /i "0x4" >nul
+    if %errorlevel% neq 0 (
+        echo Defender 服务正在运行且未被禁用，请手动关闭Defender（Disable）
+        "%~dp0Defender_Control.exe"
+        pause
+    ) else (
+        echo [√] Defender 服务未运行，跳过执行。
+    )
+) else (
+    echo [√] Defender 服务未运行，跳过执行。
+)
 
 :: 禁用LSA保护(RunAsPPL)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPLBoot" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPLBoot" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用LSA保护
 
 :: 禁用SmartScreen筛选器
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用SmartScreen筛选器
 
 :: 禁用Windows安全中心报告
@@ -173,7 +183,7 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows Security Health\State" /v 
 echo [√] 已禁用Windows安全中心报告
 
 :: 禁用驱动程序阻止列表
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config" /v "VulnerableDriverBlocklistEnable" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config" /v "VulnerableDriverBlocklistEnable" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用驱动程序阻止列表
 
 :: 禁用Edge浏览器SmartScreen
@@ -189,38 +199,38 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AppHost" /v
 echo [√] 已禁用Microsoft Store应用SmartScreen
 
 :: 禁用攻击面减少规则(ASR)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用攻击面减少规则
 
 :: 禁用UAC(用户账户控制)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d 0 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用UAC
 
 :: 禁用虚拟化安全(VBS)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 0 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d 0 /f >nul
 bcdedit /set hypervisorlaunchtype off >nul 2>&1
 echo [√] 已禁用虚拟化安全
 
 :: 禁用凭证保护(Credential Guard)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" /v "Enabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用凭证保护
 
 :: 禁用受控文件夹访问
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用受控文件夹访问
 
 :: 禁用网络保护
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用网络保护
 
 :: 禁用AMSI
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableAmsi" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableAmsi" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用AMSI
 
 :: 禁用代码完整性
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI" /v "Enabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用代码完整性
 
 :: 关闭防火墙
@@ -228,16 +238,16 @@ netsh advfirewall set allprofiles state off >nul
 echo [√] 已关闭防火墙
 
 :: 关闭默认共享
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭默认共享
 
 :: 关闭远程协助
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭远程协助
 
 :: 启用不安全的来宾登录
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "AllowInsecureGuestAuth" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "AllowInsecureGuestAuth" /t REG_DWORD /d 1 /f >nul
 echo [√] 已启用不安全的来宾登录
 
 :: 外观/资源管理器优化
@@ -428,35 +438,35 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v 
 echo [√] 已关闭多嘴的小娜
 
 :: 加快关机速度
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "1000" /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "1000" /f >nul
 echo [√] 已加快关机速度
 
 :: 缩短关闭服务等待时间
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /t REG_DWORD /d 2000 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /t REG_DWORD /d 2000 /f >nul
 echo [√] 已缩短关闭服务等待时间
 
 :: 禁用程序兼容性助手
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "PcaSvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
 echo [√] 已禁用程序兼容性助手
 
 :: 禁用远程修改注册表
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用远程修改注册表
 
 :: 禁用诊断服务
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "DPS" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
 echo [√] 已禁用诊断服务
 
 :: 禁用SysMain
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SysMain" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "SysMain" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
 echo [√] 已禁用SysMain
 
 :: 禁用Windows Search
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WSearch" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "WSearch" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
 echo [√] 已禁用Windows Search
 
 :: 禁用错误报告
@@ -464,12 +474,12 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" 
 echo [√] 已禁用错误报告
 
 :: 禁用客户体验改善计划
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用客户体验改善计划
 
 :: 禁用NTFS链接跟踪服务
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "TrkWks" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "TrkWks" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
 echo [√] 已禁用NTFS链接跟踪服务
 
 :: 禁止自动维护计划
@@ -477,27 +487,27 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedul
 echo [√] 已禁止自动维护计划
 
 :: 启用大系统缓存以提高性能
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f >nul
 echo [√] 已启用大系统缓存以提高性能
 
 :: 禁止系统内核与驱动程序分页到硬盘
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁止系统内核与驱动程序分页到硬盘
 
 :: 将文件管理系统缓存增加至256MB
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /t REG_DWORD /d 4194304 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /t REG_DWORD /d 4194304 /f >nul
 echo [√] 已将文件管理系统缓存增加至256MB
 
 :: 将Windows预读调整为关闭预读
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭Windows预读功能
 
 :: 禁用处理器的幽灵和熔断补丁
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 3 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 3 /f >nul
 echo [√] 已禁用处理器的幽灵和熔断补丁以提高性能
 
 :: VHD启动时节省磁盘空间
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /t REG_DWORD /d 4 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /t REG_DWORD /d 4 /f >nul
 echo [√] VHD启动时已节省磁盘空间
 
 :: 关闭系统自动调试功能
@@ -505,19 +515,19 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
 echo [√] 已关闭系统自动调试功能
 
 :: 将磁盘错误检查等待时间缩短到五秒
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /t REG_DWORD /d 5 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /t REG_DWORD /d 5 /f >nul
 echo [√] 已将磁盘错误检查等待时间缩短到五秒
 
 :: 设备安装禁止创建系统还原点
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /t REG_DWORD /d 1 /f >nul
 echo [√] 设备安装已禁止创建系统还原点
 
 :: 弹出USB磁盘后彻底断开电源
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /t REG_DWORD /d 0 /f >nul
 echo [√] 弹出USB磁盘后已彻底断开电源
 
 :: 关闭快速启动
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭快速启动
 
 :: 关闭休眠
@@ -525,7 +535,7 @@ powercfg /h off >nul
 echo [√] 已关闭休眠
 
 :: 根据语言设置隐藏字体
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /t REG_SZ /d "10000000000000000000000000000000" /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /t REG_SZ /d "10000000000000000000000000000000" /f >nul
 echo [√] 已根据语言设置隐藏字体
 
 :: 微软拼音输入法关闭云计算
@@ -541,15 +551,15 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX" /v "IsConverged
 echo [√] 已禁用功能更新安全措施
 
 :: 禁用蓝屏后自动重启
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用蓝屏后自动重启
 
 :: 禁用Installer detection
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用Installer detection
 
 :: 禁用上下文菜单显示延迟
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f >nul
 echo [√] 已禁用上下文菜单显示延迟
 
 :: 禁用保留空间
@@ -557,30 +567,30 @@ DISM.exe /Online /Set-ReservedStorageState /State:Disabled >nul 2>&1
 echo [√] 已禁用保留空间
 
 :: 启用硬件加速GPU计划
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul
 echo [√] 已启用硬件加速GPU计划
 
 :: 优化处理器性能和内存设置
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /t REG_DWORD /d 1 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /t REG_DWORD /d 2 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /t REG_DWORD /d 2 /f >nul
 echo [√] 已优化处理器性能和内存设置
 
 :: 降低Cortana性能减少CPU占用
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
 echo [√] 已降低Cortana性能，减少CPU占用
 
 :: 关闭Exploit Protection
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "MitigationOptions" /t REG_BINARY /d 22222200000200000002000000000000 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "MitigationOptions" /t REG_BINARY /d 22222200000200000002000000000000 /f >nul
 echo [√] 已关闭Exploit Protection
 
 :: 关闭广告ID
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f >nul
 echo [√] 已关闭广告ID
 
 :: 关闭应用启动跟踪
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭应用启动跟踪
 
 :: 去除搜索页面信息流和热搜
@@ -588,25 +598,25 @@ reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" /v "Dis
 echo [√] 已去除搜索页面信息流和热搜
 
 :: 关闭TSX漏洞补丁
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "DisableTsx" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "DisableTsx" /t REG_DWORD /d 1 /f >nul
 echo [√] 已关闭TSX漏洞补丁
 
 :: 优化进程数量
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /t REG_SZ /d "ffffffff" /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /t REG_SZ /d "ffffffff" /f >nul
 echo [√] 已优化进程数量
 
 :: 关闭诊断策略服务
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "DPS" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
 echo [√] 已关闭诊断策略服务
 
 :: 关闭程序兼容性助手
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "PcaSvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
 echo [√] 已关闭程序兼容性助手
 
 :: 关闭微软客户体验改进计划
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭微软客户体验改进计划
 
 :: 禁用交付优化
@@ -614,7 +624,7 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOp
 echo [√] 已禁用交付优化
 
 :: 禁用高精度事件定时器(HPET)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /t REG_DWORD /d 4 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /t REG_DWORD /d 4 /f >nul
 echo [√] 已禁用高精度事件定时器
 
 :: 禁用Game Bar
@@ -623,62 +633,62 @@ echo [√] 已禁用Game Bar
 
 :: Edge优化设置
 :: 禁用"首次运行"欢迎页面
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideFirstRunExperience" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideFirstRunExperience" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用"首次运行"欢迎页面
 
 :: 关闭Adobe Flash即点即用
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "RunAllFlashInAllowMode" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "RunAllFlashInAllowMode" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭Adobe Flash即点即用
 
 :: 关闭后禁止继续运行后台应用
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁止Edge关闭后继续运行后台应用
 
 :: 阻止必应搜索结果中的所有广告
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "AdsSettingForIntrusiveAdsSites" /t REG_DWORD /d 2 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "AdsSettingForIntrusiveAdsSites" /t REG_DWORD /d 2 /f >nul
 echo [√] 已阻止必应搜索结果中的所有广告
 
 :: 禁用新选项卡页面上的微软资讯
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageContentEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageContentEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用新选项卡页面上的微软资讯内容
 
 :: 隐藏新标签页中的默认热门网站
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d 1 /f >nul
 echo [√] 已隐藏新标签页中的默认热门网站
 
 :: 隐藏Edge浏览器边栏
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "ShowSidebar" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "ShowSidebar" /t REG_DWORD /d 0 /f >nul
 echo [√] 已隐藏Edge浏览器边栏
 
 :: 禁用Smartscreen筛选器
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenEnabled" /t REG_DWORD /d 0 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenForTrustedDownloadsEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenForTrustedDownloadsEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用Smartscreen筛选器
 
 :: 禁止发送任何诊断数据
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁止发送任何诊断数据
 
 :: 禁用标签页性能检测器
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "PerformanceDetectorEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "PerformanceDetectorEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用标签页性能检测器
 
 :: 关闭停止支持旧系统的通知
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SuppressUnsupportedOSWarning" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SuppressUnsupportedOSWarning" /t REG_DWORD /d 1 /f >nul
 echo [√] 已关闭停止支持旧系统的通知
 
 :: 关闭Edge自启动
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已关闭Edge自启动
 
 :: 启用效率模式
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyMode" /t REG_DWORD /d 1 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeOnPowerEnabled" /t REG_DWORD /d 2 /f >nul
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeEnabled" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyMode" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeOnPowerEnabled" /t REG_DWORD /d 2 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeEnabled" /t REG_DWORD /d 1 /f >nul
 echo [√] 已启用效率模式
 
 :: 关闭"由你的组织管理"提示
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideManagedBrowserWarning" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideManagedBrowserWarning" /t REG_DWORD /d 1 /f >nul
 echo [√] 已关闭"由你的组织管理"提示
 
 :: 隐私设置
@@ -687,19 +697,19 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /
 echo [√] 已禁用页面预测功能
 
 :: 禁用开始屏幕建议
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用开始屏幕建议
 
 :: 禁用活动收集
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用活动收集
 
 :: 禁用应用启动跟踪
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用应用启动跟踪
 
 :: 禁用广告标识符
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用广告标识符
 
 :: 禁用应用访问文件系统
@@ -727,15 +737,15 @@ reg add "HKEY_CURRENT_USER\Control Panel\International\User Profile" /v "HttpAcc
 echo [√] 已禁用网站语言跟踪
 
 :: 禁用Windows欢迎体验
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用Windows欢迎体验
 
 :: 禁用反馈频率
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用反馈频率
 
 :: 禁用诊断数据收集
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用诊断数据收集
 
 :: 禁用写作习惯跟踪
@@ -747,7 +757,7 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeli
 echo [√] 已禁用设置应用建议
 
 :: 禁用Bing搜索结果
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用Bing搜索结果
 
 :: 禁用通讯录收集
@@ -763,11 +773,11 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\SearchSetti
 echo [√] 已禁用搜索历史
 
 :: 禁用赞助商应用安装
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用赞助商应用安装
 
 :: 禁用自动连接热点
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用自动连接热点
 
 :: 禁用输入数据个性化
@@ -783,11 +793,11 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" 
 echo [√] 已禁用预安装应用
 
 :: 禁用.NET遥测
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用.NET遥测
 
 :: 禁用PowerShell遥测
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用PowerShell遥测
 
 :: 禁用遥测服务
@@ -796,27 +806,27 @@ sc stop "DiagTrack" >nul
 echo [√] 已禁用遥测服务
 
 :: 禁用错误报告(WER)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用错误报告
 
 :: 禁用语音激活(Cortana)
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 2 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 2 /f >nul
 echo [√] 已禁用语音激活
 
 :: 禁用位置服务
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用位置服务
 
 :: 禁用搜索数据收集
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用搜索数据收集
 
 :: 禁用定向广告
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用定向广告
 
 :: 禁用Wi-Fi感知
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用Wi-Fi感知
 
 :: 禁用步骤记录器
@@ -824,7 +834,7 @@ reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\ProblemReports" /
 echo [√] 已禁用步骤记录器
 
 :: 禁用写入调试信息
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用写入调试信息
 
 :: 禁用应用访问账户信息
@@ -880,28 +890,28 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" 
 echo [√] 已禁用错误报告日志
 
 :: 禁用将事件写入系统日志
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows" /v "NoEventLog" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows" /v "NoEventLog" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用将事件写入系统日志
 
 :: 禁用崩溃时写入调试信息
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "CrashDumpEnabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "CrashDumpEnabled" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用崩溃时写入调试信息
 
 :: 禁用账户登录日志报告
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableLogonCacheDisplay" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableLogonCacheDisplay" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁用账户登录日志报告
 
 :: 禁用WfpDiag.ETL日志
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Diagnostics" /v "EnableLog" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Diagnostics" /v "EnableLog" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用WfpDiag.ETL日志
 
 :: 更新设置
 :: 禁止Win10/11进行大版本更新
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /t REG_DWORD /d 1 /f >nul
 echo [√] 已禁止Win10/11进行大版本更新
 
 :: Windows更新不包括恶意软件删除工具
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f >nul
 echo [√] Windows更新已不包括恶意软件删除工具
 
 :: 禁用Windows更新 停止更新到2999年
@@ -915,107 +925,107 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "Pa
 echo [√] 已停止更新到2999年
 
 :: 禁用自动更新商店应用
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /t REG_DWORD /d 2 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /t REG_DWORD /d 2 /f >nul
 echo [√] 已禁用自动更新商店应用
 
 :: 禁用自动更新地图
-"%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f >nul
 echo [√] 已禁用自动更新地图
 
 :: 服务项优化
 :: SecurityHealthService (安全健康服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SecurityHealthService" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "SecurityHealthService" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SecurityHealthService" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SecurityHealthService" >nul 2>&1
 echo [√] 已禁用: SecurityHealthService 安全健康服务
 
 :: SysMain (SuperFetch服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SysMain" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "SysMain" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
 echo [√] 已禁用: SysMain SuperFetch服务
 
 :: WSearch (Windows搜索服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WSearch" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "WSearch" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
 echo [√] 已禁用: WSearch Windows搜索服务
 
 :: UsoSvc (Windows更新服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "UsoSvc" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "UsoSvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "UsoSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "UsoSvc" >nul 2>&1
 echo [√] 已禁用: UsoSvc Windows更新服务
 
 :: TrkWks (分布式链接跟踪服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "TrkWks" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "TrkWks" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
 echo [√] 已禁用: TrkWks 分布式链接跟踪服务
 
 :: WinDefend (Windows Defender服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WinDefend" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "WinDefend" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WinDefend" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WinDefend" >nul 2>&1
 echo [√] 已禁用: WinDefend Windows Defender服务
 
 :: diagsvc (诊断服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "diagsvc" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "diagsvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagsvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "diagsvc" >nul 2>&1
 echo [√] 已禁用: diagsvc 诊断服务
 
 :: DPS (诊断策略服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "DPS" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
 echo [√] 已禁用: DPS 诊断策略服务
 
 :: WdiServiceHost (诊断服务主机)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiServiceHost" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "WdiServiceHost" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiServiceHost" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiServiceHost" >nul 2>&1
 echo [√] 已禁用: WdiServiceHost 诊断服务主机
 
 :: WdiSystemHost (诊断系统主机)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiSystemHost" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "WdiSystemHost" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiSystemHost" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiSystemHost" >nul 2>&1
 echo [√] 已禁用: WdiSystemHost 诊断系统主机
 
 :: MapsBroker (地图服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "MapsBroker" start= demand >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "MapsBroker" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "MapsBroker" start= demand >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "MapsBroker" >nul 2>&1
 echo [√] 已设置手动: MapsBroker 地图服务
 
 :: iphlpsvc (IP助手服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "iphlpsvc" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "iphlpsvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "iphlpsvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "iphlpsvc" >nul 2>&1
 echo [√] 已禁用: iphlpsvc IP助手服务
 
 :: diagnosticshub.standardcollector.service (诊断中心收集器)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "diagnosticshub.standardcollector.service" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "diagnosticshub.standardcollector.service" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagnosticshub.standardcollector.service" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "diagnosticshub.standardcollector.service" >nul 2>&1
 echo [√] 已禁用: diagnosticshub.standardcollector.service 诊断中心收集器
 
 :: SmsRouter (SMS路由器服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SmsRouter" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "SmsRouter" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SmsRouter" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SmsRouter" >nul 2>&1
 echo [√] 已禁用: SmsRouter SMS路由器服务
 
 :: PcaSvc (程序兼容性助手)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "PcaSvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
 echo [√] 已禁用: PcaSvc 程序兼容性助手
 
 :: ShellHWDetection (Shell硬件检测)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "ShellHWDetection" start= demand >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "ShellHWDetection" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "ShellHWDetection" start= demand >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "ShellHWDetection" >nul 2>&1
 echo [√] 已设置手动: ShellHWDetection Shell 硬件检测
 
 :: SgrmBroker (系统防护服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SgrmBroker" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "SgrmBroker" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SgrmBroker" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SgrmBroker" >nul 2>&1
 echo [√] 已禁用: SgrmBroker 系统防护服务
 
 :: Schedule (任务计划服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "Schedule" start= demand >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "Schedule" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Schedule" start= demand >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "Schedule" >nul 2>&1
 echo [√] 已设置手动: Schedule 任务计划服务
 
 :: Wecsvc (Windows事件收集服务)
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "Wecsvc" start= disabled >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "Wecsvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Wecsvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "Wecsvc" >nul 2>&1
 echo [√] 已禁用: Wecsvc
 
 echo.  ========================================
@@ -2203,10 +2213,10 @@ if %option% equ 8 (
 :: 9.加快关机速度
 if %option% equ 9 (
     if %opt9_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "1000" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "1000" /f >nul
         echo [√] 已加快关机速度
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /f >nul
         echo [√] 已恢复默认关机速度
     )
     goto :EOF
@@ -2215,10 +2225,10 @@ if %option% equ 9 (
 :: 10.缩短关闭服务等待时间
 if %option% equ 10 (
     if %opt10_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /t REG_DWORD /d 2000 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /t REG_DWORD /d 2000 /f >nul
         echo [√] 已缩短关闭服务等待时间
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /f >nul
         echo [√] 已恢复默认服务关闭等待时间
     )
     goto :EOF
@@ -2227,12 +2237,12 @@ if %option% equ 10 (
 :: 11.禁用程序兼容性助手
 if %option% equ 11 (
     if %opt11_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "PcaSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
         echo [√] 已禁用程序兼容性助手
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "PcaSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "PcaSvc" >nul 2>&1
         echo [√] 已启用程序兼容性助手
     )
     goto :EOF
@@ -2241,10 +2251,10 @@ if %option% equ 11 (
 :: 12.禁用远程修改注册表
 if %option% equ 12 (
     if %opt12_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用远程修改注册表
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /f >nul
         echo [√] 已启用远程修改注册表
     )
     goto :EOF
@@ -2253,12 +2263,12 @@ if %option% equ 12 (
 :: 13.禁用诊断服务
 if %option% equ 13 (
     if %opt13_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "DPS" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
         echo [√] 已禁用诊断服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "DPS" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "DPS" >nul 2>&1
         echo [√] 已启用诊断服务
     )
     goto :EOF
@@ -2267,12 +2277,12 @@ if %option% equ 13 (
 :: 14.禁用SysMain
 if %option% equ 14 (
     if %opt14_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SysMain" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "SysMain" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
         echo [√] 已禁用SysMain
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SysMain" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "SysMain" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SysMain" >nul 2>&1
         echo [√] 已启用SysMain
     )
     goto :EOF
@@ -2281,12 +2291,12 @@ if %option% equ 14 (
 :: 15.禁用Windows Search
 if %option% equ 15 (
     if %opt15_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WSearch" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "WSearch" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
         echo [√] 已禁用Windows Search
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WSearch" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "WSearch" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "WSearch" >nul 2>&1
         echo [√] 已启用Windows Search
     )
     goto :EOF
@@ -2307,10 +2317,10 @@ if %option% equ 16 (
 :: 17.禁用客户体验改善计划
 if %option% equ 17 (
     if %opt17_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用客户体验改善计划
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul
         echo [√] 已启用客户体验改善计划
     )
     goto :EOF
@@ -2319,12 +2329,12 @@ if %option% equ 17 (
 :: 18.禁用NTFS链接跟踪服务
 if %option% equ 18 (
     if %opt18_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "TrkWks" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "TrkWks" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
         echo [√] 已禁用NTFS链接跟踪服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "TrkWks" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "TrkWks" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "TrkWks" >nul 2>&1
         echo [√] 已启用NTFS链接跟踪服务
     )
     goto :EOF
@@ -2345,10 +2355,10 @@ if %option% equ 19 (
 :: 20.启用大系统缓存以提高性能
 if %option% equ 20 (
     if %opt20_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用大系统缓存以提高性能
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用大系统缓存
     )
     goto :EOF
@@ -2357,10 +2367,10 @@ if %option% equ 20 (
 :: 21.禁止系统内核与驱动程序分页到硬盘
 if %option% equ 21 (
     if %opt21_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁止系统内核与驱动程序分页到硬盘
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 0 /f >nul
         echo [√] 已允许系统内核与驱动程序分页到硬盘
     )
     goto :EOF
@@ -2369,10 +2379,10 @@ if %option% equ 21 (
 :: 22.将文件管理系统缓存增加至256MB
 if %option% equ 22 (
     if %opt22_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /t REG_DWORD /d 4194304 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /t REG_DWORD /d 4194304 /f >nul
         echo [√] 已将文件管理系统缓存增加至256MB
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /f >nul
         echo [√] 已恢复默认文件管理系统缓存大小
     )
     goto :EOF
@@ -2381,10 +2391,10 @@ if %option% equ 22 (
 :: 23.将Windows预读调整为关闭预读
 if %option% equ 23 (
     if %opt23_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭Windows预读功能
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 3 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 3 /f >nul
         echo [√] 已启用Windows预读功能
     )
     goto :EOF
@@ -2393,10 +2403,10 @@ if %option% equ 23 (
 :: 24.禁用处理器的幽灵和熔断补丁
 if %option% equ 24 (
     if %opt24_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 3 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 3 /f >nul
         echo [√] 已禁用处理器的幽灵和熔断补丁以提高性能
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /f >nul
         echo [√] 已启用处理器的幽灵和熔断补丁
     )
     goto :EOF
@@ -2405,10 +2415,10 @@ if %option% equ 24 (
 :: 25.VHD启动时节省磁盘空间
 if %option% equ 25 (
     if %opt25_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /t REG_DWORD /d 4 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /t REG_DWORD /d 4 /f >nul
         echo [√] VHD启动时已节省磁盘空间
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /f >nul
         echo [√] 已恢复VHD启动默认设置
     )
     goto :EOF
@@ -2429,10 +2439,10 @@ if %option% equ 26 (
 :: 27.将磁盘错误检查等待时间缩短到五秒
 if %option% equ 27 (
     if %opt27_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /t REG_DWORD /d 5 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /t REG_DWORD /d 5 /f >nul
         echo [√] 已将磁盘错误检查等待时间缩短到五秒
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /f >nul
         echo [√] 已恢复默认磁盘错误检查等待时间
     )
     goto :EOF
@@ -2441,10 +2451,10 @@ if %option% equ 27 (
 :: 28.设备安装禁止创建系统还原点
 if %option% equ 28 (
     if %opt28_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /t REG_DWORD /d 1 /f >nul
         echo [√] 设备安装已禁止创建系统还原点
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /f >nul
         echo [√] 设备安装已允许创建系统还原点
     )
     goto :EOF
@@ -2453,10 +2463,10 @@ if %option% equ 28 (
 :: 29.弹出USB磁盘后彻底断开电源
 if %option% equ 29 (
     if %opt29_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /t REG_DWORD /d 0 /f >nul
         echo [√] 弹出USB磁盘后已彻底断开电源
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /f >nul
         echo [√] 已恢复USB磁盘默认电源设置
     )
     goto :EOF
@@ -2465,10 +2475,10 @@ if %option% equ 29 (
 :: 30.关闭快速启动
 if %option% equ 30 (
     if %opt30_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭快速启动
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /f >nul
         echo [√] 已启用快速启动
     )
     goto :EOF
@@ -2489,10 +2499,10 @@ if %option% equ 31 (
 :: 32.根据语言设置隐藏字体
 if %option% equ 32 (
     if %opt32_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /t REG_SZ /d "10000000000000000000000000000000" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /t REG_SZ /d "10000000000000000000000000000000" /f >nul
         echo [√] 已根据语言设置隐藏字体
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /f >nul
         echo [√] 已显示所有字体
     )
     goto :EOF
@@ -2537,10 +2547,10 @@ if %option% equ 35 (
 :: 36.禁用蓝屏后自动重启
 if %option% equ 36 (
     if %opt36_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用蓝屏后自动重启
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /f >nul
         echo [√] 已启用蓝屏后自动重启
     )
     goto :EOF
@@ -2549,10 +2559,10 @@ if %option% equ 36 (
 :: 37.禁用Installer detection
 if %option% equ 37 (
     if %opt37_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用Installer detection
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /f >nul
         echo [√] 已启用Installer detection
     )
     goto :EOF
@@ -2561,10 +2571,10 @@ if %option% equ 37 (
 :: 38禁用上下文菜单显示延迟
 if %option% equ 38 (
     if %opt38_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f >nul
         echo [√] 已禁用上下文菜单显示延迟
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "400" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "400" /f >nul
         echo [√] 已启用上下文菜单显示延迟
     )
     goto :EOF
@@ -2585,10 +2595,10 @@ if %option% equ 39 (
 :: 40.启用硬件加速GPU计划
 if %option% equ 40 (
     if %opt40_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul
         echo [√] 已启用硬件加速GPU计划
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /f >nul
         echo [√] 已禁用硬件加速GPU计划
     )
     goto :EOF
@@ -2597,14 +2607,14 @@ if %option% equ 40 (
 :: 41.优化处理器性能和内存设置
 if %option% equ 41 (
     if %opt41_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /t REG_DWORD /d 1 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /t REG_DWORD /d 2 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /t REG_DWORD /d 2 /f >nul
         echo [√] 已优化处理器性能和内存设置
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /f >nul
         echo [√] 已恢复默认处理器性能和内存设置
     )
     goto :EOF
@@ -2613,10 +2623,10 @@ if %option% equ 41 (
 :: 42.降低Cortana性能减少CPU占用
 if %option% equ 42 (
     if %opt42_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
         echo [√] 已降低Cortana性能，减少CPU占用
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f >nul
         echo [√] 已恢复Cortana默认性能
     )
     goto :EOF
@@ -2625,10 +2635,10 @@ if %option% equ 42 (
 :: 43.关闭Exploit Protection
 if %option% equ 43 (
     if %opt43_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "MitigationOptions" /t REG_BINARY /d 22222200000200000002000000000000 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "MitigationOptions" /t REG_BINARY /d 22222200000200000002000000000000 /f >nul
         echo [√] 已关闭Exploit Protection
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "MitigationOptions" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "MitigationOptions" /f >nul
         echo [√] 已启用Exploit Protection
     )
     goto :EOF
@@ -2637,12 +2647,12 @@ if %option% equ 43 (
 :: 44.关闭广告ID
 if %option% equ 44 (
     if %opt44_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f >nul
         echo [√] 已关闭广告ID
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /f >nul
         echo [√] 已启用广告ID
     )
     goto :EOF
@@ -2651,10 +2661,10 @@ if %option% equ 44 (
 :: 45.关闭应用启动跟踪
 if %option% equ 45 (
     if %opt45_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭应用启动跟踪
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f >nul
         echo [√] 已启用应用启动跟踪
     )
     goto :EOF
@@ -2675,10 +2685,10 @@ if %option% equ 46 (
 :: 47.关闭TSX漏洞补丁
 if %option% equ 47 (
     if %opt47_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "DisableTsx" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "DisableTsx" /t REG_DWORD /d 1 /f >nul
         echo [√] 已关闭TSX漏洞补丁
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "DisableTsx" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "DisableTsx" /f >nul
         echo [√] 已启用TSX漏洞补丁
     )
     goto :EOF
@@ -2687,10 +2697,10 @@ if %option% equ 47 (
 :: 48.优化进程数量
 if %option% equ 48 (
     if %opt48_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /t REG_SZ /d "ffffffff" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /t REG_SZ /d "ffffffff" /f >nul
         echo [√] 已优化进程数量
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /f >nul
         echo [√] 已恢复默认进程数量设置
     )
     goto :EOF
@@ -2699,12 +2709,12 @@ if %option% equ 48 (
 :: 49.关闭诊断策略服务
 if %option% equ 49 (
     if %opt49_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "DPS" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
         echo [√] 已关闭诊断策略服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "DPS" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "DPS" >nul 2>&1
         echo [√] 已启用诊断策略服务
     )
     goto :EOF
@@ -2713,12 +2723,12 @@ if %option% equ 49 (
 :: 50.关闭程序兼容性助手
 if %option% equ 50 (
     if %opt50_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "PcaSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
         echo [√] 已关闭程序兼容性助手
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "PcaSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "PcaSvc" >nul 2>&1
         echo [√] 已启用程序兼容性助手
     )
     goto :EOF
@@ -2727,10 +2737,10 @@ if %option% equ 50 (
 :: 51.关闭微软客户体验改进计划
 if %option% equ 51 (
     if %opt51_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭微软客户体验改进计划
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul
         echo [√] 已启用微软客户体验改进计划
     )
     goto :EOF
@@ -2751,10 +2761,10 @@ if %option% equ 52 (
 :: 53.禁用高精度事件定时器(HPET)
 if %option% equ 53 (
     if %opt53_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /t REG_DWORD /d 4 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /t REG_DWORD /d 4 /f >nul
         echo [√] 已禁用高精度事件定时器
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /f >nul
         echo [√] 已启用高精度事件定时器
     )
     goto :EOF
@@ -2920,10 +2930,10 @@ set option=%1
 :: 1.禁用"首次运行"欢迎页面
 if %option% equ 1 (
     if %opt1_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideFirstRunExperience" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideFirstRunExperience" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用"首次运行"欢迎页面
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideFirstRunExperience" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideFirstRunExperience" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用"首次运行"欢迎页面
     )
     goto :EOF
@@ -2932,10 +2942,10 @@ if %option% equ 1 (
 :: 2.关闭Adobe Flash即点即用
 if %option% equ 2 (
     if %opt2_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "RunAllFlashInAllowMode" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "RunAllFlashInAllowMode" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭Adobe Flash即点即用
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "RunAllFlashInAllowMode" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "RunAllFlashInAllowMode" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用Adobe Flash即点即用
     )
     goto :EOF
@@ -2944,10 +2954,10 @@ if %option% equ 2 (
 :: 3.关闭后禁止继续运行后台应用
 if %option% equ 3 (
     if %opt3_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁止Edge关闭后继续运行后台应用
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已允许Edge关闭后继续运行后台应用
     )
     goto :EOF
@@ -2956,10 +2966,10 @@ if %option% equ 3 (
 :: 4.阻止必应搜索结果中的所有广告
 if %option% equ 4 (
     if %opt4_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "AdsSettingForIntrusiveAdsSites" /t REG_DWORD /d 2 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "AdsSettingForIntrusiveAdsSites" /t REG_DWORD /d 2 /f >nul
         echo [√] 已阻止必应搜索结果中的所有广告
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "AdsSettingForIntrusiveAdsSites" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "AdsSettingForIntrusiveAdsSites" /t REG_DWORD /d 1 /f >nul
         echo [√] 已允许必应搜索结果中显示广告
     )
     goto :EOF
@@ -2968,10 +2978,10 @@ if %option% equ 4 (
 :: 5.禁用新选项卡页面上的微软资讯
 if %option% equ 5 (
     if %opt5_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageContentEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageContentEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用新选项卡页面上的微软资讯内容
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageContentEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageContentEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用新选项卡页面上的微软资讯内容
     )
     goto :EOF
@@ -2980,10 +2990,10 @@ if %option% equ 5 (
 :: 6.隐藏新标签页中的默认热门网站
 if %option% equ 6 (
     if %opt6_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d 1 /f >nul
         echo [√] 已隐藏新标签页中的默认热门网站
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "NewTabPageHideDefaultTopSites" /t REG_DWORD /d 0 /f >nul
         echo [√] 已显示新标签页中的默认热门网站
     )
     goto :EOF
@@ -2992,10 +3002,10 @@ if %option% equ 6 (
 :: 7.隐藏Edge浏览器边栏
 if %option% equ 7 (
     if %opt7_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "ShowSidebar" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "ShowSidebar" /t REG_DWORD /d 0 /f >nul
         echo [√] 已隐藏Edge浏览器边栏
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "ShowSidebar" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "ShowSidebar" /t REG_DWORD /d 1 /f >nul
         echo [√] 已显示Edge浏览器边栏
     )
     goto :EOF
@@ -3004,12 +3014,12 @@ if %option% equ 7 (
 :: 8.禁用Smartscreen筛选器
 if %option% equ 8 (
     if %opt8_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenEnabled" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenForTrustedDownloadsEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenForTrustedDownloadsEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用Smartscreen筛选器
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenEnabled" /t REG_DWORD /d 1 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenForTrustedDownloadsEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SmartScreenForTrustedDownloadsEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用Smartscreen筛选器
     )
     goto :EOF
@@ -3018,10 +3028,10 @@ if %option% equ 8 (
 :: 9.禁止发送任何诊断数据
 if %option% equ 9 (
     if %opt9_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁止发送任何诊断数据
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /t REG_DWORD /d 1 /f >nul
         echo [√] 已允许发送诊断数据
     )
     goto :EOF
@@ -3030,10 +3040,10 @@ if %option% equ 9 (
 :: 10.禁用标签页性能检测器
 if %option% equ 10 (
     if %opt10_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "PerformanceDetectorEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "PerformanceDetectorEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用标签页性能检测器
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "PerformanceDetectorEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "PerformanceDetectorEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用标签页性能检测器
     )
     goto :EOF
@@ -3042,10 +3052,10 @@ if %option% equ 10 (
 :: 11.关闭停止支持旧系统的通知
 if %option% equ 11 (
     if %opt11_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SuppressUnsupportedOSWarning" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SuppressUnsupportedOSWarning" /t REG_DWORD /d 1 /f >nul
         echo [√] 已关闭停止支持旧系统的通知
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SuppressUnsupportedOSWarning" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "SuppressUnsupportedOSWarning" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用停止支持旧系统的通知
     )
     goto :EOF
@@ -3054,10 +3064,10 @@ if %option% equ 11 (
 :: 12.关闭Edge自启动
 if %option% equ 12 (
     if %opt12_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭Edge自启动
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用Edge自启动
     )
     goto :EOF
@@ -3066,14 +3076,14 @@ if %option% equ 12 (
 :: 13.启用效率模式
 if %option% equ 13 (
     if %opt13_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyMode" /t REG_DWORD /d 1 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeOnPowerEnabled" /t REG_DWORD /d 2 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyMode" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeOnPowerEnabled" /t REG_DWORD /d 2 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用效率模式
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyMode" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeOnPowerEnabled" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyMode" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeOnPowerEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "EfficiencyModeEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用效率模式
     )
     goto :EOF
@@ -3082,10 +3092,10 @@ if %option% equ 13 (
 :: 14.关闭"由你的组织管理"提示
 if %option% equ 14 (
     if %opt14_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideManagedBrowserWarning" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideManagedBrowserWarning" /t REG_DWORD /d 1 /f >nul
         echo [√] 已关闭"由你的组织管理"提示
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideManagedBrowserWarning" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /v "HideManagedBrowserWarning" /t REG_DWORD /d 0 /f >nul
         echo [√] 已显示"由你的组织管理"提示
     )
     goto :EOF
@@ -3284,14 +3294,14 @@ if %option% equ 1 (
 :: 2.禁用LSA保护(RunAsPPL)
 if %option% equ 2 (
     if %opt2_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPLBoot" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPL" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPLBoot" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用LSA保护
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "RunAsPPL" /f >nul 2>&1
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPL" /t REG_DWORD /d 1 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPLBoot" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "RunAsPPL" /f >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPL" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPLBoot" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用LSA保护
     )
     goto :EOF
@@ -3300,10 +3310,10 @@ if %option% equ 2 (
 :: 3.禁用SmartScreen筛选器
 if %option% equ 3 (
     if %opt3_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用SmartScreen筛选器
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /f >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /f >nul 2>&1
         echo [√] 已启用SmartScreen筛选器
     )
     goto :EOF
@@ -3326,10 +3336,10 @@ if %option% equ 4 (
 :: 5.禁用驱动程序阻止列表
 if %option% equ 5 (
     if %opt5_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config" /v "VulnerableDriverBlocklistEnable" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config" /v "VulnerableDriverBlocklistEnable" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用驱动程序阻止列表
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config" /v "VulnerableDriverBlocklistEnable" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config" /v "VulnerableDriverBlocklistEnable" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用驱动程序阻止列表
     )
     goto :EOF
@@ -3374,10 +3384,10 @@ if %option% equ 8 (
 :: 9.禁用攻击面减少规则(ASR)
 if %option% equ 9 (
     if %opt9_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用攻击面减少规则
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用攻击面减少规则
     )
     goto :EOF
@@ -3386,12 +3396,12 @@ if %option% equ 9 (
 :: 10.禁用UAC(用户账户控制)
 if %option% equ 10 (
     if %opt10_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用UAC
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d 5 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d 5 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用UAC
     )
     goto :EOF
@@ -3400,13 +3410,13 @@ if %option% equ 10 (
 :: 11.禁用虚拟化安全(VBS)
 if %option% equ 11 (
     if %opt11_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d 0 /f >nul
         bcdedit /set hypervisorlaunchtype off >nul 2>&1
         echo [√] 已禁用虚拟化安全
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 1 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d 1 /f >nul
         bcdedit /set hypervisorlaunchtype auto >nul 2>&1
         echo [√] 已启用虚拟化安全
     )
@@ -3416,10 +3426,10 @@ if %option% equ 11 (
 :: 12.禁用凭证保护(Credential Guard)
 if %option% equ 12 (
     if %opt12_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" /v "Enabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用凭证保护
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" /v "Enabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" /v "Enabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用凭证保护
     )
     goto :EOF
@@ -3428,10 +3438,10 @@ if %option% equ 12 (
 :: 13.禁用受控文件夹访问
 if %option% equ 13 (
     if %opt13_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用受控文件夹访问
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用受控文件夹访问
     )
     goto :EOF
@@ -3440,10 +3450,10 @@ if %option% equ 13 (
 :: 14.禁用网络保护
 if %option% equ 14 (
     if %opt14_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用网络保护
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用网络保护
     )
     goto :EOF
@@ -3452,10 +3462,10 @@ if %option% equ 14 (
 :: 15.禁用AMSI
 if %option% equ 15 (
     if %opt15_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableAmsi" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableAmsi" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用AMSI
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableAmsi" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableAmsi" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用AMSI
     )
     goto :EOF
@@ -3464,10 +3474,10 @@ if %option% equ 15 (
 :: 16.禁用代码完整性
 if %option% equ 16 (
     if %opt16_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI" /v "Enabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用代码完整性
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI" /v "Enabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI" /v "Enabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用代码完整性
     )
     goto :EOF
@@ -3488,12 +3498,12 @@ if %option% equ 17 (
 :: 18.关闭默认共享
 if %option% equ 18 (
     if %opt18_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭默认共享
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 1 /f >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用默认共享
     )
     goto :EOF
@@ -3502,10 +3512,10 @@ if %option% equ 18 (
 :: 19.关闭远程协助
 if %option% equ 19 (
     if %opt19_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f >nul
         echo [√] 已关闭远程协助
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用远程协助
     )
     goto :EOF
@@ -3514,10 +3524,10 @@ if %option% equ 19 (
 :: 20.启用不安全的来宾登录
 if %option% equ 20 (
     if %opt20_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "AllowInsecureGuestAuth" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "AllowInsecureGuestAuth" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用不安全的来宾登录
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "AllowInsecureGuestAuth" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "AllowInsecureGuestAuth" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用不安全的来宾登录
     )
     goto :EOF
@@ -3871,10 +3881,10 @@ if %option% equ 1 (
 :: 2.禁用开始屏幕建议
 if %option% equ 2 (
     if %opt2_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用开始屏幕建议
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用开始屏幕建议
     )
     goto :EOF
@@ -3883,10 +3893,10 @@ if %option% equ 2 (
 :: 3.禁用活动收集
 if %option% equ 3 (
     if %opt3_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用活动收集
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用活动收集
     )
     goto :EOF
@@ -3895,10 +3905,10 @@ if %option% equ 3 (
 :: 4.禁用应用启动跟踪
 if %option% equ 4 (
     if %opt4_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用应用启动跟踪
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用应用启动跟踪
     )
     goto :EOF
@@ -3907,10 +3917,10 @@ if %option% equ 4 (
 :: 5.禁用广告标识符
 if %option% equ 5 (
     if %opt5_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用广告标识符
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用广告标识符
     )
     goto :EOF
@@ -3991,10 +4001,10 @@ if %option% equ 11 (
 :: 12.禁用Windows欢迎体验
 if %option% equ 12 (
     if %opt12_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用Windows欢迎体验
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用Windows欢迎体验
     )
     goto :EOF
@@ -4003,10 +4013,10 @@ if %option% equ 12 (
 :: 13.禁用反馈频率
 if %option% equ 13 (
     if %opt13_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用反馈频率
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用反馈频率
     )
     goto :EOF
@@ -4015,10 +4025,10 @@ if %option% equ 13 (
 :: 14.禁用诊断数据收集
 if %option% equ 14 (
     if %opt14_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用诊断数据收集
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 3 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 3 /f >nul
         echo [√] 已启用诊断数据收集
     )
     goto :EOF
@@ -4051,10 +4061,10 @@ if %option% equ 16 (
 :: 17.禁用Bing搜索结果
 if %option% equ 17 (
     if %opt17_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用Bing搜索结果
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用Bing搜索结果
     )
     goto :EOF
@@ -4099,10 +4109,10 @@ if %option% equ 20 (
 :: 21.禁用赞助商应用安装
 if %option% equ 21 (
     if %opt21_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用赞助商应用安装
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用赞助商应用安装
     )
     goto :EOF
@@ -4111,10 +4121,10 @@ if %option% equ 21 (
 :: 22.禁用自动连接热点
 if %option% equ 22 (
     if %opt22_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用自动连接热点
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用自动连接热点
     )
     goto :EOF
@@ -4159,10 +4169,10 @@ if %option% equ 25 (
 :: 26.禁用.NET遥测
 if %option% equ 26 (
     if %opt26_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用.NET遥测
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用.NET遥测
     )
     goto :EOF
@@ -4171,10 +4181,10 @@ if %option% equ 26 (
 :: 27.禁用PowerShell遥测
 if %option% equ 27 (
     if %opt27_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用PowerShell遥测
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用PowerShell遥测
     )
     goto :EOF
@@ -4197,10 +4207,10 @@ if %option% equ 28 (
 :: 29.禁用错误报告(WER)
 if %option% equ 29 (
     if %opt29_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用错误报告
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用错误报告
     )
     goto :EOF
@@ -4209,10 +4219,10 @@ if %option% equ 29 (
 :: 30.禁用语音激活(Cortana)
 if %option% equ 30 (
     if %opt30_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 2 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 2 /f >nul
         echo [√] 已禁用语音激活
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用语音激活
     )
     goto :EOF
@@ -4221,10 +4231,10 @@ if %option% equ 30 (
 :: 31.禁用位置服务
 if %option% equ 31 (
     if %opt31_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用位置服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用位置服务
     )
     goto :EOF
@@ -4233,10 +4243,10 @@ if %option% equ 31 (
 :: 32.禁用搜索数据收集
 if %option% equ 32 (
     if %opt32_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用搜索数据收集
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用搜索数据收集
     )
     goto :EOF
@@ -4245,10 +4255,10 @@ if %option% equ 32 (
 :: 33.禁用定向广告
 if %option% equ 33 (
     if %opt33_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用定向广告
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用定向广告
     )
     goto :EOF
@@ -4257,10 +4267,10 @@ if %option% equ 33 (
 :: 34.禁用Wi-Fi感知
 if %option% equ 34 (
     if %opt34_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用Wi-Fi感知
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用Wi-Fi感知
     )
     goto :EOF
@@ -4281,10 +4291,10 @@ if %option% equ 35 (
 :: 36.禁用写入调试信息
 if %option% equ 36 (
     if %opt36_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用写入调试信息
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /t REG_DWORD /d 0xf /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /t REG_DWORD /d 0xf /f >nul
         echo [√] 已启用写入调试信息
     )
     goto :EOF
@@ -4449,10 +4459,10 @@ if %option% equ 49 (
 :: 50.禁用将事件写入系统日志
 if %option% equ 50 (
     if %opt50_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows" /v "NoEventLog" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows" /v "NoEventLog" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用将事件写入系统日志
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows" /v "NoEventLog" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows" /v "NoEventLog" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用将事件写入系统日志
     )
     goto :EOF
@@ -4461,10 +4471,10 @@ if %option% equ 50 (
 :: 51.禁用崩溃时写入调试信息
 if %option% equ 51 (
     if %opt51_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "CrashDumpEnabled" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "CrashDumpEnabled" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用崩溃时写入调试信息
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "CrashDumpEnabled" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "CrashDumpEnabled" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用崩溃时写入调试信息
     )
     goto :EOF
@@ -4473,10 +4483,10 @@ if %option% equ 51 (
 :: 52.禁用账户登录日志报告
 if %option% equ 52 (
     if %opt52_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableLogonCacheDisplay" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableLogonCacheDisplay" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁用账户登录日志报告
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableLogonCacheDisplay" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableLogonCacheDisplay" /t REG_DWORD /d 0 /f >nul
         echo [√] 已启用账户登录日志报告
     )
     goto :EOF
@@ -4485,10 +4495,10 @@ if %option% equ 52 (
 :: 53.禁用WfpDiag.ETL日志
 if %option% equ 53 (
     if %opt53_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Diagnostics" /v "EnableLog" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Diagnostics" /v "EnableLog" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用WfpDiag.ETL日志
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Diagnostics" /v "EnableLog" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Diagnostics" /v "EnableLog" /t REG_DWORD /d 1 /f >nul
         echo [√] 已启用WfpDiag.ETL日志
     )
     goto :EOF
@@ -4664,12 +4674,12 @@ set option=%1
 :: 1.SecurityHealthService (安全健康服务)
 if %option% equ 1 (
     if %opt1_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SecurityHealthService" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "SecurityHealthService" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SecurityHealthService" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SecurityHealthService" >nul 2>&1
         echo [√] 已禁用: SecurityHealthService 安全健康服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SecurityHealthService" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "SecurityHealthService" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SecurityHealthService" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SecurityHealthService" >nul 2>&1
         echo [√] 已启用: SecurityHealthService 安全健康服务
     )
     goto :EOF
@@ -4678,12 +4688,12 @@ if %option% equ 1 (
 :: 2.SysMain (SuperFetch服务)
 if %option% equ 2 (
     if %opt2_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SysMain" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "SysMain" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
         echo [√] 已禁用: SysMain SuperFetch服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SysMain" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "SysMain" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SysMain" >nul 2>&1
         echo [√] 已启用: SysMain SuperFetch服务
     )
     goto :EOF
@@ -4692,12 +4702,12 @@ if %option% equ 2 (
 :: 3.WSearch (Windows搜索服务)
 if %option% equ 3 (
     if %opt3_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WSearch" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "WSearch" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
         echo [√] 已禁用: WSearch Windows搜索服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WSearch" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "WSearch" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "WSearch" >nul 2>&1
         echo [√] 已启用: WSearch Windows搜索服务
     )
     goto :EOF
@@ -4706,12 +4716,12 @@ if %option% equ 3 (
 :: 4.UsoSvc (Windows更新服务)
 if %option% equ 4 (
     if %opt4_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "UsoSvc" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "UsoSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "UsoSvc" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "UsoSvc" >nul 2>&1
         echo [√] 已禁用: UsoSvc Windows更新服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "UsoSvc" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "UsoSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "UsoSvc" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "UsoSvc" >nul 2>&1
         echo [√] 已启用: UsoSvc Windows更新服务
     )
     goto :EOF
@@ -4720,12 +4730,12 @@ if %option% equ 4 (
 :: 5.TrkWks (分布式链接跟踪服务)
 if %option% equ 5 (
     if %opt5_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "TrkWks" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "TrkWks" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
         echo [√] 已禁用: TrkWks 分布式链接跟踪服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "TrkWks" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "TrkWks" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "TrkWks" >nul 2>&1
         echo [√] 已启用: TrkWks 分布式链接跟踪服务
     )
     goto :EOF
@@ -4734,12 +4744,12 @@ if %option% equ 5 (
 :: 6.WinDefend (Windows Defender服务)
 if %option% equ 6 (
     if %opt6_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WinDefend" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "WinDefend" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WinDefend" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WinDefend" >nul 2>&1
         echo [√] 已禁用: WinDefend Windows Defender服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WinDefend" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "WinDefend" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WinDefend" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "WinDefend" >nul 2>&1
         echo [√] 已启用: WinDefend Windows Defender服务
     )
     goto :EOF
@@ -4748,12 +4758,12 @@ if %option% equ 6 (
 :: 7.diagsvc (诊断服务)
 if %option% equ 7 (
     if %opt7_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "diagsvc" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "diagsvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagsvc" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "diagsvc" >nul 2>&1
         echo [√] 已禁用: diagsvc 诊断服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "diagsvc" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "diagsvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagsvc" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "diagsvc" >nul 2>&1
         echo [√] 已启用: diagsvc 诊断服务
     )
     goto :EOF
@@ -4762,12 +4772,12 @@ if %option% equ 7 (
 :: 8.DPS (诊断策略服务)
 if %option% equ 8 (
     if %opt8_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "DPS" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
         echo [√] 已禁用: DPS 诊断策略服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "DPS" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "DPS" >nul 2>&1
         echo [√] 已启用: DPS 诊断策略服务
     )
     goto :EOF
@@ -4776,12 +4786,12 @@ if %option% equ 8 (
 :: 9.WdiServiceHost (诊断服务主机)
 if %option% equ 9 (
     if %opt9_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiServiceHost" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "WdiServiceHost" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiServiceHost" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiServiceHost" >nul 2>&1
         echo [√] 已禁用: WdiServiceHost 诊断服务主机
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiServiceHost" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "WdiServiceHost" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiServiceHost" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "WdiServiceHost" >nul 2>&1
         echo [√] 已启用: WdiServiceHost 诊断服务主机
     )
     goto :EOF
@@ -4790,12 +4800,12 @@ if %option% equ 9 (
 :: 10.WdiSystemHost (诊断系统主机)
 if %option% equ 10 (
     if %opt10_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiSystemHost" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "WdiSystemHost" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiSystemHost" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiSystemHost" >nul 2>&1
         echo [√] 已禁用: WdiSystemHost 诊断系统主机
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiSystemHost" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "WdiSystemHost" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiSystemHost" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "WdiSystemHost" >nul 2>&1
         echo [√] 已启用: WdiSystemHost 诊断系统主机
     )
     goto :EOF
@@ -4804,16 +4814,16 @@ if %option% equ 10 (
 :: 11.MapsBroker (地图服务)
 if %option% equ 11 (
     if %opt11_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "MapsBroker" start= demand >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "MapsBroker" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "MapsBroker" start= demand >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "MapsBroker" >nul 2>&1
         echo [√] 已设置手动: MapsBroker 地图服务
     ) else if %opt11_status% equ 1 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "MapsBroker" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "MapsBroker" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "MapsBroker" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "MapsBroker" >nul 2>&1
         echo [√] 已设置自动: MapsBroker 地图服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "MapsBroker" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "MapsBroker" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "MapsBroker" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "MapsBroker" >nul 2>&1
         echo [√] 已禁用: MapsBroker 地图服务
     )
     goto :EOF
@@ -4822,12 +4832,12 @@ if %option% equ 11 (
 :: 12.iphlpsvc (IP助手服务)
 if %option% equ 12 (
     if %opt12_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "iphlpsvc" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "iphlpsvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "iphlpsvc" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "iphlpsvc" >nul 2>&1
         echo [√] 已禁用: iphlpsvc IP助手服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "iphlpsvc" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "iphlpsvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "iphlpsvc" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "iphlpsvc" >nul 2>&1
         echo [√] 已启用: iphlpsvc IP助手服务
     )
     goto :EOF
@@ -4836,12 +4846,12 @@ if %option% equ 12 (
 :: 13.diagnosticshub.standardcollector.service (诊断中心收集器)
 if %option% equ 13 (
     if %opt13_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "diagnosticshub.standardcollector.service" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "diagnosticshub.standardcollector.service" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagnosticshub.standardcollector.service" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "diagnosticshub.standardcollector.service" >nul 2>&1
         echo [√] 已禁用: diagnosticshub.standardcollector.service 诊断中心收集器
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "diagnosticshub.standardcollector.service" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "diagnosticshub.standardcollector.service" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagnosticshub.standardcollector.service" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "diagnosticshub.standardcollector.service" >nul 2>&1
         echo [√] 已启用: diagnosticshub.standardcollector.service 诊断中心收集器
     )
     goto :EOF
@@ -4850,12 +4860,12 @@ if %option% equ 13 (
 :: 14.SmsRouter (SMS路由器服务)
 if %option% equ 14 (
     if %opt14_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SmsRouter" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "SmsRouter" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SmsRouter" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SmsRouter" >nul 2>&1
         echo [√] 已禁用: SmsRouter SMS路由器服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SmsRouter" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "SmsRouter" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SmsRouter" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SmsRouter" >nul 2>&1
         echo [√] 已启用: SmsRouter SMS路由器服务
     )
     goto :EOF
@@ -4864,12 +4874,12 @@ if %option% equ 14 (
 :: 15.PcaSvc (程序兼容性助手)
 if %option% equ 15 (
     if %opt15_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "PcaSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
         echo [√] 已禁用: PcaSvc 程序兼容性助手
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "PcaSvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "PcaSvc" >nul 2>&1
         echo [√] 已启用: PcaSvc 程序兼容性助手
     )
     goto :EOF
@@ -4878,16 +4888,16 @@ if %option% equ 15 (
 :: 16.ShellHWDetection (Shell硬件检测)
 if %option% equ 16 (
     if %opt16_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "ShellHWDetection" start= demand >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "ShellHWDetection" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "ShellHWDetection" start= demand >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "ShellHWDetection" >nul 2>&1
         echo [√] 已设置手动: ShellHWDetection Shell硬件检测
     ) else if %opt16_status% equ 1 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "ShellHWDetection" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "ShellHWDetection" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "ShellHWDetection" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "ShellHWDetection" >nul 2>&1
         echo [√] 已设置自动: ShellHWDetection Shell硬件检测
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "ShellHWDetection" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "ShellHWDetection" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "ShellHWDetection" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "ShellHWDetection" >nul 2>&1
         echo [√] 已禁用: ShellHWDetection Shell硬件检测
     )
     goto :EOF
@@ -4896,12 +4906,12 @@ if %option% equ 16 (
 :: 17.SgrmBroker (系统防护服务)
 if %option% equ 17 (
     if %opt17_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SgrmBroker" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "SgrmBroker" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SgrmBroker" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SgrmBroker" >nul 2>&1
         echo [√] 已禁用: SgrmBroker 系统防护服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "SgrmBroker" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "SgrmBroker" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SgrmBroker" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SgrmBroker" >nul 2>&1
         echo [√] 已启用: SgrmBroker 系统防护服务
     )
     goto :EOF
@@ -4910,16 +4920,16 @@ if %option% equ 17 (
 :: 18.Schedule (任务计划服务)
 if %option% equ 18 (
     if %opt18_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "Schedule" start= demand >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "Schedule" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Schedule" start= demand >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "Schedule" >nul 2>&1
         echo [√] 已设置手动: Schedule 任务计划服务
     ) else if %opt18_status% equ 1 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "Schedule" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "Schedule" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Schedule" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "Schedule" >nul 2>&1
         echo [√] 已设置自动: Schedule 任务计划服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "Schedule" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "Schedule" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Schedule" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "Schedule" >nul 2>&1
         echo [√] 已禁用: Schedule 任务计划服务
     )
     goto :EOF
@@ -4928,12 +4938,12 @@ if %option% equ 18 (
 :: 19.Wecsvc (Windows事件收集服务)
 if %option% equ 19 (
     if %opt19_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "Wecsvc" start= disabled >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc stop "Wecsvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Wecsvc" start= disabled >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "Wecsvc" >nul 2>&1
         echo [√] 已禁用: Wecsvc Windows事件收集服务
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E sc config "Wecsvc" start= auto >nul
-        "%~dp0NSudoLG.exe" -U:T -P:E sc start "Wecsvc" >nul 2>&1
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Wecsvc" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "Wecsvc" >nul 2>&1
         echo [√] 已启用: Wecsvc Windows事件收集服务
     )
     goto :EOF
@@ -4948,35 +4958,35 @@ echo 正在恢复所有服务默认设置...
 echo.
 
 :: 恢复默认设置并启动服务
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SysMain" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WSearch" start= delayed-auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "UsoSvc" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "TrkWks" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WinDefend" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "diagsvc" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "DPS" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiServiceHost" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "WdiSystemHost" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "MapsBroker" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "iphlpsvc" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "diagnosticshub.standardcollector.service" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SmsRouter" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "PcaSvc" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "ShellHWDetection" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SgrmBroker" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "Schedule" start= auto >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "Wecsvc" start= manual >nul
-"%~dp0NSudoLG.exe" -U:T -P:E sc config "SecurityHealthService" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= delayed-auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "UsoSvc" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WinDefend" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagsvc" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiServiceHost" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiSystemHost" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "MapsBroker" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "iphlpsvc" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagnosticshub.standardcollector.service" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SmsRouter" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "ShellHWDetection" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SgrmBroker" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Schedule" start= auto >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Wecsvc" start= manual >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SecurityHealthService" start= auto >nul
 
 :: 启动应该自动启动的服务
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "SysMain" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "TrkWks" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "WinDefend" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "DPS" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "PcaSvc" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "ShellHWDetection" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "Schedule" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "SecurityHealthService" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SysMain" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "TrkWks" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "WinDefend" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "DPS" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "PcaSvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "ShellHWDetection" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "Schedule" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SecurityHealthService" >nul 2>&1
 
 echo 所有服务已恢复默认设置!
 echo.
@@ -5076,10 +5086,10 @@ set option=%1
 :: 1.禁止Win10/11进行大版本更新
 if %option% equ 1 (
     if %opt1_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /t REG_DWORD /d 1 /f >nul
         echo [√] 已禁止Win10/11进行大版本更新
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /f >nul
         echo [√] 已允许Win10/11进行大版本更新
     )
     goto :EOF
@@ -5088,10 +5098,10 @@ if %option% equ 1 (
 :: 2.Windows更新不包括恶意软件删除工具
 if %option% equ 2 (
     if %opt2_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f >nul
         echo [√] Windows更新已不包括恶意软件删除工具
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /f >nul
         echo [√] Windows更新已包括恶意软件删除工具
     )
     goto :EOF
@@ -5124,10 +5134,10 @@ if %option% equ 3 (
 :: 4.禁用自动更新商店应用
 if %option% equ 4 (
     if %opt4_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /t REG_DWORD /d 2 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /t REG_DWORD /d 2 /f >nul
         echo [√] 已禁用自动更新商店应用
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /f >nul
         echo [√] 已启用自动更新商店应用
     )
     goto :EOF
@@ -5136,10 +5146,10 @@ if %option% equ 4 (
 :: 5.禁用自动更新地图
 if %option% equ 5 (
     if %opt6_status% equ 0 (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f >nul
         echo [√] 已禁用自动更新地图
     ) else (
-        "%~dp0NSudoLG.exe" -U:T -P:E reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /f >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /f >nul
         echo [√] 已启用自动更新地图
     )
     goto :EOF
@@ -5150,8 +5160,8 @@ goto :EOF
 :RESTART_WU_SERVICE
 echo.
 echo 正在重启Windows更新服务...
-"%~dp0NSudoLG.exe" -U:T -P:E sc stop "wuauserv" >nul 2>&1
-"%~dp0NSudoLG.exe" -U:T -P:E sc start "wuauserv" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "wuauserv" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "wuauserv" >nul 2>&1
 echo Windows更新服务已重启
 echo.
 pause
@@ -5473,7 +5483,7 @@ echo.                          ZyperWin++ - 关于软件
 echo.===============================================================================
 echo.
 echo.
-echo.                             ZyperWin++ v2.0
+echo.                             ZyperWin++ v2.1
 echo.
 echo.              开发者：ZyperWave
 echo. 
