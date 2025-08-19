@@ -1,6 +1,6 @@
 @echo off
 
-title ZyperWin++ v2.1
+title ZyperWin++ v2.2
 
 :: 设置默认控制台背景和前景色
 color 1f
@@ -10,8 +10,8 @@ set ConsoleForeColor=White
 net session >nul 2>&1
 if %errorlevel% neq 0 (
 	echo.=========================================================
-	echo 请以管理员身份运行此脚本！
-	echo.否则脚本会优化失败！
+	echo.错误：此脚本需要以管理员身份运行。
+	echo.请右键单击此文件，然后选择“以管理员身份运行”。
 	echo.
 	echo.=========================================================
 	echo.
@@ -38,6 +38,18 @@ if not exist "%~dp0Defender_Control.exe" (
 	echo.=========================================================
 	echo 错误：未找到 Defender_Control.exe
 	echo 请确保本脚本与 Defender_Control.exe 在同一目录下
+	echo.
+	echo.=========================================================
+	pause>nul|set /p=请按任意键继续执行……
+	color 00
+	endlocal
+	exit
+)
+
+if not exist "%~dp0MAS_AIO_CN.cmd" (
+	echo.=========================================================
+	echo 错误：未找到 MAS_AIO_CN.cmd
+	echo 请确保本脚本与 MAS_AIO_CN.cmd 在同一目录下
 	echo.
 	echo.=========================================================
 	pause>nul|set /p=请按任意键继续执行……
@@ -111,60 +123,1070 @@ echo.
 echo.
 echo.                           [1]   快 速 优 化
 echo.
+echo.
 echo.                           [2]   自定义优化
 echo.
-echo.                           [3]   垃 圾 清 理
 echo.
-echo.                           [4]   Office 安装
+echo.                           [3]   优 化 还 原
 echo.
-echo.                           [5]   系 统 激 活
-echo.
-echo.                           [6]   APPX 管理
+echo.                           
+echo.                           [4]   其 他 功 能
+echo.                           
 echo.                             
-echo.                           [7]   关 于 软 件
+echo.                           [5]   关 于 软 件
 echo.                             
 echo.
 echo.                           [X]   退      出
 echo.
 echo.===============================================================================
-choice /C:1234567X /N /M "请输入你的选项 ："
-if errorlevel 8 goto :Quit
-if errorlevel 7 goto :about
-if errorlevel 6 goto :AppX_Manager
-if errorlevel 5 goto :System_activation
-if errorlevel 4 goto :Office_install
-if errorlevel 3 goto :Clean
+choice /C:12345X /N /M "请输入你的选项 ："
+if errorlevel 6 goto :Quit
+if errorlevel 5 goto :about
+if errorlevel 4 goto :others
+if errorlevel 3 goto :recover_optimize
 if errorlevel 2 goto :custom_optimize
 if errorlevel 1 goto :quick_optimize
 ::-------------------------------------------------------------------------------------------
 
+
 ::-------------------------------------------------------------------------------------------
-:: ZyperWin++ - 快速优化
+:: ZyperWin++ - 主菜单
 ::-------------------------------------------------------------------------------------------
 :quick_optimize
 
 cls
 echo.===============================================================================
-echo.                          ZyperWin++ - 快速优化
+echo.                          ZyperWin++ - 快 速 优 化
 echo.===============================================================================
 echo.
-echo.  正在执行全面系统优化...
+echo.
+echo.  [1]   基 本 优 化
+echo.
+echo.
+echo.  [2]   深 度 优 化
+echo.
+echo.
+echo.  [3]   极 限 优 化
+echo.
+echo.                           
+echo.
+echo.                           
+echo.                             
+echo.
+echo.                             
+echo.
+echo.  [X]   退      出
+echo.
+echo.===============================================================================
+choice /C:123X /N /M "请输入你的选项 ："
+if errorlevel 4 goto :MainMenu
+if errorlevel 3 goto :all_optimize
+if errorlevel 2 goto :deep_optimize
+if errorlevel 1 goto :basic_optimize
+::-------------------------------------------------------------------------------------------
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 基 本 优 化
+::-------------------------------------------------------------------------------------------
+:basic_optimize
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 基 本 优 化
+echo.===============================================================================
+echo.
+echo.  正在执行基本优化...
 echo.
 echo.  注意：此过程可能此过程可能需要几分钟时间，请勿关闭窗口
 echo.
 echo.  ==============================================================================
-sc query "wscsvc" | findstr /i "RUNNING" >nul
+echo 正在检测Windows Defender服务状态...
+sc query "WinDefend" | findstr /i "RUNNING" >nul
 if %errorlevel% equ 0 (
-    reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wscsvc" /v "Start" 2>nul | findstr /i "0x4" >nul
-    if %errorlevel% neq 0 (
-        echo Defender 服务正在运行且未被禁用，请手动关闭Defender（Disable）
-        "%~dp0Defender_Control.exe"
-        pause
-    ) else (
-        echo [√] Defender 服务未运行，跳过执行。
-    )
+    echo [!] Defender服务正在运行，请手动关闭（Disable）...
+    "%~dp0Defender_Control.exe"
+    pause
 ) else (
-    echo [√] Defender 服务未运行，跳过执行。
+    echo [√] Defender服务未运行，自动跳过...
+)
+
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "SearchboxTaskbarMode" /t REG_DWORD /d 0 /f >nul
+echo [√] 已隐藏任务栏Cortana
+
+:: 任务栏窗口合并
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用任务栏窗口合并
+
+:: 资源管理器打开显示"此电脑"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /t REG_DWORD /d 1 /f >nul
+echo [√] 资源管理器打开时显示"此电脑"
+
+:: 总是从内存卸载无用DLL
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "AlwaysUnloadDLL" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用从内存卸载无用DLL
+
+:: 禁止跟踪损坏的快捷方式
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveTrack" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用跟踪损坏的快捷方式
+
+:: 优化文件列表刷新策略
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "ForegroundLockTimeout" /t REG_DWORD /d 0 /f >nul
+echo [√] 已优化Windows文件列表刷新策略
+
+:: 创建快捷方式不添加"快捷方式"字样
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "link" /t REG_BINARY /d 00000000 /f >nul
+echo [√] 创建快捷方式时不添加"快捷方式"字样
+
+:: 禁止自动播放
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d 255 /f >nul
+echo [√] 已禁用自动播放
+
+:: 在单独进程中打开文件夹
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "SeparateProcess" /t REG_DWORD /d 1 /f >nul
+echo [√] 已在单独进程中打开文件夹窗口
+
+:: 快速访问不显示常用文件夹
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowFrequent" /t REG_DWORD /d 0 /f >nul
+echo [√] 快速访问不再显示常用文件夹
+
+:: 快速访问不显示最近使用文件
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /t REG_DWORD /d 0 /f >nul
+echo [√] 快速访问不再显示最近使用文件
+
+:: 语言栏隐藏到任务栏
+reg add "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ShowStatus" /t REG_DWORD /d 3 /f >nul
+echo [√] 语言栏已隐藏到任务栏
+
+:: 隐藏语言栏帮助按钮
+reg add "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ExtraIconsOnMinimized" /t REG_DWORD /d 0 /f >nul
+echo [√] 已隐藏语言栏上的帮助按钮
+
+:: 资源管理器崩溃自动重启
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /t REG_DWORD /d 1 /f >nul
+echo [√] 资源管理器崩溃时将自动重启
+
+:: 显示文件扩展名
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d 0 /f >nul
+echo [√] 已显示已知文件类型的扩展名
+
+:: 桌面显示"此电脑"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /t REG_DWORD /d 0 /f >nul
+echo [√] 桌面已显示"此电脑"
+
+:: 桌面显示"回收站"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /t REG_DWORD /d 0 /f >nul
+echo [√] 桌面已显示"回收站"
+
+:: 禁用兼容性疑难解答右键菜单
+reg delete "HKEY_CLASSES_ROOT\exefile\shellex\ContextMenuHandlers\Compatibility" /f >nul 2>&1
+echo [√] 已禁用可执行文件的"兼容性疑难解答"右键菜单
+
+:: 禁用Windows Defender扫描右键菜单
+reg delete "HKEY_CLASSES_ROOT\*\shellex\ContextMenuHandlers\EPP" /f >nul 2>&1
+echo [√] 已禁用文件/文件夹的"使用Windows Defender扫描"右键菜单
+
+:: 禁用Bitlocker右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shell\BitLocker" /f >nul 2>&1
+echo [√] 已禁用磁盘的"启用Bitlocker"右键菜单
+
+:: 禁用"作为便携设备打开"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shell\PortableDeviceMenu" /f >nul 2>&1
+echo [√] 已禁用磁盘的"作为便携设备打开"右键菜单
+
+:: 禁用新建联系人右键菜单
+reg delete "HKEY_CLASSES_ROOT\.contact\ShellNew" /f >nul 2>&1
+echo [√] 已禁用新建的"联系人"右键菜单
+
+:: 禁用"还原先前版本"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}" /f >nul 2>&1
+echo [√] 已禁用文件/磁盘的"还原先前版本"右键菜单
+
+:: 禁用"刻录到光盘"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{B327765E-D724-4347-8B16-78AE18552FC3}" /f >nul 2>&1
+echo [√] 已禁用磁盘的"刻录到光盘"右键菜单
+
+:: 禁用"授予访问权限"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Sharing" /f >nul 2>&1
+echo [√] 已禁用"授予访问权限"右键菜单
+
+:: 禁用"始终脱机可用"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Offline Files" /f >nul 2>&1
+echo [√] 已禁用文件/文件夹的"始终脱机可用"右键菜单
+
+:: 禁用"固定到快速访问"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shell\pintohome" /f >nul 2>&1
+echo [√] 已禁用文件夹的"固定到快速访问"右键菜单
+
+:: 禁用工作文件夹右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\WorkFolders" /f >nul 2>&1
+echo [√] 已禁用"工作文件夹"右键菜单
+
+:: 禁用画图3D右键菜单
+reg delete "HKEY_CLASSES_ROOT\SystemFileAssociations\.3mf\Shell\3D Edit" /f >nul 2>&1
+echo [√] 已禁用文件的"画图3D"右键菜单
+
+:: 禁用"包含到库中"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Library Location" /f >nul 2>&1
+echo [√] 已禁用文件夹的"包含到库中"右键菜单
+
+:: 禁用开始菜单常用应用
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用开始菜单App列表-最常用的应用
+
+:: 禁用开始菜单最近添加应用
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用开始菜单App列表-最近添加的应用
+
+:: 记事本启用自动换行
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "fWrap" /t REG_DWORD /d 1 /f >nul
+echo [√] 记事本已启用自动换行
+
+:: 记事本显示状态栏
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "StatusBar" /t REG_DWORD /d 1 /f >nul
+echo [√] 记事本已启用状态栏显示
+
+:: 退出时清除最近打开文档
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用退出系统时清除最近打开的文档
+
+:: 恢复Win11经典右键菜单
+reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve >nul
+echo [√] 已恢复Win11经典右键菜单
+
+:: 恢复Win11经典资源管理器
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /ve /t REG_SZ /d "CLSID_ItemsViewAdapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /ve /t REG_SZ /d "File Explorer Xaml Island View Adapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
+echo [√] 已恢复Win11经典资源管理器
+
+echo 正在重启资源管理器...
+taskkill /f /im explorer.exe >nul
+start explorer.exe >nul
+echo 资源管理器已重启
+
+:: 性能优化设置
+:: 不允许在开始菜单显示建议
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁止在开始菜单显示建议
+
+:: 不要在应用商店中查找关联应用
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁止在应用商店中查找关联应用
+
+:: 关闭商店应用推广
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "PreInstalledAppsEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭商店应用推广
+
+:: 关闭锁屏时的Windows聚焦推广
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭锁屏时的Windows聚焦推广
+
+:: 关闭"使用Windows时获取技巧和建议"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SoftLandingEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭"使用Windows时获取技巧和建议"
+
+:: 关闭游戏录制工具
+reg add "HKEY_CURRENT_USER\System\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭游戏录制工具
+
+:: 关闭多嘴的小娜
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭多嘴的小娜
+
+:: 加快关机速度
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "1000" /f >nul
+echo [√] 已加快关机速度
+
+:: 缩短关闭服务等待时间
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /t REG_DWORD /d 2000 /f >nul
+echo [√] 已缩短关闭服务等待时间
+
+:: 禁用程序兼容性助手
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
+echo [√] 已禁用程序兼容性助手
+
+:: 禁用诊断服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
+echo [√] 已禁用诊断服务
+
+:: 禁用SysMain
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
+echo [√] 已禁用SysMain
+
+:: 禁用Windows Search
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
+echo [√] 已禁用Windows Search
+
+:: 禁用错误报告
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用错误报告
+
+:: 禁用客户体验改善计划
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用客户体验改善计划
+
+:: 禁用NTFS链接跟踪服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
+echo [√] 已禁用NTFS链接跟踪服务
+
+:: 禁止自动维护计划
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v "MaintenanceDisabled" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁止自动维护计划
+
+:: 启用大系统缓存以提高性能
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用大系统缓存以提高性能
+
+:: 禁止系统内核与驱动程序分页到硬盘
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁止系统内核与驱动程序分页到硬盘
+
+:: 将文件管理系统缓存增加至256MB
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /t REG_DWORD /d 4194304 /f >nul
+echo [√] 已将文件管理系统缓存增加至256MB
+
+:: 将Windows预读调整为关闭预读
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭Windows预读功能
+
+:: VHD启动时节省磁盘空间
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /t REG_DWORD /d 4 /f >nul
+echo [√] VHD启动时已节省磁盘空间
+
+:: 关闭系统自动调试功能
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭系统自动调试功能
+
+:: 将磁盘错误检查等待时间缩短到五秒
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /t REG_DWORD /d 5 /f >nul
+echo [√] 已将磁盘错误检查等待时间缩短到五秒
+
+:: 设备安装禁止创建系统还原点
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /t REG_DWORD /d 1 /f >nul
+echo [√] 设备安装已禁止创建系统还原点
+
+:: 弹出USB磁盘后彻底断开电源
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /t REG_DWORD /d 0 /f >nul
+echo [√] 弹出USB磁盘后已彻底断开电源
+
+:: 关闭快速启动
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭快速启动
+
+:: 关闭休眠
+powercfg /h off >nul
+echo [√] 已关闭休眠
+
+:: 根据语言设置隐藏字体
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /t REG_SZ /d "10000000000000000000000000000000" /f >nul
+echo [√] 已根据语言设置隐藏字体
+
+:: 微软拼音输入法关闭云计算
+reg add "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS" /v "CloudCandidate" /t REG_DWORD /d 0 /f >nul
+echo [√] 微软拼音输入法已关闭云计算
+
+:: 禁用内容传递优化服务
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DownloadMode" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用内容传递优化服务
+:: 禁用程序兼容性助手
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
+echo [√] 已禁用: PcaSvc 程序兼容性助手
+
+:: 禁用诊断服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
+echo [√] 已禁用: DPS 诊断策略服务
+
+:: 禁用SysMain (SuperFetch服务)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
+echo [√] 已禁用: SysMain SuperFetch服务
+
+:: 禁用Windows Search
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
+echo [√] 已禁用: WSearch Windows搜索服务
+
+:: 禁用NTFS链接跟踪服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
+echo [√] 已禁用: TrkWks 分布式链接跟踪服务
+
+:: 禁用诊断服务主机
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiServiceHost" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiServiceHost" >nul 2>&1
+echo [√] 已禁用: WdiServiceHost 诊断服务主机
+
+:: 禁用诊断系统主机
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiSystemHost" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiSystemHost" >nul 2>&1
+echo [√] 已禁用: WdiSystemHost 诊断系统主机
+
+:: 设置手动: MapsBroker (地图服务)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "MapsBroker" start= demand >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "MapsBroker" >nul 2>&1
+echo [√] 已设置手动: MapsBroker 地图服务
+
+:: 禁用诊断中心收集器
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagnosticshub.standardcollector.service" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "diagnosticshub.standardcollector.service" >nul 2>&1
+echo [√] 已禁用: diagnosticshub.standardcollector.service 诊断中心收集器
+
+echo.  ========================================
+echo 基本优化已完成! 
+echo 建议重启计算机使所有更改生效
+pause
+goto MainMenu
+
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 深 度 优 化
+::-------------------------------------------------------------------------------------------
+:deep_optimize
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 深 度 优 化
+echo.===============================================================================
+echo.
+echo.  正在执行深度优化...
+echo.
+echo.  注意：此过程可能此过程可能需要几分钟时间，请勿关闭窗口
+echo.
+echo.  ==============================================================================
+echo 正在检测Windows Defender服务状态...
+sc query "WinDefend" | findstr /i "RUNNING" >nul
+if %errorlevel% equ 0 (
+    echo [!] Defender服务正在运行，请手动关闭（Disable）...
+    "%~dp0Defender_Control.exe"
+    pause
+) else (
+    echo [√] Defender服务未运行，自动跳过...
+)
+
+:: 外观/资源管理器优化
+:: 隐藏任务栏Cortana
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "SearchboxTaskbarMode" /t REG_DWORD /d 0 /f >nul
+echo [√] 已隐藏任务栏Cortana
+
+:: 任务栏窗口合并
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用任务栏窗口合并
+
+:: 资源管理器打开显示"此电脑"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /t REG_DWORD /d 1 /f >nul
+echo [√] 资源管理器打开时显示"此电脑"
+
+:: 总是从内存卸载无用DLL
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "AlwaysUnloadDLL" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用从内存卸载无用DLL
+
+:: 禁止跟踪损坏的快捷方式
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveTrack" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用跟踪损坏的快捷方式
+
+:: 优化文件列表刷新策略
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "ForegroundLockTimeout" /t REG_DWORD /d 0 /f >nul
+echo [√] 已优化Windows文件列表刷新策略
+
+:: 创建快捷方式不添加"快捷方式"字样
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "link" /t REG_BINARY /d 00000000 /f >nul
+echo [√] 创建快捷方式时不添加"快捷方式"字样
+
+:: 禁止自动播放
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d 255 /f >nul
+echo [√] 已禁用自动播放
+
+:: 在单独进程中打开文件夹
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "SeparateProcess" /t REG_DWORD /d 1 /f >nul
+echo [√] 已在单独进程中打开文件夹窗口
+
+:: 快速访问不显示常用文件夹
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowFrequent" /t REG_DWORD /d 0 /f >nul
+echo [√] 快速访问不再显示常用文件夹
+
+:: 快速访问不显示最近使用文件
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /t REG_DWORD /d 0 /f >nul
+echo [√] 快速访问不再显示最近使用文件
+
+:: 语言栏隐藏到任务栏
+reg add "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ShowStatus" /t REG_DWORD /d 3 /f >nul
+echo [√] 语言栏已隐藏到任务栏
+
+:: 隐藏语言栏帮助按钮
+reg add "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ExtraIconsOnMinimized" /t REG_DWORD /d 0 /f >nul
+echo [√] 已隐藏语言栏上的帮助按钮
+
+:: 资源管理器崩溃自动重启
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /t REG_DWORD /d 1 /f >nul
+echo [√] 资源管理器崩溃时将自动重启
+
+:: 显示文件扩展名
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d 0 /f >nul
+echo [√] 已显示已知文件类型的扩展名
+
+:: 桌面显示"此电脑"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /t REG_DWORD /d 0 /f >nul
+echo [√] 桌面已显示"此电脑"
+
+:: 桌面显示"回收站"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /t REG_DWORD /d 0 /f >nul
+echo [√] 桌面已显示"回收站"
+
+:: 禁用兼容性疑难解答右键菜单
+reg delete "HKEY_CLASSES_ROOT\exefile\shellex\ContextMenuHandlers\Compatibility" /f >nul 2>&1
+echo [√] 已禁用可执行文件的"兼容性疑难解答"右键菜单
+
+:: 禁用Windows Defender扫描右键菜单
+reg delete "HKEY_CLASSES_ROOT\*\shellex\ContextMenuHandlers\EPP" /f >nul 2>&1
+echo [√] 已禁用文件/文件夹的"使用Windows Defender扫描"右键菜单
+
+:: 禁用Bitlocker右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shell\BitLocker" /f >nul 2>&1
+echo [√] 已禁用磁盘的"启用Bitlocker"右键菜单
+
+:: 禁用"作为便携设备打开"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shell\PortableDeviceMenu" /f >nul 2>&1
+echo [√] 已禁用磁盘的"作为便携设备打开"右键菜单
+
+:: 禁用新建联系人右键菜单
+reg delete "HKEY_CLASSES_ROOT\.contact\ShellNew" /f >nul 2>&1
+echo [√] 已禁用新建的"联系人"右键菜单
+
+:: 禁用"还原先前版本"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}" /f >nul 2>&1
+echo [√] 已禁用文件/磁盘的"还原先前版本"右键菜单
+
+:: 禁用"刻录到光盘"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{B327765E-D724-4347-8B16-78AE18552FC3}" /f >nul 2>&1
+echo [√] 已禁用磁盘的"刻录到光盘"右键菜单
+
+:: 禁用"授予访问权限"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Sharing" /f >nul 2>&1
+echo [√] 已禁用"授予访问权限"右键菜单
+
+:: 禁用"始终脱机可用"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Offline Files" /f >nul 2>&1
+echo [√] 已禁用文件/文件夹的"始终脱机可用"右键菜单
+
+:: 禁用"固定到快速访问"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shell\pintohome" /f >nul 2>&1
+echo [√] 已禁用文件夹的"固定到快速访问"右键菜单
+
+:: 禁用工作文件夹右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\WorkFolders" /f >nul 2>&1
+echo [√] 已禁用"工作文件夹"右键菜单
+
+:: 禁用画图3D右键菜单
+reg delete "HKEY_CLASSES_ROOT\SystemFileAssociations\.3mf\Shell\3D Edit" /f >nul 2>&1
+echo [√] 已禁用文件的"画图3D"右键菜单
+
+:: 禁用"包含到库中"右键菜单
+reg delete "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Library Location" /f >nul 2>&1
+echo [√] 已禁用文件夹的"包含到库中"右键菜单
+
+:: 禁用开始菜单常用应用
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用开始菜单App列表-最常用的应用
+
+:: 禁用开始菜单最近添加应用
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用开始菜单App列表-最近添加的应用
+
+:: 记事本启用自动换行
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "fWrap" /t REG_DWORD /d 1 /f >nul
+echo [√] 记事本已启用自动换行
+
+:: 记事本显示状态栏
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "StatusBar" /t REG_DWORD /d 1 /f >nul
+echo [√] 记事本已启用状态栏显示
+
+:: 退出时清除最近打开文档
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用退出系统时清除最近打开的文档
+
+:: 恢复Win11经典右键菜单
+reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve >nul
+echo [√] 已恢复Win11经典右键菜单
+
+:: 恢复Win11经典资源管理器
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /ve /t REG_SZ /d "CLSID_ItemsViewAdapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /ve /t REG_SZ /d "File Explorer Xaml Island View Adapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
+echo [√] 已恢复Win11经典资源管理器
+
+echo 正在重启资源管理器...
+taskkill /f /im explorer.exe >nul
+start explorer.exe >nul
+echo 资源管理器已重启
+
+:: 性能优化设置
+:: 不允许在开始菜单显示建议
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁止在开始菜单显示建议
+
+:: 不要在应用商店中查找关联应用
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁止在应用商店中查找关联应用
+
+:: 关闭商店应用推广
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "PreInstalledAppsEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭商店应用推广
+
+:: 关闭锁屏时的Windows聚焦推广
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭锁屏时的Windows聚焦推广
+
+:: 关闭"使用Windows时获取技巧和建议"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SoftLandingEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭"使用Windows时获取技巧和建议"
+
+:: 关闭游戏录制工具
+reg add "HKEY_CURRENT_USER\System\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭游戏录制工具
+
+:: 关闭多嘴的小娜
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭多嘴的小娜
+
+:: 加快关机速度
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "1000" /f >nul
+echo [√] 已加快关机速度
+
+:: 缩短关闭服务等待时间
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /t REG_DWORD /d 2000 /f >nul
+echo [√] 已缩短关闭服务等待时间
+
+:: 禁用程序兼容性助手
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
+echo [√] 已禁用程序兼容性助手
+
+:: 禁用诊断服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
+echo [√] 已禁用诊断服务
+
+:: 禁用SysMain
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
+echo [√] 已禁用SysMain
+
+:: 禁用Windows Search
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
+echo [√] 已禁用Windows Search
+
+:: 禁用错误报告
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用错误报告
+
+:: 禁用客户体验改善计划
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用客户体验改善计划
+
+:: 禁用NTFS链接跟踪服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
+echo [√] 已禁用NTFS链接跟踪服务
+
+:: 禁止自动维护计划
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v "MaintenanceDisabled" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁止自动维护计划
+
+:: 启用大系统缓存以提高性能
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f >nul
+echo [√] 已启用大系统缓存以提高性能
+
+:: 禁止系统内核与驱动程序分页到硬盘
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁止系统内核与驱动程序分页到硬盘
+
+:: 将文件管理系统缓存增加至256MB
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /t REG_DWORD /d 4194304 /f >nul
+echo [√] 已将文件管理系统缓存增加至256MB
+
+:: 将Windows预读调整为关闭预读
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭Windows预读功能
+
+:: VHD启动时节省磁盘空间
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /t REG_DWORD /d 4 /f >nul
+echo [√] VHD启动时已节省磁盘空间
+
+:: 关闭系统自动调试功能
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭系统自动调试功能
+
+:: 将磁盘错误检查等待时间缩短到五秒
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /t REG_DWORD /d 5 /f >nul
+echo [√] 已将磁盘错误检查等待时间缩短到五秒
+
+:: 设备安装禁止创建系统还原点
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /t REG_DWORD /d 1 /f >nul
+echo [√] 设备安装已禁止创建系统还原点
+
+:: 弹出USB磁盘后彻底断开电源
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /t REG_DWORD /d 0 /f >nul
+echo [√] 弹出USB磁盘后已彻底断开电源
+
+:: 关闭快速启动
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭快速启动
+
+:: 关闭休眠
+powercfg /h off >nul
+echo [√] 已关闭休眠
+
+:: 根据语言设置隐藏字体
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /t REG_SZ /d "10000000000000000000000000000000" /f >nul
+echo [√] 已根据语言设置隐藏字体
+
+:: 微软拼音输入法关闭云计算
+reg add "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS" /v "CloudCandidate" /t REG_DWORD /d 0 /f >nul
+echo [√] 微软拼音输入法已关闭云计算
+
+:: 禁用内容传递优化服务
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DownloadMode" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用内容传递优化服务
+
+:: 禁用SmartScreen筛选器
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用SmartScreen筛选器
+
+:: 禁用Windows安全中心报告
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Security Health\Platform" /v "Registered" /t REG_DWORD /d 0 /f >nul
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows Security Health\State" /v "Disabled" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用Windows安全中心报告
+
+:: 禁用Edge浏览器SmartScreen
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Edge" /v "SmartScreenEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用Edge浏览器SmartScreen
+
+:: 禁用文件资源管理器SmartScreen
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "off" /f >nul
+echo [√] 已禁用文件资源管理器SmartScreen
+
+:: 禁用Microsoft Store应用SmartScreen
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用Microsoft Store应用SmartScreen
+
+:: 禁用UAC(用户账户控制)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用UAC
+
+:: 关闭防火墙
+netsh advfirewall set allprofiles state off >nul
+echo [√] 已关闭防火墙
+
+:: 关闭默认共享
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭默认共享
+
+:: 关闭远程协助
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭远程协助
+
+:: 启用硬件加速GPU计划
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul
+echo [√] 已启用硬件加速GPU计划
+
+:: 优化处理器性能和内存设置
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /t REG_DWORD /d 1 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /t REG_DWORD /d 2 /f >nul
+echo [√] 已优化处理器性能和内存设置
+
+:: 降低Cortana性能减少CPU占用
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
+echo [√] 已降低Cortana性能，减少CPU占用
+
+:: 关闭广告ID
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f >nul
+echo [√] 已关闭广告ID
+
+:: 关闭应用启动跟踪
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d 0 /f >nul
+echo [√] 已关闭应用启动跟踪
+
+:: 去除搜索页面信息流和热搜
+reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" /v "DisableSearchBoxSuggestions" /t REG_DWORD /d 1 /f >nul
+echo [√] 已去除搜索页面信息流和热搜
+
+:: 禁用高精度事件定时器(HPET)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /t REG_DWORD /d 4 /f >nul
+echo [√] 已禁用高精度事件定时器
+
+:: 禁用Game Bar
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\GameDVR" /v "AppCaptureEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用Game Bar
+
+:: 禁用远程修改注册表
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用远程修改注册表
+
+:: 禁用保留空间
+DISM.exe /Online /Set-ReservedStorageState /State:Disabled >nul 2>&1
+echo [√] 已禁用保留空间
+
+:: 禁用上下文菜单显示延迟
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f >nul
+echo [√] 已禁用上下文菜单显示延迟
+
+:: 禁用蓝屏后自动重启
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用蓝屏后自动重启
+
+:: 禁用Installer detection
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用Installer detection
+
+:: 禁用功能更新安全措施
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX" /v "IsConvergedUpdateStackEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用功能更新安全措施
+
+:: 禁用交付优化
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization" /v "SystemSettingsDownloadMode" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用交付优化
+
+:: 禁用微软客户体验改进计划
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用微软客户体验改进计划
+
+:: 禁用遥测服务
+sc config "DiagTrack" start= disabled >nul
+sc stop "DiagTrack" >nul
+echo [√] 已禁用遥测服务
+
+:: 禁用错误报告(WER)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用错误报告
+
+:: 禁用语音激活(Cortana)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 2 /f >nul
+echo [√] 已禁用语音激活
+
+:: 禁用位置服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用位置服务
+
+:: 禁用搜索数据收集
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用搜索数据收集
+
+:: 禁用定向广告
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用定向广告
+
+:: 禁用Wi-Fi感知
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用Wi-Fi感知
+
+:: 禁用步骤记录器
+reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\ProblemReports" /v "DisableProblemReports" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用步骤记录器
+
+:: 禁用写入调试信息
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用写入调试信息
+
+:: 禁用Windows欢迎体验
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用Windows欢迎体验
+
+:: 禁用反馈频率
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用反馈频率
+
+:: 禁用诊断数据收集
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用诊断数据收集
+
+:: 禁用写作习惯跟踪
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Input\Settings" /v "Inking&TypingPersonalization" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用写作习惯跟踪
+
+:: 禁用设置应用建议
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用设置应用建议
+
+:: 禁用Bing搜索结果
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用Bing搜索结果
+
+:: 禁用搜索历史
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsDeviceSearchHistoryEnabled" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用搜索历史
+
+:: 禁用赞助商应用安装
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用赞助商应用安装
+
+:: 禁用自动连接热点
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用自动连接热点
+
+:: 禁用输入数据个性化
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Personalization\Settings" /v "RestrictImplicitTextCollection" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用输入数据个性化
+
+:: 禁用键入见解
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Input\Settings" /v "EnableTypingInsights" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用键入见解
+
+:: 禁用预安装应用
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "DisablePreInstalledApps" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用预安装应用
+
+:: 禁用.NET遥测
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁用.NET遥测
+
+:: 禁用PowerShell遥测
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用PowerShell遥测
+
+:: 禁用自动安装推荐的应用程序
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" /v "AutoDownload" /t REG_DWORD /d 2 /f >nul
+echo [√] 已禁止自动安装推荐的应用程序
+
+:: 禁止Win10/11进行大版本更新
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /t REG_DWORD /d 1 /f >nul
+echo [√] 已禁止Win10/11进行大版本更新
+
+:: Windows更新不包括恶意软件删除工具
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f >nul
+echo [√] Windows更新已不包括恶意软件删除工具
+
+:: 禁用自动更新商店应用
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /t REG_DWORD /d 2 /f >nul
+echo [√] 已禁用自动更新商店应用
+
+:: 禁用自动更新地图
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f >nul
+echo [√] 已禁用自动更新地图
+
+:: 禁用程序兼容性助手
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "PcaSvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "PcaSvc" >nul 2>&1
+echo [√] 已禁用: PcaSvc 程序兼容性助手
+
+:: 禁用诊断服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "DPS" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "DPS" >nul 2>&1
+echo [√] 已禁用: DPS 诊断策略服务
+
+:: 禁用SysMain (SuperFetch服务)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SysMain" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SysMain" >nul 2>&1
+echo [√] 已禁用: SysMain SuperFetch服务
+
+:: 禁用Windows Search
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WSearch" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WSearch" >nul 2>&1
+echo [√] 已禁用: WSearch Windows搜索服务
+
+:: 禁用NTFS链接跟踪服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "TrkWks" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "TrkWks" >nul 2>&1
+echo [√] 已禁用: TrkWks 分布式链接跟踪服务
+
+:: 禁用诊断服务主机
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiServiceHost" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiServiceHost" >nul 2>&1
+echo [√] 已禁用: WdiServiceHost 诊断服务主机
+
+:: 禁用诊断系统主机
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WdiSystemHost" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "WdiSystemHost" >nul 2>&1
+echo [√] 已禁用: WdiSystemHost 诊断系统主机
+
+:: 设置手动: MapsBroker (地图服务)
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "MapsBroker" start= demand >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "MapsBroker" >nul 2>&1
+echo [√] 已设置手动: MapsBroker 地图服务
+
+:: 禁用诊断中心收集器
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "diagnosticshub.standardcollector.service" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "diagnosticshub.standardcollector.service" >nul 2>&1
+echo [√] 已禁用: diagnosticshub.standardcollector.service 诊断中心收集器
+
+:: 禁用IP助手服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "iphlpsvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "iphlpsvc" >nul 2>&1
+echo [√] 已禁用: iphlpsvc IP助手服务
+
+:: 禁用SMS路由器服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SmsRouter" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "SmsRouter" >nul 2>&1
+echo [√] 已禁用: SmsRouter SMS路由器服务
+
+:: 设置手动: Shell硬件检测
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "ShellHWDetection" start= demand >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "ShellHWDetection" >nul 2>&1
+echo [√] 已设置手动: ShellHWDetection Shell 硬件检测
+
+:: 设置手动: 任务计划服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Schedule" start= demand >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "Schedule" >nul 2>&1
+echo [√] 已设置手动: Schedule 任务计划服务
+
+:: 禁用Windows事件收集服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "Wecsvc" start= disabled >nul
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "Wecsvc" >nul 2>&1
+echo [√] 已禁用: Wecsvc Windows事件收集服务
+
+:: 禁用遥测服务
+sc config "DiagTrack" start= disabled >nul
+sc stop "DiagTrack" >nul
+echo [√] 已禁用: DiagTrack 遥测服务
+
+echo.  ========================================
+echo 深度优化已完成! 
+echo 建议重启计算机使所有更改生效
+pause
+goto MainMenu
+
+
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 极 限 优 化
+::-------------------------------------------------------------------------------------------
+:all_optimize
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 极 限 优 化
+echo.===============================================================================
+echo.
+echo.  正在执行极限优化...
+echo.
+echo.  注意：此过程可能此过程可能需要几分钟时间，请勿关闭窗口
+echo.
+echo.  ==============================================================================
+echo 正在检测Windows Defender服务状态...
+sc query "WinDefend" | findstr /i "RUNNING" >nul
+if %errorlevel% equ 0 (
+    echo [!] Defender服务正在运行，请手动关闭（Disable）...
+    "%~dp0Defender_Control.exe"
+    pause
+) else (
+    echo [√] Defender服务未运行，自动跳过...
 )
 
 :: 禁用LSA保护(RunAsPPL)
@@ -392,11 +1414,16 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Ex
 echo [√] 已启用退出系统时清除最近打开的文档
 
 :: 恢复Win11经典右键菜单
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /ve /t REG_SZ /d "" /f >nul
+reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve >nul
 echo [√] 已恢复Win11经典右键菜单
 
 :: 恢复Win11经典资源管理器
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" /v "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" /t REG_SZ /d "" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /ve /t REG_SZ /d "CLSID_ItemsViewAdapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /ve /t REG_SZ /d "File Explorer Xaml Island View Adapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
 echo [√] 已恢复Win11经典资源管理器
 
 echo 正在重启资源管理器...
@@ -915,12 +1942,6 @@ echo [√] 已禁止Win10/11进行大版本更新
 echo [√] Windows更新已不包括恶意软件删除工具
 
 :: 禁用Windows更新 停止更新到2999年
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "FlightSettingsMaxPauseDays" /t REG_SZ /d "7152" /f >nul
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesStartTime" /t REG_SZ /d "2024-01-01T10:00:52Z" /f >nul
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesEndTime" /t REG_SZ /d "2999-12-01T09:59:52Z" /f >nul
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesStartTime" /t REG_SZ /d "2024-01-01T10:00:52Z" /f >nul
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesEndTime" /t REG_SZ /d "2999-12-01T09:59:52Z" /f >nul
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesStartTime" /t REG_SZ /d "2024-01-01T09:59:52Z" /f >nul
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /t REG_SZ /d "2999-12-01T09:59:52Z" /f >nul
 echo [√] 已停止更新到2999年
 
@@ -1029,7 +2050,7 @@ echo [√] 已设置手动: Schedule 任务计划服务
 echo [√] 已禁用: Wecsvc
 
 echo.  ========================================
-echo 快速优化已完成! 
+echo 极限优化已完成! 
 echo 建议重启计算机使所有更改生效
 pause
 goto MainMenu
@@ -1065,7 +2086,6 @@ echo.
 echo.  [X]   返回
 echo.
 echo.===============================================================================
-echo.
 choice /C:1234567X /N /M "请输入你的选项 ："
 if errorlevel 8 goto :MainMenu
 if errorlevel 7 goto :fuwuxiang
@@ -1318,7 +2338,7 @@ reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50
 if %errorlevel% equ 0 (set "opt36_status=1" & set "opt36_mark=[+]") else (set "opt36_mark=[-]")
 
 :: 37. Win11恢复经典资源管理器
-reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" /v "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" >nul 2>&1
+reg query "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" >nul 2>&1
 if %errorlevel% equ 0 (set "opt37_status=1" & set "opt37_mark=[+]") else (set "opt37_mark=[-]")
 goto :eof
 
@@ -1751,7 +2771,7 @@ goto :EOF
 
 :OPT36
 if %opt36_status% equ 0 (
-    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /ve /t REG_SZ /d "" /f >nul
+    reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve >nul
     echo [√] 已恢复Win11经典右键菜单
 ) else (
     reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f >nul
@@ -1761,10 +2781,16 @@ goto :eof
 
 :OPT37
 if %opt37_status% equ 0 (
-    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" /v "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" /t REG_SZ /d "" /f >nul
+    reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /ve /t REG_SZ /d "CLSID_ItemsViewAdapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /ve /t REG_SZ /d "File Explorer Xaml Island View Adapter" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /ve /t REG_SZ /d "C:\\Windows\\System32\\Windows.UI.FileExplorer.dll_" /f >nul
+reg add "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}\InProcServer32" /v ThreadingModel /t REG_SZ /d Apartment /f >nul
     echo [√] 已恢复Win11经典资源管理器
 ) else (
-    reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" /v "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" /f >nul
+    reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /f >nul
+reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /f >nul
     echo [√] 已还原Win11默认资源管理器
 )
 endlocal
@@ -3183,7 +4209,7 @@ goto anquan
 :: 1.禁用Defender总进程
 sc query "wscsvc" | findstr /i "RUNNING" >nul
 if %errorlevel% equ 0 (
-    reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wscsvc" /v "Start" 2>nul | findstr /i "0x4" >nul
+    reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" 2>nul | findstr /i "0x4" >nul
     if %errorlevel% equ 0 (set "opt1_status=1" & set "opt1_mark=[+]") else (set "opt1_mark=[-]")
 ) else (
     set "opt1_status=1" & set "opt1_mark=[+]"
@@ -5110,23 +6136,13 @@ if %option% equ 2 (
 :: 3.禁用Windows更新 停止更新到2999年
 if %option% equ 3 (
     if %opt3_status% equ 0 (
-        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "FlightSettingsMaxPauseDays" /t REG_SZ /d "7152" /f >nul
-        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesStartTime" /t REG_SZ /d "2024-01-01T10:00:52Z" /f >nul
-        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesEndTime" /t REG_SZ /d "2999-12-01T09:59:52Z" /f >nul
-        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesStartTime" /t REG_SZ /d "2024-01-01T10:00:52Z" /f >nul
-        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesEndTime" /t REG_SZ /d "2999-12-01T09:59:52Z" /f >nul
-        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesStartTime" /t REG_SZ /d "2024-01-01T09:59:52Z" /f >nul
+        :: 暂停更新（但不删除关键注册表项）
         reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /t REG_SZ /d "2999-12-01T09:59:52Z" /f >nul
-        echo [√] 已停止更新到2999年
+        echo [√] 已暂停 Windows 更新至 2999 年
     ) else (
-        reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "FlightSettingsMaxPauseDays" /f >nul
-        reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesStartTime" /f >nul
-        reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesEndTime" /f >nul
-        reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesStartTime" /f >nul
-        reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesEndTime" /f >nul
-        reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesStartTime" /f >nul
-        reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /f >nul
-        echo [√] 已恢复Windows更新
+        :: 恢复更新（仅重置关键值，而不是删除整个键）
+        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /t REG_SZ /d "" /f >nul
+        echo [√] 已恢复 Windows 更新
     )
     goto :EOF
 )
@@ -5159,13 +6175,1668 @@ goto :EOF
 
 :RESTART_WU_SERVICE
 echo.
-echo 正在重启Windows更新服务...
+echo 正在重启 Windows Update 相关服务...
 "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "wuauserv" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "CryptSvc" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc stop "BITS" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "BITS" >nul 2>&1
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "CryptSvc" >nul 2>&1
 "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "wuauserv" >nul 2>&1
-echo Windows更新服务已重启
+echo Windows Update 服务及依赖项已重启
 echo.
 pause
 goto update
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 优化还原
+::-------------------------------------------------------------------------------------------
+:recover_optimize
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 优 化 还 原
+echo.===============================================================================
+echo.
+echo.
+echo.  [1]   基本优化还原
+echo.
+echo.  [2]   深度优化还原
+echo.
+echo.  [3]   所有优化还原
+echo.
+echo.  [4]   系统更新还原
+echo.
+echo.  [5]   Defender 还原
+echo.                           
+echo.                           
+echo.                             
+echo.                           
+echo.                             
+echo.
+echo.  [X]   退      出
+echo.
+echo.===============================================================================
+choice /C:12345X /N /M "请输入你的选项 ："
+if errorlevel 6 goto :MainMenu
+if errorlevel 5 goto :recover_defender
+if errorlevel 4 goto :recover_update
+if errorlevel 3 goto :recover_all_optimize
+if errorlevel 2 goto :recover_deep_optimize
+if errorlevel 1 goto :recover_basic_optimize
+::-------------------------------------------------------------------------------------------
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 基本优化还原
+::-------------------------------------------------------------------------------------------
+:recover_basic_optimize
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 基本优化还原
+echo.===============================================================================
+echo.
+echo.  正在还原基本优化设置...
+echo.
+echo.  注意：此过程可能需要几分钟时间，请勿关闭窗口
+echo.
+echo.  ==============================================================================
+
+:: 还原Defender设置
+sc config "wscsvc" start= auto >nul
+echo [√] 已恢复Defender服务默认设置
+
+:: 还原任务栏Cortana
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "SearchboxTaskbarMode" /f >nul 2>&1
+echo [√] 已恢复任务栏Cortana显示
+
+:: 还原任务栏窗口合并
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel" /f >nul 2>&1
+echo [√] 已恢复任务栏窗口合并默认设置
+
+:: 还原资源管理器打开位置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /f >nul 2>&1
+echo [√] 已恢复资源管理器打开位置默认设置
+
+:: 还原DLL卸载设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "AlwaysUnloadDLL" /f >nul 2>&1
+echo [√] 已恢复DLL卸载默认设置
+
+:: 还原快捷方式跟踪
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveTrack" /f >nul 2>&1
+echo [√] 已恢复快捷方式跟踪默认设置
+
+:: 还原文件列表刷新策略
+reg delete "HKEY_CURRENT_USER\Control Panel\Desktop" /v "ForegroundLockTimeout" /f >nul 2>&1
+echo [√] 已恢复文件列表刷新默认策略
+
+:: 还原快捷方式创建文字
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "link" /f >nul 2>&1
+echo [√] 已恢复快捷方式创建默认文字
+
+:: 还原自动播放设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /f >nul 2>&1
+echo [√] 已恢复自动播放默认设置
+
+:: 还原文件夹进程设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "SeparateProcess" /f >nul 2>&1
+echo [√] 已恢复文件夹进程默认设置
+
+:: 还原快速访问常用文件夹
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowFrequent" /f >nul 2>&1
+echo [√] 已恢复快速访问常用文件夹显示
+
+:: 还原快速访问最近文件
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /f >nul 2>&1
+echo [√] 已恢复快速访问最近文件显示
+
+:: 还原语言栏设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ShowStatus" /f >nul 2>&1
+echo [√] 已恢复语言栏默认设置
+
+:: 还原语言栏帮助按钮
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ExtraIconsOnMinimized" /f >nul 2>&1
+echo [√] 已恢复语言栏帮助按钮显示
+
+:: 还原资源管理器崩溃重启
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /f >nul 2>&1
+echo [√] 已恢复资源管理器崩溃重启设置
+
+:: 还原文件扩展名显示
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /f >nul 2>&1
+echo [√] 已恢复文件扩展名默认显示设置
+
+:: 还原桌面"此电脑"图标
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /f >nul 2>&1
+echo [√] 已恢复桌面"此电脑"图标默认设置
+
+:: 还原桌面"回收站"图标
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /f >nul 2>&1
+echo [√] 已恢复桌面"回收站"图标默认设置
+
+:: 还原右键菜单项
+reg add "HKEY_CLASSES_ROOT\exefile\shellex\ContextMenuHandlers\Compatibility" /ve /t REG_SZ /d "{1d27f844-3a1f-4410-85ac-14651078412d}" /f >nul
+reg add "HKEY_CLASSES_ROOT\*\shellex\ContextMenuHandlers\EPP" /ve /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shell\BitLocker" /ve /t REG_SZ /d "启用BitLocker..." /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shell\PortableDeviceMenu" /ve /t REG_SZ /d "作为便携设备打开" /f >nul
+reg add "HKEY_CLASSES_ROOT\.contact\ShellNew" /ve /t REG_SZ /d "联系人" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{B327765E-D724-4347-8B16-78AE18552FC3}" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Sharing" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Offline Files" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shell\pintohome" /ve /t REG_SZ /d "固定到快速访问" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\WorkFolders" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\SystemFileAssociations\.3mf\Shell\3D Edit" /ve /t REG_SZ /d "在画图3D中编辑" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Library Location" /ve /t REG_SZ /d "" /f >nul
+echo [√] 已恢复所有右键菜单项
+
+:: 还原开始菜单常用应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f >nul 2>&1
+echo [√] 已恢复开始菜单常用应用显示
+
+:: 还原开始菜单最近添加应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /f >nul 2>&1
+echo [√] 已恢复开始菜单最近添加应用显示
+
+:: 还原记事本自动换行
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "fWrap" /f >nul 2>&1
+echo [√] 已恢复记事本自动换行默认设置
+
+:: 还原记事本状态栏
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "StatusBar" /f >nul 2>&1
+echo [√] 已恢复记事本状态栏默认设置
+
+:: 还原最近文档清除
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /f >nul 2>&1
+echo [√] 已恢复最近文档清除设置
+
+:: 还原Win11右键菜单
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f >nul 2>&1
+echo [√] 已恢复Win11默认右键菜单
+
+:: 还原Win11资源管理器
+reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /f >nul
+reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /f >nul
+echo [√] 已恢复Win11默认资源管理器
+
+echo 正在重启资源管理器...
+taskkill /f /im explorer.exe >nul
+start explorer.exe >nul
+echo 资源管理器已重启
+
+:: 还原开始菜单建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /f >nul 2>&1
+echo [√] 已恢复开始菜单建议显示
+
+:: 还原应用商店关联应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /f >nul 2>&1
+echo [√] 已恢复应用商店关联应用查找
+
+:: 还原商店应用推广
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "PreInstalledAppsEnabled" /f >nul 2>&1
+echo [√] 已恢复商店应用推广
+
+:: 还原锁屏聚焦推广
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenEnabled" /f >nul 2>&1
+echo [√] 已恢复锁屏聚焦推广
+
+:: 还原技巧和建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SoftLandingEnabled" /f >nul 2>&1
+echo [√] 已恢复"使用Windows时获取技巧和建议"
+
+:: 还原游戏录制工具
+reg delete "HKEY_CURRENT_USER\System\GameConfigStore" /v "GameDVR_Enabled" /f >nul 2>&1
+echo [√] 已恢复游戏录制工具
+
+:: 还原小娜设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /f >nul 2>&1
+echo [√] 已恢复小娜默认设置
+
+:: 还原关机速度
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /f >nul 2>&1
+echo [√] 已恢复默认关机速度
+
+:: 还原服务关闭等待时间
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /f >nul 2>&1
+echo [√] 已恢复默认服务关闭等待时间
+
+:: 还原程序兼容性助手
+sc config "PcaSvc" start= auto >nul
+sc start "PcaSvc" >nul 2>&1
+echo [√] 已恢复程序兼容性助手
+
+:: 还原诊断服务
+sc config "DPS" start= auto >nul
+sc start "DPS" >nul 2>&1
+echo [√] 已恢复诊断服务
+
+:: 还原SysMain
+sc config "SysMain" start= auto >nul
+sc start "SysMain" >nul 2>&1
+echo [√] 已恢复SysMain
+
+:: 还原Windows Search
+sc config "WSearch" start= auto >nul
+sc start "WSearch" >nul 2>&1
+echo [√] 已恢复Windows Search
+
+:: 还原错误报告
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f >nul 2>&1
+echo [√] 已恢复错误报告
+
+:: 还原客户体验改善计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul 2>&1
+echo [√] 已恢复客户体验改善计划
+
+:: 还原NTFS链接跟踪服务
+sc config "TrkWks" start= auto >nul
+sc start "TrkWks" >nul 2>&1
+echo [√] 已恢复NTFS链接跟踪服务
+
+:: 还原自动维护计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v "MaintenanceDisabled" /f >nul 2>&1
+echo [√] 已恢复自动维护计划
+
+:: 还原大系统缓存
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /f >nul 2>&1
+echo [√] 已恢复系统缓存默认设置
+
+:: 还原系统内核分页
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /f >nul 2>&1
+echo [√] 已恢复系统内核分页默认设置
+
+:: 还原文件管理系统缓存
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /f >nul 2>&1
+echo [√] 已恢复文件管理系统缓存默认设置
+
+:: 还原Windows预读
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /f >nul 2>&1
+echo [√] 已恢复Windows预读功能
+
+:: 还原VHD启动设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /f >nul 2>&1
+echo [√] 已恢复VHD启动默认设置
+
+:: 还原系统自动调试
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /f >nul 2>&1
+echo [√] 已恢复系统自动调试功能
+
+:: 还原磁盘错误检查等待时间
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /f >nul 2>&1
+echo [√] 已恢复磁盘错误检查默认等待时间
+
+:: 还原设备安装系统还原点
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /f >nul 2>&1
+echo [√] 已恢复设备安装系统还原点创建
+
+:: 还原USB磁盘电源设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /f >nul 2>&1
+echo [√] 已恢复USB磁盘电源默认设置
+
+:: 还原快速启动
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /f >nul 2>&1
+echo [√] 已恢复快速启动默认设置
+
+:: 还原休眠
+powercfg /h on >nul
+echo [√] 已恢复休眠功能
+
+:: 还原字体设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /f >nul 2>&1
+echo [√] 已恢复字体默认设置
+
+:: 还原微软拼音云计算
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS" /v "CloudCandidate" /f >nul 2>&1
+echo [√] 已恢复微软拼音云计算功能
+
+:: 还原内容传递优化服务
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DownloadMode" /f >nul 2>&1
+echo [√] 已恢复内容传递优化服务
+
+echo.  ========================================
+echo 基本优化已还原! 
+echo 建议重启计算机使所有更改生效
+pause
+goto MainMenu
+
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 深度优化还原
+::-------------------------------------------------------------------------------------------
+:recover_deep_optimize
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 深度优化还原
+echo.===============================================================================
+echo.
+echo.  正在还原深度优化设置...
+echo.
+echo.  注意：此过程可能需要几分钟时间，请勿关闭窗口
+echo.
+echo.  ==============================================================================
+:: 还原Defender设置
+sc config "wscsvc" start= auto >nul
+echo [√] 已恢复Defender服务默认设置
+
+:: 还原任务栏Cortana
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "SearchboxTaskbarMode" /f >nul 2>&1
+echo [√] 已恢复任务栏Cortana显示
+
+:: 还原任务栏窗口合并
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel" /f >nul 2>&1
+echo [√] 已恢复任务栏窗口合并默认设置
+
+:: 还原资源管理器打开位置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /f >nul 2>&1
+echo [√] 已恢复资源管理器打开位置默认设置
+
+:: 还原DLL卸载设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "AlwaysUnloadDLL" /f >nul 2>&1
+echo [√] 已恢复DLL卸载默认设置
+
+:: 还原快捷方式跟踪
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveTrack" /f >nul 2>&1
+echo [√] 已恢复快捷方式跟踪默认设置
+
+:: 还原文件列表刷新策略
+reg delete "HKEY_CURRENT_USER\Control Panel\Desktop" /v "ForegroundLockTimeout" /f >nul 2>&1
+echo [√] 已恢复文件列表刷新默认策略
+
+:: 还原快捷方式创建文字
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "link" /f >nul 2>&1
+echo [√] 已恢复快捷方式创建默认文字
+
+:: 还原自动播放设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /f >nul 2>&1
+echo [√] 已恢复自动播放默认设置
+
+:: 还原文件夹进程设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "SeparateProcess" /f >nul 2>&1
+echo [√] 已恢复文件夹进程默认设置
+
+:: 还原快速访问常用文件夹
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowFrequent" /f >nul 2>&1
+echo [√] 已恢复快速访问常用文件夹显示
+
+:: 还原快速访问最近文件
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /f >nul 2>&1
+echo [√] 已恢复快速访问最近文件显示
+
+:: 还原语言栏设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ShowStatus" /f >nul 2>&1
+echo [√] 已恢复语言栏默认设置
+
+:: 还原语言栏帮助按钮
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ExtraIconsOnMinimized" /f >nul 2>&1
+echo [√] 已恢复语言栏帮助按钮显示
+
+:: 还原资源管理器崩溃重启
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /f >nul 2>&1
+echo [√] 已恢复资源管理器崩溃重启设置
+
+:: 还原文件扩展名显示
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /f >nul 2>&1
+echo [√] 已恢复文件扩展名默认显示设置
+
+:: 还原桌面"此电脑"图标
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /f >nul 2>&1
+echo [√] 已恢复桌面"此电脑"图标默认设置
+
+:: 还原桌面"回收站"图标
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /f >nul 2>&1
+echo [√] 已恢复桌面"回收站"图标默认设置
+
+:: 还原右键菜单项
+reg add "HKEY_CLASSES_ROOT\exefile\shellex\ContextMenuHandlers\Compatibility" /ve /t REG_SZ /d "{1d27f844-3a1f-4410-85ac-14651078412d}" /f >nul
+reg add "HKEY_CLASSES_ROOT\*\shellex\ContextMenuHandlers\EPP" /ve /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shell\BitLocker" /ve /t REG_SZ /d "启用BitLocker..." /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shell\PortableDeviceMenu" /ve /t REG_SZ /d "作为便携设备打开" /f >nul
+reg add "HKEY_CLASSES_ROOT\.contact\ShellNew" /ve /t REG_SZ /d "联系人" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{B327765E-D724-4347-8B16-78AE18552FC3}" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Sharing" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Offline Files" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shell\pintohome" /ve /t REG_SZ /d "固定到快速访问" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\WorkFolders" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\SystemFileAssociations\.3mf\Shell\3D Edit" /ve /t REG_SZ /d "在画图3D中编辑" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Library Location" /ve /t REG_SZ /d "" /f >nul
+echo [√] 已恢复所有右键菜单项
+
+:: 还原开始菜单常用应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f >nul 2>&1
+echo [√] 已恢复开始菜单常用应用显示
+
+:: 还原开始菜单最近添加应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /f >nul 2>&1
+echo [√] 已恢复开始菜单最近添加应用显示
+
+:: 还原记事本自动换行
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "fWrap" /f >nul 2>&1
+echo [√] 已恢复记事本自动换行默认设置
+
+:: 还原记事本状态栏
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "StatusBar" /f >nul 2>&1
+echo [√] 已恢复记事本状态栏默认设置
+
+:: 还原最近文档清除
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /f >nul 2>&1
+echo [√] 已恢复最近文档清除设置
+
+:: 还原Win11右键菜单
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f >nul 2>&1
+echo [√] 已恢复Win11默认右键菜单
+
+:: 还原Win11资源管理器
+reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /f >nul
+reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /f >nul
+echo [√] 已恢复Win11默认资源管理器
+
+echo 正在重启资源管理器...
+taskkill /f /im explorer.exe >nul
+start explorer.exe >nul
+echo 资源管理器已重启
+
+:: 还原开始菜单建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /f >nul 2>&1
+echo [√] 已恢复开始菜单建议显示
+
+:: 还原应用商店关联应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /f >nul 2>&1
+echo [√] 已恢复应用商店关联应用查找
+
+:: 还原商店应用推广
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "PreInstalledAppsEnabled" /f >nul 2>&1
+echo [√] 已恢复商店应用推广
+
+:: 还原锁屏聚焦推广
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenEnabled" /f >nul 2>&1
+echo [√] 已恢复锁屏聚焦推广
+
+:: 还原技巧和建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SoftLandingEnabled" /f >nul 2>&1
+echo [√] 已恢复"使用Windows时获取技巧和建议"
+
+:: 还原游戏录制工具
+reg delete "HKEY_CURRENT_USER\System\GameConfigStore" /v "GameDVR_Enabled" /f >nul 2>&1
+echo [√] 已恢复游戏录制工具
+
+:: 还原小娜设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /f >nul 2>&1
+echo [√] 已恢复小娜默认设置
+
+:: 还原关机速度
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /f >nul 2>&1
+echo [√] 已恢复默认关机速度
+
+:: 还原服务关闭等待时间
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /f >nul 2>&1
+echo [√] 已恢复默认服务关闭等待时间
+
+:: 还原程序兼容性助手
+sc config "PcaSvc" start= auto >nul
+sc start "PcaSvc" >nul 2>&1
+echo [√] 已恢复程序兼容性助手
+
+:: 还原诊断服务
+sc config "DPS" start= auto >nul
+sc start "DPS" >nul 2>&1
+echo [√] 已恢复诊断服务
+
+:: 还原SysMain
+sc config "SysMain" start= auto >nul
+sc start "SysMain" >nul 2>&1
+echo [√] 已恢复SysMain
+
+:: 还原Windows Search
+sc config "WSearch" start= auto >nul
+sc start "WSearch" >nul 2>&1
+echo [√] 已恢复Windows Search
+
+:: 还原错误报告
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f >nul 2>&1
+echo [√] 已恢复错误报告
+
+:: 还原客户体验改善计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul 2>&1
+echo [√] 已恢复客户体验改善计划
+
+:: 还原NTFS链接跟踪服务
+sc config "TrkWks" start= auto >nul
+sc start "TrkWks" >nul 2>&1
+echo [√] 已恢复NTFS链接跟踪服务
+
+:: 还原自动维护计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v "MaintenanceDisabled" /f >nul 2>&1
+echo [√] 已恢复自动维护计划
+
+:: 还原大系统缓存
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /f >nul 2>&1
+echo [√] 已恢复系统缓存默认设置
+
+:: 还原系统内核分页
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /f >nul 2>&1
+echo [√] 已恢复系统内核分页默认设置
+
+:: 还原文件管理系统缓存
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /f >nul 2>&1
+echo [√] 已恢复文件管理系统缓存默认设置
+
+:: 还原Windows预读
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /f >nul 2>&1
+echo [√] 已恢复Windows预读功能
+
+:: 还原VHD启动设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /f >nul 2>&1
+echo [√] 已恢复VHD启动默认设置
+
+:: 还原系统自动调试
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /f >nul 2>&1
+echo [√] 已恢复系统自动调试功能
+
+:: 还原磁盘错误检查等待时间
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /f >nul 2>&1
+echo [√] 已恢复磁盘错误检查默认等待时间
+
+:: 还原设备安装系统还原点
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /f >nul 2>&1
+echo [√] 已恢复设备安装系统还原点创建
+
+:: 还原USB磁盘电源设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /f >nul 2>&1
+echo [√] 已恢复USB磁盘电源默认设置
+
+:: 还原快速启动
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /f >nul 2>&1
+echo [√] 已恢复快速启动默认设置
+
+:: 还原休眠
+powercfg /h on >nul
+echo [√] 已恢复休眠功能
+
+:: 还原字体设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /f >nul 2>&1
+echo [√] 已恢复字体默认设置
+
+:: 还原微软拼音云计算
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS" /v "CloudCandidate" /f >nul 2>&1
+echo [√] 已恢复微软拼音云计算功能
+
+:: 还原内容传递优化服务
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DownloadMode" /f >nul 2>&1
+echo [√] 已恢复内容传递优化服务
+
+:: 还原SmartScreen筛选器
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /f >nul 2>&1
+echo [√] 已恢复SmartScreen筛选器
+
+:: 还原安全中心报告
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Security Health\Platform" /v "Registered" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows Security Health\State" /v "Disabled" /f >nul 2>&1
+echo [√] 已恢复Windows安全中心报告
+
+:: 还原Edge浏览器SmartScreen
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Edge" /v "SmartScreenEnabled" /f >nul 2>&1
+echo [√] 已恢复Edge浏览器SmartScreen
+
+:: 还原文件资源管理器SmartScreen
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /f >nul 2>&1
+echo [√] 已恢复文件资源管理器SmartScreen
+
+:: 还原Store应用SmartScreen
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /f >nul 2>&1
+echo [√] 已恢复Microsoft Store应用SmartScreen
+
+:: 还原UAC设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /f >nul 2>&1
+echo [√] 已恢复UAC默认设置
+
+:: 还原防火墙
+netsh advfirewall set allprofiles state on >nul
+echo [√] 已恢复防火墙
+
+:: 还原默认共享
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /f >nul 2>&1
+echo [√] 已恢复默认共享
+
+:: 还原远程协助
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /f >nul 2>&1
+echo [√] 已恢复远程协助
+
+:: 还原硬件加速GPU计划
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /f >nul 2>&1
+echo [√] 已恢复硬件加速GPU计划默认设置
+
+:: 还原处理器性能和内存设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /f >nul 2>&1
+echo [√] 已恢复处理器性能和内存默认设置
+
+:: 还原Cortana性能
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f >nul 2>&1
+echo [√] 已恢复Cortana默认性能
+
+:: 还原广告ID
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /f >nul 2>&1
+echo [√] 已恢复广告ID
+
+:: 还原应用启动跟踪
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f >nul 2>&1
+echo [√] 已恢复应用启动跟踪
+
+:: 还原搜索页面信息流
+reg delete "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" /v "DisableSearchBoxSuggestions" /f >nul 2>&1
+echo [√] 已恢复搜索页面信息流和热搜
+
+:: 还原高精度事件定时器
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /f >nul 2>&1
+echo [√] 已恢复高精度事件定时器
+
+:: 还原Game Bar
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\GameDVR" /v "AppCaptureEnabled" /f >nul 2>&1
+echo [√] 已恢复Game Bar
+
+:: 还原远程注册表修改
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /f >nul 2>&1
+echo [√] 已恢复远程注册表修改权限
+
+:: 还原保留空间
+DISM.exe /Online /Set-ReservedStorageState /State:Enabled >nul 2>&1
+echo [√] 已恢复保留空间
+
+:: 还原上下文菜单延迟
+reg delete "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /f >nul 2>&1
+echo [√] 已恢复上下文菜单显示延迟
+
+:: 还原蓝屏自动重启
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /f >nul 2>&1
+echo [√] 已恢复蓝屏后自动重启
+
+:: 还原Installer detection
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /f >nul 2>&1
+echo [√] 已恢复Installer detection
+
+:: 还原功能更新安全措施
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX" /v "IsConvergedUpdateStackEnabled" /f >nul 2>&1
+echo [√] 已恢复功能更新安全措施
+
+:: 还原交付优化
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization" /v "SystemSettingsDownloadMode" /f >nul 2>&1
+echo [√] 已恢复交付优化
+
+:: 还原客户体验改进计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul 2>&1
+echo [√] 已恢复微软客户体验改进计划
+
+:: 还原遥测服务
+sc config "DiagTrack" start= auto >nul
+sc start "DiagTrack" >nul 2>&1
+echo [√] 已恢复遥测服务
+
+:: 还原错误报告
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f >nul 2>&1
+echo [√] 已恢复错误报告
+
+:: 还原语音激活
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /f >nul 2>&1
+echo [√] 已恢复语音激活
+
+:: 还原位置服务
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /f >nul 2>&1
+echo [√] 已恢复位置服务
+
+:: 还原搜索数据收集
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f >nul 2>&1
+echo [√] 已恢复搜索数据收集
+
+:: 还原定向广告
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /f >nul 2>&1
+echo [√] 已恢复定向广告
+
+:: 还原Wi-Fi感知
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /f >nul 2>&1
+echo [√] 已恢复Wi-Fi感知
+
+:: 还原步骤记录器
+reg delete "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\ProblemReports" /v "DisableProblemReports" /f >nul 2>&1
+echo [√] 已恢复步骤记录器
+
+:: 还原写入调试信息
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /f >nul 2>&1
+echo [√] 已恢复写入调试信息
+
+:: 还原Windows欢迎体验
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /f >nul 2>&1
+echo [√] 已恢复Windows欢迎体验
+
+:: 还原反馈频率
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /f >nul 2>&1
+echo [√] 已恢复反馈频率
+
+:: 还原诊断数据收集
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /f >nul 2>&1
+echo [√] 已恢复诊断数据收集
+
+:: 还原写作习惯跟踪
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Input\Settings" /v "Inking&TypingPersonalization" /f >nul 2>&1
+echo [√] 已恢复写作习惯跟踪
+
+:: 还原设置应用建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /f >nul 2>&1
+echo [√] 已恢复设置应用建议
+
+:: 还原Bing搜索结果
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /f >nul 2>&1
+echo [√] 已恢复Bing搜索结果
+
+:: 还原搜索历史
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsDeviceSearchHistoryEnabled" /f >nul 2>&1
+echo [√] 已恢复搜索历史
+
+:: 还原赞助商应用安装
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /f >nul 2>&1
+echo [√] 已恢复赞助商应用安装
+
+:: 还原自动连接热点
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /f >nul 2>&1
+echo [√] 已恢复自动连接热点
+
+:: 还原输入数据个性化
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Personalization\Settings" /v "RestrictImplicitTextCollection" /f >nul 2>&1
+echo [√] 已恢复输入数据个性化
+
+:: 还原键入见解
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Input\Settings" /v "EnableTypingInsights" /f >nul 2>&1
+echo [√] 已恢复键入见解
+
+:: 还原预安装应用
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "DisablePreInstalledApps" /f >nul 2>&1
+echo [√] 已恢复预安装应用
+
+:: 还原.NET遥测
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /f >nul 2>&1
+echo [√] 已恢复.NET遥测
+
+:: 还原PowerShell遥测
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /f >nul 2>&1
+echo [√] 已恢复PowerShell遥测
+
+:: 还原自动安装推荐的应用程序
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" /v "AutoDownload" /f >nul 2>&1
+echo [√] 已恢复自动安装推荐的应用程序
+
+:: 还原大版本更新
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /f >nul 2>&1
+echo [√] 已恢复Windows大版本更新
+
+:: 还原恶意软件删除工具
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /f >nul 2>&1
+echo [√] Windows更新已恢复包括恶意软件删除工具
+
+:: 还原商店应用自动更新
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /f >nul 2>&1
+echo [√] 已恢复自动更新商店应用
+
+:: 还原地图自动更新
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /f >nul 2>&1
+echo [√] 已恢复自动更新地图
+
+:: 还原IP助手服务
+sc config "iphlpsvc" start= auto >nul
+sc start "iphlpsvc" >nul 2>&1
+echo [√] 已恢复IP助手服务
+
+:: 还原SMS路由器服务
+sc config "SmsRouter" start= auto >nul
+sc start "SmsRouter" >nul 2>&1
+echo [√] 已恢复SMS路由器服务
+
+:: 还原Shell硬件检测
+sc config "ShellHWDetection" start= auto >nul
+sc start "ShellHWDetection" >nul 2>&1
+echo [√] 已恢复Shell硬件检测
+
+:: 还原任务计划服务
+sc config "Schedule" start= auto >nul
+sc start "Schedule" >nul 2>&1
+echo [√] 已恢复任务计划服务
+
+:: 还原Windows事件收集服务
+sc config "Wecsvc" start= auto >nul
+sc start "Wecsvc" >nul 2>&1
+echo [√] 已恢复Windows事件收集服务
+
+:: 还原诊断中心收集器
+sc config "diagnosticshub.standardcollector.service" start= auto >nul
+sc start "diagnosticshub.standardcollector.service" >nul 2>&1
+echo [√] 已恢复诊断中心收集器
+
+echo.  ========================================
+echo 深度优化已还原! 
+echo 建议重启计算机使所有更改生效
+pause
+goto MainMenu
+
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 所有优化还原
+::-------------------------------------------------------------------------------------------
+:recover_all_optimize
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 所有优化还原
+echo.===============================================================================
+echo.
+echo.  正在还原所有优化设置...
+echo.
+echo.  注意：此过程可能需要几分钟时间，请勿关闭窗口
+echo.
+echo.  ==============================================================================
+:: 还原Defender设置
+sc config "wscsvc" start= auto >nul
+echo [√] 已恢复Defender服务默认设置
+
+:: 还原任务栏Cortana
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "SearchboxTaskbarMode" /f >nul 2>&1
+echo [√] 已恢复任务栏Cortana显示
+
+:: 还原任务栏窗口合并
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel" /f >nul 2>&1
+echo [√] 已恢复任务栏窗口合并默认设置
+
+:: 还原资源管理器打开位置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /f >nul 2>&1
+echo [√] 已恢复资源管理器打开位置默认设置
+
+:: 还原DLL卸载设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "AlwaysUnloadDLL" /f >nul 2>&1
+echo [√] 已恢复DLL卸载默认设置
+
+:: 还原快捷方式跟踪
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveTrack" /f >nul 2>&1
+echo [√] 已恢复快捷方式跟踪默认设置
+
+:: 还原文件列表刷新策略
+reg delete "HKEY_CURRENT_USER\Control Panel\Desktop" /v "ForegroundLockTimeout" /f >nul 2>&1
+echo [√] 已恢复文件列表刷新默认策略
+
+:: 还原快捷方式创建文字
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "link" /f >nul 2>&1
+echo [√] 已恢复快捷方式创建默认文字
+
+:: 还原自动播放设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /f >nul 2>&1
+echo [√] 已恢复自动播放默认设置
+
+:: 还原文件夹进程设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "SeparateProcess" /f >nul 2>&1
+echo [√] 已恢复文件夹进程默认设置
+
+:: 还原快速访问常用文件夹
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowFrequent" /f >nul 2>&1
+echo [√] 已恢复快速访问常用文件夹显示
+
+:: 还原快速访问最近文件
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /f >nul 2>&1
+echo [√] 已恢复快速访问最近文件显示
+
+:: 还原语言栏设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ShowStatus" /f >nul 2>&1
+echo [√] 已恢复语言栏默认设置
+
+:: 还原语言栏帮助按钮
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\CTF\LangBar" /v "ExtraIconsOnMinimized" /f >nul 2>&1
+echo [√] 已恢复语言栏帮助按钮显示
+
+:: 还原资源管理器崩溃重启
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /f >nul 2>&1
+echo [√] 已恢复资源管理器崩溃重启设置
+
+:: 还原文件扩展名显示
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /f >nul 2>&1
+echo [√] 已恢复文件扩展名默认显示设置
+
+:: 还原桌面"此电脑"图标
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /f >nul 2>&1
+echo [√] 已恢复桌面"此电脑"图标默认设置
+
+:: 还原桌面"回收站"图标
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /f >nul 2>&1
+echo [√] 已恢复桌面"回收站"图标默认设置
+
+:: 还原右键菜单项
+reg add "HKEY_CLASSES_ROOT\exefile\shellex\ContextMenuHandlers\Compatibility" /ve /t REG_SZ /d "{1d27f844-3a1f-4410-85ac-14651078412d}" /f >nul
+reg add "HKEY_CLASSES_ROOT\*\shellex\ContextMenuHandlers\EPP" /ve /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shell\BitLocker" /ve /t REG_SZ /d "启用BitLocker..." /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shell\PortableDeviceMenu" /ve /t REG_SZ /d "作为便携设备打开" /f >nul
+reg add "HKEY_CLASSES_ROOT\.contact\ShellNew" /ve /t REG_SZ /d "联系人" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{596AB062-B4D2-4215-9F74-E9109B0A8153}" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Drive\shellex\ContextMenuHandlers\{B327765E-D724-4347-8B16-78AE18552FC3}" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Sharing" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Offline Files" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shell\pintohome" /ve /t REG_SZ /d "固定到快速访问" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\WorkFolders" /ve /t REG_SZ /d "" /f >nul
+reg add "HKEY_CLASSES_ROOT\SystemFileAssociations\.3mf\Shell\3D Edit" /ve /t REG_SZ /d "在画图3D中编辑" /f >nul
+reg add "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\Library Location" /ve /t REG_SZ /d "" /f >nul
+echo [√] 已恢复所有右键菜单项
+
+:: 还原开始菜单常用应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f >nul 2>&1
+echo [√] 已恢复开始菜单常用应用显示
+
+:: 还原开始菜单最近添加应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /f >nul 2>&1
+echo [√] 已恢复开始菜单最近添加应用显示
+
+:: 还原记事本自动换行
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "fWrap" /f >nul 2>&1
+echo [√] 已恢复记事本自动换行默认设置
+
+:: 还原记事本状态栏
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Notepad" /v "StatusBar" /f >nul 2>&1
+echo [√] 已恢复记事本状态栏默认设置
+
+:: 还原最近文档清除
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /f >nul 2>&1
+echo [√] 已恢复最近文档清除设置
+
+:: 还原Win11右键菜单
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f >nul 2>&1
+echo [√] 已恢复Win11默认右键菜单
+
+:: 还原Win11资源管理器
+reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{2aa9162e-c906-4dd9-ad0b-3d24a8eef5a0}" /f >nul
+reg delete "HKEY_CURRENT_USER\Software\Classes\CLSID\{6480100b-5a83-4d1e-9f69-8ae5a88e9a33}" /f >nul
+echo [√] 已恢复Win11默认资源管理器
+
+echo 正在重启资源管理器...
+taskkill /f /im explorer.exe >nul
+start explorer.exe >nul
+echo 资源管理器已重启
+
+:: 还原开始菜单建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /f >nul 2>&1
+echo [√] 已恢复开始菜单建议显示
+
+:: 还原应用商店关联应用
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /f >nul 2>&1
+echo [√] 已恢复应用商店关联应用查找
+
+:: 还原商店应用推广
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "PreInstalledAppsEnabled" /f >nul 2>&1
+echo [√] 已恢复商店应用推广
+
+:: 还原锁屏聚焦推广
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenEnabled" /f >nul 2>&1
+echo [√] 已恢复锁屏聚焦推广
+
+:: 还原技巧和建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SoftLandingEnabled" /f >nul 2>&1
+echo [√] 已恢复"使用Windows时获取技巧和建议"
+
+:: 还原游戏录制工具
+reg delete "HKEY_CURRENT_USER\System\GameConfigStore" /v "GameDVR_Enabled" /f >nul 2>&1
+echo [√] 已恢复游戏录制工具
+
+:: 还原小娜设置
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /f >nul 2>&1
+echo [√] 已恢复小娜默认设置
+
+:: 还原关机速度
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /f >nul 2>&1
+echo [√] 已恢复默认关机速度
+
+:: 还原服务关闭等待时间
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "ServicesPipeTimeout" /f >nul 2>&1
+echo [√] 已恢复默认服务关闭等待时间
+
+:: 还原程序兼容性助手
+sc config "PcaSvc" start= auto >nul
+sc start "PcaSvc" >nul 2>&1
+echo [√] 已恢复程序兼容性助手
+
+:: 还原诊断服务
+sc config "DPS" start= auto >nul
+sc start "DPS" >nul 2>&1
+echo [√] 已恢复诊断服务
+
+:: 还原SysMain
+sc config "SysMain" start= auto >nul
+sc start "SysMain" >nul 2>&1
+echo [√] 已恢复SysMain
+
+:: 还原Windows Search
+sc config "WSearch" start= auto >nul
+sc start "WSearch" >nul 2>&1
+echo [√] 已恢复Windows Search
+
+:: 还原错误报告
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f >nul 2>&1
+echo [√] 已恢复错误报告
+
+:: 还原客户体验改善计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul 2>&1
+echo [√] 已恢复客户体验改善计划
+
+:: 还原NTFS链接跟踪服务
+sc config "TrkWks" start= auto >nul
+sc start "TrkWks" >nul 2>&1
+echo [√] 已恢复NTFS链接跟踪服务
+
+:: 还原自动维护计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v "MaintenanceDisabled" /f >nul 2>&1
+echo [√] 已恢复自动维护计划
+
+:: 还原大系统缓存
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /f >nul 2>&1
+echo [√] 已恢复系统缓存默认设置
+
+:: 还原系统内核分页
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /f >nul 2>&1
+echo [√] 已恢复系统内核分页默认设置
+
+:: 还原文件管理系统缓存
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /f >nul 2>&1
+echo [√] 已恢复文件管理系统缓存默认设置
+
+:: 还原Windows预读
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /f >nul 2>&1
+echo [√] 已恢复Windows预读功能
+
+:: 还原VHD启动设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FsDepends\Parameters" /v "VirtualDiskExpandOnMount" /f >nul 2>&1
+echo [√] 已恢复VHD启动默认设置
+
+:: 还原系统自动调试
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /f >nul 2>&1
+echo [√] 已恢复系统自动调试功能
+
+:: 还原磁盘错误检查等待时间
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "AutoChkTimeOut" /f >nul 2>&1
+echo [√] 已恢复磁盘错误检查默认等待时间
+
+:: 还原设备安装系统还原点
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /f >nul 2>&1
+echo [√] 已恢复设备安装系统还原点创建
+
+:: 还原USB磁盘电源设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\USBSTOR" /v "DisableOnSoftRemove" /f >nul 2>&1
+echo [√] 已恢复USB磁盘电源默认设置
+
+:: 还原快速启动
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /f >nul 2>&1
+echo [√] 已恢复快速启动默认设置
+
+:: 还原休眠
+powercfg /h on >nul
+echo [√] 已恢复休眠功能
+
+:: 还原字体设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /v "MitigationOptions_FontBocking" /f >nul 2>&1
+echo [√] 已恢复字体默认设置
+
+:: 还原微软拼音云计算
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS" /v "CloudCandidate" /f >nul 2>&1
+echo [√] 已恢复微软拼音云计算功能
+
+:: 还原内容传递优化服务
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DownloadMode" /f >nul 2>&1
+echo [√] 已恢复内容传递优化服务
+
+:: 还原SmartScreen筛选器
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /f >nul 2>&1
+echo [√] 已恢复SmartScreen筛选器
+
+:: 还原安全中心报告
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Security Health\Platform" /v "Registered" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows Security Health\State" /v "Disabled" /f >nul 2>&1
+echo [√] 已恢复Windows安全中心报告
+
+:: 还原Edge浏览器SmartScreen
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Edge" /v "SmartScreenEnabled" /f >nul 2>&1
+echo [√] 已恢复Edge浏览器SmartScreen
+
+:: 还原文件资源管理器SmartScreen
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /f >nul 2>&1
+echo [√] 已恢复文件资源管理器SmartScreen
+
+:: 还原Store应用SmartScreen
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /f >nul 2>&1
+echo [√] 已恢复Microsoft Store应用SmartScreen
+
+:: 还原UAC设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /f >nul 2>&1
+echo [√] 已恢复UAC默认设置
+
+:: 还原防火墙
+netsh advfirewall set allprofiles state on >nul
+echo [√] 已恢复防火墙
+
+:: 还原默认共享
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareServer" /f >nul 2>&1
+echo [√] 已恢复默认共享
+
+:: 还原远程协助
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /f >nul 2>&1
+echo [√] 已恢复远程协助
+
+:: 还原硬件加速GPU计划
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /f >nul 2>&1
+echo [√] 已恢复硬件加速GPU计划默认设置
+
+:: 还原处理器性能和内存设置
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ16Priority" /f >nul 2>&1
+echo [√] 已恢复处理器性能和内存默认设置
+
+:: 还原Cortana性能
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f >nul 2>&1
+echo [√] 已恢复Cortana默认性能
+
+:: 还原广告ID
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /f >nul 2>&1
+echo [√] 已恢复广告ID
+
+:: 还原应用启动跟踪
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f >nul 2>&1
+echo [√] 已恢复应用启动跟踪
+
+:: 还原搜索页面信息流
+reg delete "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" /v "DisableSearchBoxSuggestions" /f >nul 2>&1
+echo [√] 已恢复搜索页面信息流和热搜
+
+:: 还原高精度事件定时器
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hpet" /v "Start" /f >nul 2>&1
+echo [√] 已恢复高精度事件定时器
+
+:: 还原Game Bar
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\GameDVR" /v "AppCaptureEnabled" /f >nul 2>&1
+echo [√] 已恢复Game Bar
+
+:: 还原远程注册表修改
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" /v "RemoteRegAccess" /f >nul 2>&1
+echo [√] 已恢复远程注册表修改权限
+
+:: 还原保留空间
+DISM.exe /Online /Set-ReservedStorageState /State:Enabled >nul 2>&1
+echo [√] 已恢复保留空间
+
+:: 还原上下文菜单延迟
+reg delete "HKEY_CURRENT_USER\Control Panel\Desktop" /v "MenuShowDelay" /f >nul 2>&1
+echo [√] 已恢复上下文菜单显示延迟
+
+:: 还原蓝屏自动重启
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "AutoReboot" /f >nul 2>&1
+echo [√] 已恢复蓝屏后自动重启
+
+:: 还原Installer detection
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableInstallerDetection" /f >nul 2>&1
+echo [√] 已恢复Installer detection
+
+:: 还原功能更新安全措施
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX" /v "IsConvergedUpdateStackEnabled" /f >nul 2>&1
+echo [√] 已恢复功能更新安全措施
+
+:: 还原交付优化
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization" /v "SystemSettingsDownloadMode" /f >nul 2>&1
+echo [√] 已恢复交付优化
+
+:: 还原客户体验改进计划
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f >nul 2>&1
+echo [√] 已恢复微软客户体验改进计划
+
+:: 还原遥测服务
+sc config "DiagTrack" start= auto >nul
+sc start "DiagTrack" >nul 2>&1
+echo [√] 已恢复遥测服务
+
+:: 还原错误报告
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f >nul 2>&1
+echo [√] 已恢复错误报告
+
+:: 还原语音激活
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /f >nul 2>&1
+echo [√] 已恢复语音激活
+
+:: 还原位置服务
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /f >nul 2>&1
+echo [√] 已恢复位置服务
+
+:: 还原搜索数据收集
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f >nul 2>&1
+echo [√] 已恢复搜索数据收集
+
+:: 还原定向广告
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /f >nul 2>&1
+echo [√] 已恢复定向广告
+
+:: 还原Wi-Fi感知
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /f >nul 2>&1
+echo [√] 已恢复Wi-Fi感知
+
+:: 还原步骤记录器
+reg delete "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\ProblemReports" /v "DisableProblemReports" /f >nul 2>&1
+echo [√] 已恢复步骤记录器
+
+:: 还原写入调试信息
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter" /v "DEFAULT" /f >nul 2>&1
+echo [√] 已恢复写入调试信息
+
+:: 还原Windows欢迎体验
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableFirstRunAnimate" /f >nul 2>&1
+echo [√] 已恢复Windows欢迎体验
+
+:: 还原反馈频率
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /f >nul 2>&1
+echo [√] 已恢复反馈频率
+
+:: 还原诊断数据收集
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /f >nul 2>&1
+echo [√] 已恢复诊断数据收集
+
+:: 还原写作习惯跟踪
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Input\Settings" /v "Inking&TypingPersonalization" /f >nul 2>&1
+echo [√] 已恢复写作习惯跟踪
+
+:: 还原设置应用建议
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /f >nul 2>&1
+echo [√] 已恢复设置应用建议
+
+:: 还原Bing搜索结果
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /f >nul 2>&1
+echo [√] 已恢复Bing搜索结果
+
+:: 还原搜索历史
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsDeviceSearchHistoryEnabled" /f >nul 2>&1
+echo [√] 已恢复搜索历史
+
+:: 还原赞助商应用安装
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /f >nul 2>&1
+echo [√] 已恢复赞助商应用安装
+
+:: 还原自动连接热点
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "fBlockNonDomain" /f >nul 2>&1
+echo [√] 已恢复自动连接热点
+
+:: 还原输入数据个性化
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Personalization\Settings" /v "RestrictImplicitTextCollection" /f >nul 2>&1
+echo [√] 已恢复输入数据个性化
+
+:: 还原键入见解
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Input\Settings" /v "EnableTypingInsights" /f >nul 2>&1
+echo [√] 已恢复键入见解
+
+:: 还原预安装应用
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "DisablePreInstalledApps" /f >nul 2>&1
+echo [√] 已恢复预安装应用
+
+:: 还原.NET遥测
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DisableNetFrameworkTelemetry" /f >nul 2>&1
+echo [√] 已恢复.NET遥测
+
+:: 还原PowerShell遥测
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnablePowerShellTelemetry" /f >nul 2>&1
+echo [√] 已恢复PowerShell遥测
+
+:: 还原自动安装推荐的应用程序
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate" /v "AutoDownload" /f >nul 2>&1
+echo [√] 已恢复自动安装推荐的应用程序
+
+:: 还原大版本更新
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /f >nul 2>&1
+echo [√] 已恢复Windows大版本更新
+
+:: 还原恶意软件删除工具
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /f >nul 2>&1
+echo [√] Windows更新已恢复包括恶意软件删除工具
+
+:: 还原商店应用自动更新
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /f >nul 2>&1
+echo [√] 已恢复自动更新商店应用
+
+:: 还原地图自动更新
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /f >nul 2>&1
+echo [√] 已恢复自动更新地图
+
+:: 还原IP助手服务
+sc config "iphlpsvc" start= auto >nul
+sc start "iphlpsvc" >nul 2>&1
+echo [√] 已恢复IP助手服务
+
+:: 还原SMS路由器服务
+sc config "SmsRouter" start= auto >nul
+sc start "SmsRouter" >nul 2>&1
+echo [√] 已恢复SMS路由器服务
+
+:: 还原Shell硬件检测
+sc config "ShellHWDetection" start= auto >nul
+sc start "ShellHWDetection" >nul 2>&1
+echo [√] 已恢复Shell硬件检测
+
+:: 还原任务计划服务
+sc config "Schedule" start= auto >nul
+sc start "Schedule" >nul 2>&1
+echo [√] 已恢复任务计划服务
+
+:: 还原Windows事件收集服务
+sc config "Wecsvc" start= auto >nul
+sc start "Wecsvc" >nul 2>&1
+echo [√] 已恢复Windows事件收集服务
+
+:: 还原诊断中心收集器
+sc config "diagnosticshub.standardcollector.service" start= auto >nul
+sc start "diagnosticshub.standardcollector.service" >nul 2>&1
+echo [√] 已恢复诊断中心收集器
+
+:: 还原LSA保护
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "RunAsPPL" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPL" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa" /v "RunAsPPLBoot" /f >nul 2>&1
+bcdedit /deletevalue hypervisorlaunchtype >nul 2>&1
+echo [√] 已恢复LSA保护
+
+:: 还原驱动程序阻止列表
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config" /v "VulnerableDriverBlocklistEnable" /f >nul 2>&1
+echo [√] 已恢复驱动程序阻止列表
+
+:: 还原攻击面减少规则
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /f >nul 2>&1
+echo [√] 已恢复攻击面减少规则
+
+:: 还原虚拟化安全
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /f >nul 2>&1
+bcdedit /set hypervisorlaunchtype auto >nul 2>&1
+echo [√] 已恢复虚拟化安全
+
+:: 还原凭证保护
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" /v "Enabled" /f >nul 2>&1
+echo [√] 已恢复凭证保护
+
+:: 还原受控文件夹访问
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /f >nul 2>&1
+echo [√] 已恢复受控文件夹访问
+
+:: 还原网络保护
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /f >nul 2>&1
+echo [√] 已恢复网络保护
+
+:: 还原AMSI
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableAmsi" /f >nul 2>&1
+echo [√] 已恢复AMSI
+
+:: 还原代码完整性
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI" /v "Enabled" /f >nul 2>&1
+echo [√] 已恢复代码完整性
+
+:: 还原来宾登录
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "AllowInsecureGuestAuth" /f >nul 2>&1
+echo [√] 已恢复安全来宾登录
+
+:: 还原处理器幽灵和熔断补丁
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /f >nul 2>&1
+echo [√] 已恢复处理器幽灵和熔断补丁
+
+:: 还原Exploit Protection
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "MitigationOptions" /f >nul 2>&1
+echo [√] 已恢复Exploit Protection
+
+:: 还原TSX漏洞补丁
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "DisableTsx" /f >nul 2>&1
+echo [√] 已恢复TSX漏洞补丁
+
+:: 还原进程数量
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /f >nul 2>&1
+echo [√] 已恢复进程数量默认设置
+
+:: 还原诊断策略服务
+sc config "DPS" start= auto >nul
+sc start "DPS" >nul 2>&1
+echo [√] 已恢复诊断策略服务
+
+:: 还原程序兼容性助手
+sc config "PcaSvc" start= auto >nul
+sc start "PcaSvc" >nul 2>&1
+echo [√] 已恢复程序兼容性助手
+
+:: 还原Edge浏览器设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge" /f >nul 2>&1
+echo [√] 已恢复Edge浏览器所有默认设置
+
+:: 还原页面预测功能
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "AllowPagePrediction" /f >nul 2>&1
+echo [√] 已恢复页面预测功能
+
+:: 还原活动收集
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /f >nul 2>&1
+echo [√] 已恢复活动收集
+
+:: 还原应用访问权限
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\broadFileSystemAccess" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\activity" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCall" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\sync" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCallHistory" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\email" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userDataTasks" /f >nul 2>&1
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\chatMessage" /f >nul 2>&1
+echo [√] 已恢复所有应用访问权限默认设置
+
+:: 还原网站语言跟踪
+reg delete "HKEY_CURRENT_USER\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /f >nul 2>&1
+echo [√] 已恢复网站语言跟踪
+
+:: 还原通讯录收集
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts" /f >nul 2>&1
+echo [√] 已恢复通讯录收集
+
+:: 还原键入文本收集
+reg delete "HKEY_CURRENT_USER\Software\Microsoft\Input\Settings" /v "Inking&TypingPersonalization" /f >nul 2>&1
+echo [√] 已恢复键入文本收集
+
+:: 还原日志设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-CBS/Debug" /v "Enabled" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\Logging" /v "EnableLog" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows" /v "NoEventLog" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl" /v "CrashDumpEnabled" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DisableLogonCacheDisplay" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Diagnostics" /v "EnableLog" /f >nul 2>&1
+echo [√] 已恢复所有日志默认设置
+
+:: 还原Windows更新设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /f >nul 2>&1
+echo [√] 已恢复Windows更新默认设置
+
+:: 还原安全健康服务
+sc config "SecurityHealthService" start= auto >nul
+sc start "SecurityHealthService" >nul 2>&1
+echo [√] 已恢复安全健康服务
+
+:: 还原Windows更新服务
+sc config "UsoSvc" start= auto >nul
+sc start "UsoSvc" >nul 2>&1
+echo [√] 已恢复Windows更新服务
+
+:: 还原Windows Defender服务
+sc config "WinDefend" start= auto >nul
+sc start "WinDefend" >nul 2>&1
+echo [√] 已恢复Windows Defender服务
+
+:: 还原诊断服务
+sc config "diagsvc" start= auto >nul
+sc start "diagsvc" >nul 2>&1
+echo [√] 已恢复诊断服务
+
+:: 还原系统防护服务
+sc config "SgrmBroker" start= auto >nul
+sc start "SgrmBroker" >nul 2>&1
+echo [√] 已恢复系统防护服务
+
+echo.  ========================================
+echo 极限优化已还原! 
+echo 建议重启计算机使所有更改生效
+pause
+goto MainMenu
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 系统更新还原
+::-------------------------------------------------------------------------------------------
+:recover_update
+
+cls
+echo.===============================================================================
+echo.                          Windows 更新功能完全恢复工具
+echo.===============================================================================
+echo.
+echo.  正在恢复Windows更新功能...
+echo.
+echo.  注意：此过程可能需要几分钟时间，请勿关闭窗口
+echo.
+echo.  ==============================================================================
+
+:: 1. 恢复Windows更新服务设置
+sc config "wuauserv" start= auto >nul
+sc config "UsoSvc" start= auto >nul
+sc config "BITS" start= auto >nul
+sc config "CryptSvc" start= auto >nul
+sc config "DcomLaunch" start= auto >nul
+sc config "TrustedInstaller" start= auto >nul
+net start wuauserv >nul 2>&1
+net start UsoSvc >nul 2>&1
+net start BITS >nul 2>&1
+net start CryptSvc >nul 2>&1
+net start TrustedInstaller >nul 2>&1
+
+echo [√] Windows更新相关服务已恢复并启动
+
+:: 2. 恢复Windows更新相关注册表设置
+:: 删除更新暂停设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /f >nul 2>&1
+
+:: 恢复自动更新设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /f >nul 2>&1
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v "AUOptions" /t REG_DWORD /d 3 /f >nul
+
+:: 恢复更新服务器设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "WUServer" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "WUStatusServer" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "UpdateServiceUrlAlternate" /f >nul 2>&1
+
+:: 恢复更新通知设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "SetDisableUXWUAccess" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWindowsUpdate" /f >nul 2>&1
+
+:: 恢复驱动程序更新设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /f >nul 2>&1
+
+:: 恢复功能更新设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsUpdate\UX" /v "IsConvergedUpdateStackEnabled" /f >nul 2>&1
+
+:: 恢复交付优化设置
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization" /v "SystemSettingsDownloadMode" /f >nul 2>&1
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DODownloadMode" /f >nul 2>&1
+
+echo [√] Windows更新注册表设置已恢复
+
+:: 完成提示
+echo.
+echo.  ==============================================================================
+echo   Windows更新功能已完全恢复!
+echo.
+echo   建议操作:
+echo   1. 重启计算机使所有更改生效
+echo   2. 打开Windows更新检查更新状态
+echo   3. 如有问题可运行Windows更新疑难解答
+echo.  ==============================================================================
+
+:: 打开Windows更新设置
+echo 正在打开Windows更新设置...
+start ms-settings:windowsupdate >nul
+
+pause
+goto MainMenu
+
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - Defender 还原
+::-------------------------------------------------------------------------------------------
+:recover_defender
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - Defender 还原
+echo.===============================================================================
+echo.
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "SecurityHealthService" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "SecurityHealthService" >nul 2>&1
+        echo [√] 已启用: SecurityHealthService 安全健康服务
+"%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc config "WinDefend" start= auto >nul
+        "%~dp0NSudoLG.exe" -U:T -P:E -ShowWindowMode:Hide sc start "WinDefend" >nul 2>&1
+"%~dp0Defender_Control.exe"
+        echo [√] 已启用: Windows Defender服务
+        echo [i]请手动启动Windows Defender（Enable）
+
+echo.  ========================================
+echo Defender 还原已完成! 
+echo 建议重启计算机使所有更改生效
+pause
+goto MainMenu
+
+
+::-------------------------------------------------------------------------------------------
+:: ZyperWin++ - 其他功能
+::-------------------------------------------------------------------------------------------
+:others
+
+cls
+echo.===============================================================================
+echo.                          ZyperWin++ - 其 他 功 能
+echo.===============================================================================
+echo.
+echo.
+echo.  [1]   垃圾清理
+echo.
+echo.  [2]   Office安装（需联网）
+echo.
+echo.  [3]   系统激活（部分需联网）
+echo.
+echo.  [4]   Appx管理（测试实验性）
+echo.
+echo.
+echo.                           
+echo.                           
+echo.                             
+echo.                           
+echo.                             
+echo.
+echo.  [X]   退      出
+echo.
+echo.===============================================================================
+choice /C:1234X /N /M "请输入你的选项 ："
+if errorlevel 5 goto :MainMenu
+if errorlevel 4 goto :AppX_Manager
+if errorlevel 3 goto :System_activation
+if errorlevel 2 goto :Office_install
+if errorlevel 1 goto :Clean
+::-------------------------------------------------------------------------------------------
 
 
 ::-------------------------------------------------------------------------------------------
@@ -5290,9 +7961,10 @@ setlocal enabledelayedexpansion
 :AppX_Manager
 cls
 echo ===============================================================================
-echo                 APPX 管理（复制粘贴包名卸载）
+echo                 APPX 管理（测试实验性）
 echo ===============================================================================
-echo.
+echo 提示：当列出包名时选择你需要卸载的程序复制
+echo 例如：“Microsoft.Windows.Photos_版本号_架构__8wekyb3d8bbwe”，复制这个粘贴后回车就能卸载了
 echo 正在检测可卸载的APPX包...
 echo.
 
@@ -5462,10 +8134,9 @@ echo.                ZyperWin++ - 系统激活
 echo.===============================================================================
 echo.
 echo 正在调用MAS激活，稍等片刻...
-echo 提示：界面按1激活系统，按2激活Office，按3两者激活
 echo.
-@powershell.exe -Command "irm https://get.activated.win | iex; exit"
-echo.
+start %~dp0MAS_AIO_CN.cmd
+echo 新窗口已调用，根据界面提示激活系统
 echo 按任意键返回
 echo.
 pause
@@ -5483,7 +8154,7 @@ echo.                          ZyperWin++ - 关于软件
 echo.===============================================================================
 echo.
 echo.
-echo.                             ZyperWin++ v2.1
+echo.                             ZyperWin++ v2.2
 echo.
 echo.              开发者：ZyperWave
 echo. 
