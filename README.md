@@ -1,4 +1,4 @@
-# ZyperWin++ 2.0
+# ZyperWin++ 2.2
 ZyperWin++是一个轻便的Windows优化工具，适用于Win7-Win11最新版的优化，包括性能优化、服务项优化、垃圾清理等操作，还支持系统激活和Office快速安装。  
 <img width="660" height="441" alt="image" src="https://github.com/user-attachments/assets/a6e1e3df-9ce7-4855-bcef-23edc998c542" />  
 参照MSMG工具箱设计风格制作，美观简洁，处理任务明确，功能位置较2.0版本有改进，显得美观一点  
