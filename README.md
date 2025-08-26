@@ -1,18 +1,20 @@
-# ZyperWin++ 2.2
+# ZyperWin++ 3.0
 ZyperWin++是一个轻便的Windows优化工具，适用于Win7-Win11最新版的优化，包括性能优化、服务项优化、垃圾清理等操作，还支持系统激活和Office快速安装。  
-<img width="660" height="441" alt="image" src="https://github.com/user-attachments/assets/a6e1e3df-9ce7-4855-bcef-23edc998c542" />  
-参照MSMG工具箱设计风格制作，美观简洁，处理任务明确，功能位置较2.0版本有改进，显得美观一点  
-<img width="660" height="441" alt="image" src="https://github.com/user-attachments/assets/834f7951-d817-4087-8951-a8260aeed097" />  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/57b672a6-a373-4a83-a0fe-c78b59329ba8" />  
+基于.NET4编写，并引入SunnyUI，外观简洁美观。兼容性强，无需额外安装运行库（Win7需要集成）  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/bd5f1659-ebc4-4184-8109-e705fe32f841" />  
 快速优化分级别优化，满足不同用户的需求  
-<img width="659" height="432" alt="image" src="https://github.com/user-attachments/assets/ad861c72-d4ff-4594-98fc-3a8fe357f5c4" />  
-<img width="659" height="432" alt="image" src="https://github.com/user-attachments/assets/e563f838-4921-4124-9325-7a14c167f7ab" />  
-自定义优化可以选择需要优化的功能，避免优化到需要用的功能。按“A”全部优化，按数字根据你所输入的选项优化。添加了是否优化检测以及撤销操作，避免优化不满意可以回退。  
-<img width="660" height="441" alt="image" src="https://github.com/user-attachments/assets/e440849b-c327-42ec-a76e-92493c73cbc1" />  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/a1b25fa8-2e63-4b99-950c-af5738e01791" />  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/0ab7cd2f-6373-4f64-b697-c2e18c69a837" />  
+自定义优化可以选择需要优化的功能，避免优化到需要用的功能。通过开关控件反应优化情况  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/c7dc1b87-425f-47ae-916d-3bdffdd23cae" />  
 添加了优化还原功能，不满意可以回退优化。  
-<img width="659" height="432" alt="image" src="https://github.com/user-attachments/assets/0b7b4b11-3fe7-481a-bfb1-b86ecb68c81a" />  
-此工具还支持快速安装Office，基本是全自动安装，不过这个需要联网操作安装，等待片刻后安装完毕。  
-<img width="659" height="487" alt="image" src="https://github.com/user-attachments/assets/8bd154ca-b593-47e1-848d-e5cc89e5b61d" />  
-此脚本还添加了Appx管理功能，方便管理卸载您的Appx应用。  
-<img width="1318" height="427" alt="image" src="https://github.com/user-attachments/assets/3ac793ae-e9f0-40fa-8ad0-fe0139fce6e1" />  
-内存资源占用低，处理快速轻便，是一个不错的全面自动优化工具。  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/9d05aca8-766b-41dd-8a13-46e1a1ed61e3" />  
+垃圾清理添加选项，默认全选，并添加了进度条  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/192d8efb-fe34-4428-96d5-a05b6fb14a16" />  
+此工具还支持快速安装Office，基本是全自动安装，不过这个需要联网操作安装，等待片刻后安装完毕  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/9d885ce2-48b4-4344-8c72-20cd43b87ff5" />  
+此脚本还添加了Appx管理功能，方便管理卸载您的Appx应用，支持卸载用户已安装的应用  
+<img width="421" height="651" alt="image" src="https://github.com/user-attachments/assets/e3b14219-05ac-4139-9c52-dc3f3e544c07" />  
+软件包占用小，可以方便给个人电脑或者班级电脑快速优化  
 若出现问题请及时反馈！反馈交流群：312820776  
