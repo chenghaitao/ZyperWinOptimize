@@ -28,10 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(explorer));
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.uiButton2 = new Sunny.UI.UIButton();
+            this.uiButton1 = new Sunny.UI.UIButton();
+            this.label21 = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.uiSwitch35 = new Sunny.UI.UISwitch();
             this.label35 = new System.Windows.Forms.Label();
@@ -60,10 +65,6 @@
             this.uiSwitch23 = new Sunny.UI.UISwitch();
             this.label23 = new System.Windows.Forms.Label();
             this.uiSwitch22 = new Sunny.UI.UISwitch();
-            this.label22 = new System.Windows.Forms.Label();
-            this.uiSwitch21 = new Sunny.UI.UISwitch();
-            this.label21 = new System.Windows.Forms.Label();
-            this.uiSwitch20 = new Sunny.UI.UISwitch();
             this.label20 = new System.Windows.Forms.Label();
             this.uiSwitch19 = new Sunny.UI.UISwitch();
             this.label19 = new System.Windows.Forms.Label();
@@ -102,7 +103,9 @@
             this.uiSwitch2 = new Sunny.UI.UISwitch();
             this.label2 = new System.Windows.Forms.Label();
             this.uiSwitch1 = new Sunny.UI.UISwitch();
+            this.label22 = new System.Windows.Forms.Label();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -135,7 +138,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(660, 1300);
+            this.panel2.Size = new System.Drawing.Size(660, 1262);
             this.panel2.TabIndex = 4;
             // 
             // tableLayoutPanel1
@@ -145,38 +148,37 @@
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 85.24282F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.75718F));
-            this.tableLayoutPanel1.Controls.Add(this.label36, 0, 34);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch35, 1, 34);
-            this.tableLayoutPanel1.Controls.Add(this.label35, 0, 33);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch34, 1, 33);
-            this.tableLayoutPanel1.Controls.Add(this.label34, 0, 32);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch33, 1, 32);
-            this.tableLayoutPanel1.Controls.Add(this.label33, 0, 31);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch32, 1, 31);
-            this.tableLayoutPanel1.Controls.Add(this.label32, 0, 30);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch31, 1, 30);
-            this.tableLayoutPanel1.Controls.Add(this.label31, 0, 29);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch30, 1, 29);
-            this.tableLayoutPanel1.Controls.Add(this.label30, 0, 28);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch29, 1, 28);
-            this.tableLayoutPanel1.Controls.Add(this.label29, 0, 27);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch28, 1, 27);
-            this.tableLayoutPanel1.Controls.Add(this.label28, 0, 26);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch27, 1, 26);
-            this.tableLayoutPanel1.Controls.Add(this.label27, 0, 25);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch26, 1, 25);
-            this.tableLayoutPanel1.Controls.Add(this.label26, 0, 24);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch25, 1, 24);
-            this.tableLayoutPanel1.Controls.Add(this.label25, 0, 23);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch24, 1, 23);
-            this.tableLayoutPanel1.Controls.Add(this.label24, 0, 22);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch23, 1, 22);
-            this.tableLayoutPanel1.Controls.Add(this.label23, 0, 21);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch22, 1, 21);
-            this.tableLayoutPanel1.Controls.Add(this.label22, 0, 20);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch21, 1, 20);
-            this.tableLayoutPanel1.Controls.Add(this.label21, 0, 19);
-            this.tableLayoutPanel1.Controls.Add(this.uiSwitch20, 1, 19);
+            this.tableLayoutPanel1.Controls.Add(this.uiButton2, 1, 34);
+            this.tableLayoutPanel1.Controls.Add(this.uiButton1, 1, 33);
+            this.tableLayoutPanel1.Controls.Add(this.label21, 0, 33);
+            this.tableLayoutPanel1.Controls.Add(this.label36, 0, 32);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch35, 1, 32);
+            this.tableLayoutPanel1.Controls.Add(this.label35, 0, 31);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch34, 1, 31);
+            this.tableLayoutPanel1.Controls.Add(this.label34, 0, 30);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch33, 1, 30);
+            this.tableLayoutPanel1.Controls.Add(this.label33, 0, 29);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch32, 1, 29);
+            this.tableLayoutPanel1.Controls.Add(this.label32, 0, 28);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch31, 1, 28);
+            this.tableLayoutPanel1.Controls.Add(this.label31, 0, 27);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch30, 1, 27);
+            this.tableLayoutPanel1.Controls.Add(this.label30, 0, 26);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch29, 1, 26);
+            this.tableLayoutPanel1.Controls.Add(this.label29, 0, 25);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch28, 1, 25);
+            this.tableLayoutPanel1.Controls.Add(this.label28, 0, 24);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch27, 1, 24);
+            this.tableLayoutPanel1.Controls.Add(this.label27, 0, 23);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch26, 1, 23);
+            this.tableLayoutPanel1.Controls.Add(this.label26, 0, 22);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch25, 1, 22);
+            this.tableLayoutPanel1.Controls.Add(this.label25, 0, 21);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch24, 1, 21);
+            this.tableLayoutPanel1.Controls.Add(this.label24, 0, 20);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch23, 1, 20);
+            this.tableLayoutPanel1.Controls.Add(this.label23, 0, 19);
+            this.tableLayoutPanel1.Controls.Add(this.uiSwitch22, 1, 19);
             this.tableLayoutPanel1.Controls.Add(this.label20, 0, 18);
             this.tableLayoutPanel1.Controls.Add(this.uiSwitch19, 1, 18);
             this.tableLayoutPanel1.Controls.Add(this.label19, 0, 17);
@@ -215,6 +217,7 @@
             this.tableLayoutPanel1.Controls.Add(this.uiSwitch2, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.uiSwitch1, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label22, 0, 34);
             this.tableLayoutPanel1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(33, 90);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -254,20 +257,79 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(594, 1160);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(594, 1162);
             this.tableLayoutPanel1.TabIndex = 12;
+            // 
+            // uiButton2
+            // 
+            this.uiButton2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
+            this.uiButton2.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
+            this.uiButton2.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(203)))), ((int)(((byte)(189)))));
+            this.uiButton2.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton2.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton2.LightColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
+            this.uiButton2.Location = new System.Drawing.Point(507, 1128);
+            this.uiButton2.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton2.Name = "uiButton2";
+            this.uiButton2.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
+            this.uiButton2.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(203)))), ((int)(((byte)(189)))));
+            this.uiButton2.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton2.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton2.Size = new System.Drawing.Size(51, 24);
+            this.uiButton2.Style = Sunny.UI.UIStyle.Custom;
+            this.uiButton2.TabIndex = 77;
+            this.uiButton2.Text = "设置";
+            this.uiButton2.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton2.Click += new System.EventHandler(this.uiButton2_Click);
+            // 
+            // uiButton1
+            // 
+            this.uiButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
+            this.uiButton1.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
+            this.uiButton1.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(203)))), ((int)(((byte)(189)))));
+            this.uiButton1.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton1.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.LightColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
+            this.uiButton1.Location = new System.Drawing.Point(507, 1095);
+            this.uiButton1.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton1.Name = "uiButton1";
+            this.uiButton1.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
+            this.uiButton1.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(203)))), ((int)(((byte)(189)))));
+            this.uiButton1.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton1.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
+            this.uiButton1.Size = new System.Drawing.Size(51, 24);
+            this.uiButton1.Style = Sunny.UI.UIStyle.Custom;
+            this.uiButton1.TabIndex = 76;
+            this.uiButton1.Text = "设置";
+            this.uiButton1.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.Click += new System.EventHandler(this.uiButton1_Click);
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label21.Location = new System.Drawing.Point(6, 1092);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(146, 25);
+            this.label21.TabIndex = 74;
+            this.label21.Text = "Win11右键设置";
+            this.toolTip1.SetToolTip(this.label21, resources.GetString("label21.ToolTip"));
             // 
             // label36
             // 
             this.label36.AutoSize = true;
             this.label36.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label36.Location = new System.Drawing.Point(6, 1125);
+            this.label36.Location = new System.Drawing.Point(6, 1059);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(221, 25);
             this.label36.TabIndex = 73;
             this.label36.Text = "退出时清除最近打开文档";
+            this.toolTip1.SetToolTip(this.label36, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explo" +
+        "rer\",\r\nValueName = \"ClearRecentDocsOnExit\",\r\n启用值：1,\r\n禁用值：0");
             // 
             // uiSwitch35
             // 
@@ -275,7 +337,7 @@
             this.uiSwitch35.ActiveText = "";
             this.uiSwitch35.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch35.InActiveText = "";
-            this.uiSwitch35.Location = new System.Drawing.Point(507, 1128);
+            this.uiSwitch35.Location = new System.Drawing.Point(507, 1062);
             this.uiSwitch35.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch35.Name = "uiSwitch35";
             this.uiSwitch35.Size = new System.Drawing.Size(51, 24);
@@ -287,11 +349,13 @@
             // 
             this.label35.AutoSize = true;
             this.label35.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label35.Location = new System.Drawing.Point(6, 1092);
+            this.label35.Location = new System.Drawing.Point(6, 1026);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(164, 25);
             this.label35.TabIndex = 71;
             this.label35.Text = "记事本显示状态栏";
+            this.toolTip1.SetToolTip(this.label35, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Notepad\",\r\n值名：\"StatusBar\",\r\nEnableVal" +
+        "ue = 1,\r\n禁用值：0");
             // 
             // uiSwitch34
             // 
@@ -299,7 +363,7 @@
             this.uiSwitch34.ActiveText = "";
             this.uiSwitch34.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch34.InActiveText = "";
-            this.uiSwitch34.Location = new System.Drawing.Point(507, 1095);
+            this.uiSwitch34.Location = new System.Drawing.Point(507, 1029);
             this.uiSwitch34.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch34.Name = "uiSwitch34";
             this.uiSwitch34.Size = new System.Drawing.Size(51, 24);
@@ -311,11 +375,13 @@
             // 
             this.label34.AutoSize = true;
             this.label34.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label34.Location = new System.Drawing.Point(6, 1059);
+            this.label34.Location = new System.Drawing.Point(6, 993);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(183, 25);
             this.label34.TabIndex = 69;
             this.label34.Text = "记事本启用自动换行";
+            this.toolTip1.SetToolTip(this.label34, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Notepad\",\r\n值名：\"fWrap\",\r\n启用值：1,\r\n禁用值：0" +
+        "");
             // 
             // uiSwitch33
             // 
@@ -323,7 +389,7 @@
             this.uiSwitch33.ActiveText = "";
             this.uiSwitch33.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch33.InActiveText = "";
-            this.uiSwitch33.Location = new System.Drawing.Point(507, 1062);
+            this.uiSwitch33.Location = new System.Drawing.Point(507, 996);
             this.uiSwitch33.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch33.Name = "uiSwitch33";
             this.uiSwitch33.Size = new System.Drawing.Size(51, 24);
@@ -335,11 +401,13 @@
             // 
             this.label33.AutoSize = true;
             this.label33.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label33.Location = new System.Drawing.Point(6, 1026);
+            this.label33.Location = new System.Drawing.Point(6, 960);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(240, 25);
             this.label33.TabIndex = 67;
             this.label33.Text = "禁用开始菜单最近添加应用";
+            this.toolTip1.SetToolTip(this.label33, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advan" +
+        "ced\",\r\nValueName = \"Start_TrackDocs\",\r\n启用值：0,\r\n禁用值：1");
             // 
             // uiSwitch32
             // 
@@ -347,7 +415,7 @@
             this.uiSwitch32.ActiveText = "";
             this.uiSwitch32.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch32.InActiveText = "";
-            this.uiSwitch32.Location = new System.Drawing.Point(507, 1029);
+            this.uiSwitch32.Location = new System.Drawing.Point(507, 963);
             this.uiSwitch32.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch32.Name = "uiSwitch32";
             this.uiSwitch32.Size = new System.Drawing.Size(51, 24);
@@ -359,11 +427,13 @@
             // 
             this.label32.AutoSize = true;
             this.label32.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label32.Location = new System.Drawing.Point(6, 993);
+            this.label32.Location = new System.Drawing.Point(6, 927);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(202, 25);
             this.label32.TabIndex = 65;
             this.label32.Text = "禁用开始菜单常用应用";
+            this.toolTip1.SetToolTip(this.label32, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advan" +
+        "ced\",\r\nValueName = \"Start_TrackProgs\",\r\n启用值：0,\r\n禁用值：1");
             // 
             // uiSwitch31
             // 
@@ -371,7 +441,7 @@
             this.uiSwitch31.ActiveText = "";
             this.uiSwitch31.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch31.InActiveText = "";
-            this.uiSwitch31.Location = new System.Drawing.Point(507, 996);
+            this.uiSwitch31.Location = new System.Drawing.Point(507, 930);
             this.uiSwitch31.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch31.Name = "uiSwitch31";
             this.uiSwitch31.Size = new System.Drawing.Size(51, 24);
@@ -383,11 +453,13 @@
             // 
             this.label31.AutoSize = true;
             this.label31.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label31.Location = new System.Drawing.Point(6, 960);
+            this.label31.Location = new System.Drawing.Point(6, 894);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(237, 25);
             this.label31.TabIndex = 63;
             this.label31.Text = "禁用\"包含到库中\"右键菜单";
+            this.toolTip1.SetToolTip(this.label31, "注册表位置：“HKEY_CURRENT_USER\\Folder\\shellex\\ContextMenuHandlers\\Library Location\",\r\n值" +
+        "名：null,\r\n启用值：null,\r\n禁用值：\"{018B4BE5-2F3F-45E6-9B3D-4D4BEE19812D}\"");
             // 
             // uiSwitch30
             // 
@@ -395,7 +467,7 @@
             this.uiSwitch30.ActiveText = "";
             this.uiSwitch30.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch30.InActiveText = "";
-            this.uiSwitch30.Location = new System.Drawing.Point(507, 963);
+            this.uiSwitch30.Location = new System.Drawing.Point(507, 897);
             this.uiSwitch30.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch30.Name = "uiSwitch30";
             this.uiSwitch30.Size = new System.Drawing.Size(51, 24);
@@ -407,11 +479,13 @@
             // 
             this.label30.AutoSize = true;
             this.label30.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label30.Location = new System.Drawing.Point(6, 927);
+            this.label30.Location = new System.Drawing.Point(6, 861);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(189, 25);
             this.label30.TabIndex = 61;
             this.label30.Text = "禁用画图3D右键菜单";
+            this.toolTip1.SetToolTip(this.label30, "注册表位置：“HKEY_CURRENT_USER\\SystemFileAssociations\\.3mf\\Shell\\3D Edit\",\r\n值名：null,\r\nE" +
+        "nableValue = null,\r\n禁用值：\"画图3D\"");
             // 
             // uiSwitch29
             // 
@@ -419,7 +493,7 @@
             this.uiSwitch29.ActiveText = "";
             this.uiSwitch29.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch29.InActiveText = "";
-            this.uiSwitch29.Location = new System.Drawing.Point(507, 930);
+            this.uiSwitch29.Location = new System.Drawing.Point(507, 864);
             this.uiSwitch29.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch29.Name = "uiSwitch29";
             this.uiSwitch29.Size = new System.Drawing.Size(51, 24);
@@ -431,11 +505,13 @@
             // 
             this.label29.AutoSize = true;
             this.label29.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label29.Location = new System.Drawing.Point(6, 894);
+            this.label29.Location = new System.Drawing.Point(6, 828);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(221, 25);
             this.label29.TabIndex = 59;
             this.label29.Text = "禁用工作文件夹右键菜单";
+            this.toolTip1.SetToolTip(this.label29, "注册表位置：“HKEY_CURRENT_USER\\Folder\\shellex\\ContextMenuHandlers\\WorkFolders\",\r\n值名：nul" +
+        "l,\r\n启用值：null,\r\n禁用值：\"{E50FF753-70F3-4C12-95FB-6586AFEBA48B}\"");
             // 
             // uiSwitch28
             // 
@@ -443,7 +519,7 @@
             this.uiSwitch28.ActiveText = "";
             this.uiSwitch28.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch28.InActiveText = "";
-            this.uiSwitch28.Location = new System.Drawing.Point(507, 897);
+            this.uiSwitch28.Location = new System.Drawing.Point(507, 831);
             this.uiSwitch28.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch28.Name = "uiSwitch28";
             this.uiSwitch28.Size = new System.Drawing.Size(51, 24);
@@ -455,11 +531,13 @@
             // 
             this.label28.AutoSize = true;
             this.label28.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label28.Location = new System.Drawing.Point(6, 861);
+            this.label28.Location = new System.Drawing.Point(6, 795);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(275, 25);
             this.label28.TabIndex = 57;
             this.label28.Text = "禁用\"固定到快速访问\"右键菜单";
+            this.toolTip1.SetToolTip(this.label28, "注册表位置：“HKEY_CURRENT_USER\\Folder\\shell\\pintohome\",\r\n值名：null,\r\n启用值：null,\r\nDisableVa" +
+        "lue = \"固定到快速访问\"");
             // 
             // uiSwitch27
             // 
@@ -467,7 +545,7 @@
             this.uiSwitch27.ActiveText = "";
             this.uiSwitch27.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch27.InActiveText = "";
-            this.uiSwitch27.Location = new System.Drawing.Point(507, 864);
+            this.uiSwitch27.Location = new System.Drawing.Point(507, 798);
             this.uiSwitch27.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch27.Name = "uiSwitch27";
             this.uiSwitch27.Size = new System.Drawing.Size(51, 24);
@@ -479,11 +557,13 @@
             // 
             this.label27.AutoSize = true;
             this.label27.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label27.Location = new System.Drawing.Point(6, 828);
+            this.label27.Location = new System.Drawing.Point(6, 762);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(256, 25);
             this.label27.TabIndex = 55;
             this.label27.Text = "禁用\"始终脱机可用\"右键菜单";
+            this.toolTip1.SetToolTip(this.label27, "注册表位置：“HKEY_CURRENT_USER\\Folder\\shellex\\ContextMenuHandlers\\Offline Files\",\r\n值名：n" +
+        "ull,\r\n启用值：null,\r\n禁用值：\"{474C98EE-CF3D-41f5-80E3-4AAB0AB04301}\"");
             // 
             // uiSwitch26
             // 
@@ -491,7 +571,7 @@
             this.uiSwitch26.ActiveText = "";
             this.uiSwitch26.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch26.InActiveText = "";
-            this.uiSwitch26.Location = new System.Drawing.Point(507, 831);
+            this.uiSwitch26.Location = new System.Drawing.Point(507, 765);
             this.uiSwitch26.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch26.Name = "uiSwitch26";
             this.uiSwitch26.Size = new System.Drawing.Size(51, 24);
@@ -503,11 +583,13 @@
             // 
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label26.Location = new System.Drawing.Point(6, 795);
+            this.label26.Location = new System.Drawing.Point(6, 729);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(256, 25);
             this.label26.TabIndex = 53;
             this.label26.Text = "禁用\"授予访问权限\"右键菜单";
+            this.toolTip1.SetToolTip(this.label26, "注册表位置：“HKEY_CURRENT_USER\\Folder\\shellex\\ContextMenuHandlers\\Sharing\",\r\n值名：null,\r\n" +
+        "EnableValue = null,\r\n禁用值：\"{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}\"");
             // 
             // uiSwitch25
             // 
@@ -515,7 +597,7 @@
             this.uiSwitch25.ActiveText = "";
             this.uiSwitch25.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch25.InActiveText = "";
-            this.uiSwitch25.Location = new System.Drawing.Point(507, 798);
+            this.uiSwitch25.Location = new System.Drawing.Point(507, 732);
             this.uiSwitch25.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch25.Name = "uiSwitch25";
             this.uiSwitch25.Size = new System.Drawing.Size(51, 24);
@@ -527,11 +609,13 @@
             // 
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label25.Location = new System.Drawing.Point(6, 762);
+            this.label25.Location = new System.Drawing.Point(6, 696);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(237, 25);
             this.label25.TabIndex = 51;
             this.label25.Text = "禁用\"刻录到光盘\"右键菜单";
+            this.toolTip1.SetToolTip(this.label25, "注册表位置：“HKEY_CURRENT_USER\\Drive\\shellex\\ContextMenuHandlers\\{B327765E-D724-4347-8B" +
+        "16-78AE18552FC3}\",\r\n值名：null,\r\n启用值：null,\r\n禁用值：\"\"");
             // 
             // uiSwitch24
             // 
@@ -539,7 +623,7 @@
             this.uiSwitch24.ActiveText = "";
             this.uiSwitch24.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch24.InActiveText = "";
-            this.uiSwitch24.Location = new System.Drawing.Point(507, 765);
+            this.uiSwitch24.Location = new System.Drawing.Point(507, 699);
             this.uiSwitch24.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch24.Name = "uiSwitch24";
             this.uiSwitch24.Size = new System.Drawing.Size(51, 24);
@@ -551,11 +635,13 @@
             // 
             this.label24.AutoSize = true;
             this.label24.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label24.Location = new System.Drawing.Point(6, 729);
+            this.label24.Location = new System.Drawing.Point(6, 663);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(256, 25);
             this.label24.TabIndex = 49;
             this.label24.Text = "禁用\"还原先前版本\"右键菜单";
+            this.toolTip1.SetToolTip(this.label24, "注册表位置：“HKEY_CURRENT_USER\\Drive\\shellex\\ContextMenuHandlers\\{596AB062-B4D2-4215-9F" +
+        "74-E9109B0A8153}\",\r\n值名：null,\r\n启用值：null,\r\n禁用值：\"\"");
             // 
             // uiSwitch23
             // 
@@ -563,7 +649,7 @@
             this.uiSwitch23.ActiveText = "";
             this.uiSwitch23.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch23.InActiveText = "";
-            this.uiSwitch23.Location = new System.Drawing.Point(507, 732);
+            this.uiSwitch23.Location = new System.Drawing.Point(507, 666);
             this.uiSwitch23.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch23.Name = "uiSwitch23";
             this.uiSwitch23.Size = new System.Drawing.Size(51, 24);
@@ -575,11 +661,13 @@
             // 
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label23.Location = new System.Drawing.Point(6, 696);
+            this.label23.Location = new System.Drawing.Point(6, 630);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(221, 25);
             this.label23.TabIndex = 47;
             this.label23.Text = "禁用新建联系人右键菜单";
+            this.toolTip1.SetToolTip(this.label23, "注册表位置：“HKEY_CURRENT_USER\\.contact\\ShellNew\",\r\n值名：null,\r\n启用值：null,\r\nDisableValue =" +
+        " \"\"");
             // 
             // uiSwitch22
             // 
@@ -587,61 +675,13 @@
             this.uiSwitch22.ActiveText = "";
             this.uiSwitch22.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiSwitch22.InActiveText = "";
-            this.uiSwitch22.Location = new System.Drawing.Point(507, 699);
+            this.uiSwitch22.Location = new System.Drawing.Point(507, 633);
             this.uiSwitch22.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiSwitch22.Name = "uiSwitch22";
             this.uiSwitch22.Size = new System.Drawing.Size(51, 24);
             this.uiSwitch22.Style = Sunny.UI.UIStyle.Custom;
             this.uiSwitch22.TabIndex = 46;
             this.uiSwitch22.Text = "uiSwitch22";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label22.Location = new System.Drawing.Point(6, 663);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(294, 25);
-            this.label22.TabIndex = 45;
-            this.label22.Text = "禁用\"作为便携设备打开\"右键菜单";
-            // 
-            // uiSwitch21
-            // 
-            this.uiSwitch21.ActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
-            this.uiSwitch21.ActiveText = "";
-            this.uiSwitch21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiSwitch21.InActiveText = "";
-            this.uiSwitch21.Location = new System.Drawing.Point(507, 666);
-            this.uiSwitch21.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiSwitch21.Name = "uiSwitch21";
-            this.uiSwitch21.Size = new System.Drawing.Size(51, 24);
-            this.uiSwitch21.Style = Sunny.UI.UIStyle.Custom;
-            this.uiSwitch21.TabIndex = 44;
-            this.uiSwitch21.Text = "uiSwitch21";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label21.Location = new System.Drawing.Point(6, 630);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(205, 25);
-            this.label21.TabIndex = 43;
-            this.label21.Text = "禁用Bitlocker右键菜单";
-            // 
-            // uiSwitch20
-            // 
-            this.uiSwitch20.ActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
-            this.uiSwitch20.ActiveText = "";
-            this.uiSwitch20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiSwitch20.InActiveText = "";
-            this.uiSwitch20.Location = new System.Drawing.Point(507, 633);
-            this.uiSwitch20.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiSwitch20.Name = "uiSwitch20";
-            this.uiSwitch20.Size = new System.Drawing.Size(51, 24);
-            this.uiSwitch20.Style = Sunny.UI.UIStyle.Custom;
-            this.uiSwitch20.TabIndex = 42;
-            this.uiSwitch20.Text = "uiSwitch20";
             // 
             // label20
             // 
@@ -652,6 +692,8 @@
             this.label20.Size = new System.Drawing.Size(339, 25);
             this.label20.TabIndex = 41;
             this.label20.Text = "禁用Windows Defender扫描右键菜单";
+            this.toolTip1.SetToolTip(this.label20, "注册表位置：“HKEY_CURRENT_USER\\*\\shellex\\ContextMenuHandlers\\EPP\",\r\n值名：null,\r\nEnableVal" +
+        "ue = null,\r\n禁用值：\"{09A47860-11B0-4DA5-AFA5-26D86198A780}\"");
             // 
             // uiSwitch19
             // 
@@ -676,6 +718,8 @@
             this.label19.Size = new System.Drawing.Size(259, 25);
             this.label19.TabIndex = 39;
             this.label19.Text = "禁用兼容性疑难解答右键菜单";
+            this.toolTip1.SetToolTip(this.label19, "注册表位置：“HKEY_CURRENT_USER\\exefile\\shellex\\ContextMenuHandlers\\Compatibility\",\r\n值名：" +
+        "null,\r\n启用值：null,\r\n禁用值：\"{1d27f844-3a1f-4410-85ac-14651078412d}\"");
             // 
             // uiSwitch18
             // 
@@ -700,6 +744,9 @@
             this.label18.Size = new System.Drawing.Size(161, 25);
             this.label18.TabIndex = 37;
             this.label18.Text = "桌面显示\"回收站\"";
+            this.toolTip1.SetToolTip(this.label18, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideD" +
+        "esktopIcons\\NewStartPanel\",\r\n值名：\"{645FF040-5081-101B-9F08-00AA002F954E}\",\r\nEnabl" +
+        "eValue = 0,\r\n禁用值：1");
             // 
             // uiSwitch17
             // 
@@ -724,6 +771,9 @@
             this.label17.Size = new System.Drawing.Size(161, 25);
             this.label17.TabIndex = 35;
             this.label17.Text = "桌面显示\"此电脑\"";
+            this.toolTip1.SetToolTip(this.label17, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideD" +
+        "esktopIcons\\NewStartPanel\",\r\n值名：\"{20D04FE0-3AEA-1069-A2D8-08002B30309D}\",\r\nEnabl" +
+        "eValue = 0,\r\n禁用值：1");
             // 
             // uiSwitch16
             // 
@@ -748,6 +798,8 @@
             this.label16.Size = new System.Drawing.Size(145, 25);
             this.label16.TabIndex = 33;
             this.label16.Text = "显示文件扩展名";
+            this.toolTip1.SetToolTip(this.label16, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advan" +
+        "ced\",\r\nValueName = \"HideFileExt\",\r\n启用值：0,\r\n禁用值：1");
             // 
             // uiSwitch15
             // 
@@ -772,6 +824,8 @@
             this.label15.Size = new System.Drawing.Size(221, 25);
             this.label15.TabIndex = 31;
             this.label15.Text = "资源管理器崩溃自动重启";
+            this.toolTip1.SetToolTip(this.label15, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\",\r" +
+        "\n值名：\"AutoRestartShell\",\r\n启用值：1,\r\n禁用值：0");
             // 
             // uiSwitch14
             // 
@@ -796,6 +850,8 @@
             this.label14.Size = new System.Drawing.Size(183, 25);
             this.label14.TabIndex = 29;
             this.label14.Text = "隐藏语言栏帮助按钮";
+            this.toolTip1.SetToolTip(this.label14, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\CTF\\LangBar\",\r\n值名：\"ExtraIconsOnMinimi" +
+        "zed\",\r\n启用值：0,\r\n禁用值：1");
             // 
             // uiSwitch13
             // 
@@ -820,6 +876,8 @@
             this.label13.Size = new System.Drawing.Size(183, 25);
             this.label13.TabIndex = 27;
             this.label13.Text = "语言栏隐藏到任务栏";
+            this.toolTip1.SetToolTip(this.label13, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\CTF\\LangBar\",\r\n值名：\"ShowStatus\",\r\nEnab" +
+        "leValue = 3,\r\n禁用值：0");
             // 
             // uiSwitch12
             // 
@@ -844,6 +902,8 @@
             this.label12.Size = new System.Drawing.Size(259, 25);
             this.label12.TabIndex = 25;
             this.label12.Text = "快速访问不显示最近使用文件";
+            this.toolTip1.SetToolTip(this.label12, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\",\r\n值名" +
+        "：\"ShowRecent\",\r\n启用值：0,\r\n禁用值：1");
             // 
             // uiSwitch11
             // 
@@ -868,6 +928,8 @@
             this.label11.Size = new System.Drawing.Size(240, 25);
             this.label11.TabIndex = 23;
             this.label11.Text = "快速访问不显示常用文件夹";
+            this.toolTip1.SetToolTip(this.label11, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\",\r\n值名" +
+        "：\"ShowFrequent\",\r\n启用值：0,\r\n禁用值：1");
             // 
             // uiSwitch10
             // 
@@ -892,6 +954,8 @@
             this.label10.Size = new System.Drawing.Size(221, 25);
             this.label10.TabIndex = 21;
             this.label10.Text = "在单独进程中打开文件夹";
+            this.toolTip1.SetToolTip(this.label10, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advan" +
+        "ced\",\r\nValueName = \"SeparateProcess\",\r\n启用值：1,\r\n禁用值：0");
             // 
             // uiSwitch9
             // 
@@ -916,6 +980,8 @@
             this.label9.Size = new System.Drawing.Size(126, 25);
             this.label9.TabIndex = 19;
             this.label9.Text = "禁止自动播放";
+            this.toolTip1.SetToolTip(this.label9, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explo" +
+        "rer\",\r\nValueName = \"NoDriveTypeAutoRun\",\r\n启用值：255,\r\n禁用值：145");
             // 
             // uiSwitch8
             // 
@@ -940,6 +1006,8 @@
             this.label8.Size = new System.Drawing.Size(313, 25);
             this.label8.TabIndex = 17;
             this.label8.Text = "创建快捷方式不添加\"快捷方式\"字样";
+            this.toolTip1.SetToolTip(this.label8, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\",\r\n值名" +
+        "：\"link\",\r\n启用值：new byte[] { 0, 0, 0, 0 },\r\n禁用值：null,");
             // 
             // uiSwitch7
             // 
@@ -964,6 +1032,8 @@
             this.label7.Size = new System.Drawing.Size(202, 25);
             this.label7.TabIndex = 15;
             this.label7.Text = "优化文件列表刷新策略";
+            this.toolTip1.SetToolTip(this.label7, "注册表位置：“HKEY_CURRENT_USER\\Control Panel\\Desktop\",\r\n值名：\"ForegroundLockTimeout\",\r\nEn" +
+        "ableValue = 0,\r\n禁用值：200000");
             // 
             // uiSwitch6
             // 
@@ -988,6 +1058,8 @@
             this.label6.Size = new System.Drawing.Size(221, 25);
             this.label6.TabIndex = 13;
             this.label6.Text = "禁止跟踪损坏的快捷方式";
+            this.toolTip1.SetToolTip(this.label6, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explo" +
+        "rer\",\r\nValueName = \"NoResolveTrack\",\r\n启用值：1,\r\n禁用值：0");
             // 
             // uiSwitch5
             // 
@@ -1012,6 +1084,8 @@
             this.label5.Size = new System.Drawing.Size(217, 25);
             this.label5.TabIndex = 11;
             this.label5.Text = "总是从内存卸载无用DLL";
+            this.toolTip1.SetToolTip(this.label5, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\",\r\n值名" +
+        "：\"AlwaysUnloadDLL\",\r\n启用值：1,\r\n禁用值：0");
             // 
             // uiSwitch4
             // 
@@ -1036,6 +1110,8 @@
             this.label4.Size = new System.Drawing.Size(256, 25);
             this.label4.TabIndex = 9;
             this.label4.Text = "资源管理器打开显示\"此电脑\"";
+            this.toolTip1.SetToolTip(this.label4, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advan" +
+        "ced\",\r\nValueName = \"LaunchTo\",\r\n启用值：1,\r\n禁用值：2");
             // 
             // uiSwitch3
             // 
@@ -1060,6 +1136,8 @@
             this.label3.Size = new System.Drawing.Size(221, 25);
             this.label3.TabIndex = 7;
             this.label3.Text = "任务栏窗口被占满后合并";
+            this.toolTip1.SetToolTip(this.label3, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advan" +
+        "ced\",\r\nValueName = \"TaskbarGlomLevel\",\r\n启用值：1,\r\n禁用值：0");
             // 
             // uiSwitch2
             // 
@@ -1084,6 +1162,8 @@
             this.label2.Size = new System.Drawing.Size(164, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "隐藏任务栏搜索框";
+            this.toolTip1.SetToolTip(this.label2, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\",\r\n值名：\"" +
+        "SearchboxTaskbarMode\",\r\n启用值：0,\r\n禁用值：1");
             // 
             // uiSwitch1
             // 
@@ -1099,12 +1179,23 @@
             this.uiSwitch1.TabIndex = 3;
             this.uiSwitch1.Text = "uiSwitch1";
             // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label22.Location = new System.Drawing.Point(6, 1125);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(203, 25);
+            this.label22.TabIndex = 75;
+            this.label22.Text = "Win11资源管理器设置";
+            this.toolTip1.SetToolTip(this.label22, resources.GetString("label22.ToolTip"));
+            // 
             // vScrollBar1
             // 
             this.vScrollBar1.Dock = System.Windows.Forms.DockStyle.Right;
             this.vScrollBar1.Location = new System.Drawing.Point(640, 0);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(20, 1300);
+            this.vScrollBar1.Size = new System.Drawing.Size(20, 1262);
             this.vScrollBar1.TabIndex = 4;
             // 
             // explorer
@@ -1116,7 +1207,7 @@
             this.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.Name = "explorer";
-            this.Size = new System.Drawing.Size(660, 495);
+            this.Size = new System.Drawing.Size(660, 1665);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -1161,10 +1252,6 @@
         private Sunny.UI.UISwitch uiSwitch23;
         private System.Windows.Forms.Label label23;
         private Sunny.UI.UISwitch uiSwitch22;
-        private System.Windows.Forms.Label label22;
-        private Sunny.UI.UISwitch uiSwitch21;
-        private System.Windows.Forms.Label label21;
-        private Sunny.UI.UISwitch uiSwitch20;
         private System.Windows.Forms.Label label20;
         private Sunny.UI.UISwitch uiSwitch19;
         private System.Windows.Forms.Label label19;
@@ -1203,5 +1290,10 @@
         private Sunny.UI.UISwitch uiSwitch2;
         private System.Windows.Forms.Label label2;
         private Sunny.UI.UISwitch uiSwitch1;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label22;
+        private Sunny.UI.UIButton uiButton2;
+        private Sunny.UI.UIButton uiButton1;
     }
 }

@@ -37,8 +37,7 @@ namespace ZyperWin__
                 uiSwitch1, uiSwitch2, uiSwitch3, uiSwitch4, uiSwitch5,
                 uiSwitch6, uiSwitch7, uiSwitch8, uiSwitch9, uiSwitch10,
                 uiSwitch11, uiSwitch12, uiSwitch13, uiSwitch14, uiSwitch15,
-                uiSwitch16, uiSwitch17, uiSwitch18, uiSwitch19, uiSwitch20,
-                uiSwitch21, uiSwitch22, uiSwitch23, uiSwitch24, uiSwitch25,
+                uiSwitch16, uiSwitch17, uiSwitch18, uiSwitch19, uiSwitch22, uiSwitch23, uiSwitch24, uiSwitch25,
                 uiSwitch26, uiSwitch27, uiSwitch28, uiSwitch29, uiSwitch30,
                 uiSwitch31, uiSwitch32, uiSwitch33, uiSwitch34, uiSwitch35
             });
@@ -235,26 +234,6 @@ namespace ZyperWin__
                 ValueName = null,
                 EnableValue = null,
                 DisableValue = "{09A47860-11B0-4DA5-AFA5-26D86198A780}"
-            });
-
-            // 20. 删除BitLocker右键
-            registrySettings.Add(new RegistrySetting
-            {
-                Hive = RegistryHive.ClassesRoot,
-                KeyPath = @"Drive\shell\BitLocker",
-                ValueName = null,
-                EnableValue = null,
-                DisableValue = "BitLocker"
-            });
-
-            // 21. 删除便携设备右键
-            registrySettings.Add(new RegistrySetting
-            {
-                Hive = RegistryHive.ClassesRoot,
-                KeyPath = @"Drive\shell\PortableDeviceMenu",
-                ValueName = null,
-                EnableValue = null,
-                DisableValue = "PortableDeviceMenu"
             });
 
             // 22. 删除新建联系人
@@ -538,10 +517,6 @@ namespace ZyperWin__
             // 检查特定的右键菜单是否完整
             switch (setting.KeyPath)
             {
-                case @"Drive\shell\BitLocker":
-                    return CheckSubKeyExists(baseKey, @"Drive\shell\BitLocker\command");
-                case @"Drive\shell\PortableDeviceMenu":
-                    return CheckSubKeyExists(baseKey, @"Drive\shell\PortableDeviceMenu\command");
                 case @"SystemFileAssociations\.3mf\Shell\3D Edit":
                     return CheckSubKeyExists(baseKey, @"SystemFileAssociations\.3mf\Shell\3D Edit\command");
                 default:
@@ -572,12 +547,6 @@ namespace ZyperWin__
                             // 对于特定的右键菜单项，需要恢复完整的注册表结构
                             switch (optionIndex)
                             {
-                                case 20: // BitLocker
-                                    RestoreBitLockerContextMenu(baseKey);
-                                    break;
-                                case 21: // 便携设备
-                                    RestorePortableDeviceMenu(baseKey);
-                                    break;
                                 case 29: // 画图3D
                                     RestorePaint3DContextMenu(baseKey);
                                     break;
@@ -639,60 +608,6 @@ namespace ZyperWin__
             });
         }
 
-        private void RestoreBitLockerContextMenu(RegistryKey baseKey)
-        {
-            try
-            {
-                // 恢复 BitLocker 右键菜单 - 最简单版本
-                using (var key = baseKey.CreateSubKey(@"Drive\shell\BitLocker", true))
-                {
-                    key.SetValue("", "启用BitLocker...", RegistryValueKind.String);
-                }
-
-                using (var commandKey = baseKey.CreateSubKey(@"Drive\shell\BitLocker\command", true))
-                {
-                    commandKey.SetValue("", "control.exe /name Microsoft.BitLockerDriveEncryption", RegistryValueKind.String);
-                }
-
-                Console.WriteLine("[成功] 已恢复 BitLocker 右键菜单");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[错误] 恢复 BitLocker 菜单失败: {ex.Message}");
-            }
-        }
-
-        private void RestorePortableDeviceMenu(RegistryKey baseKey)
-        {
-            try
-            {
-                // 先删除旧的
-                try
-                {
-                    baseKey.DeleteSubKeyTree(@"Drive\shell\PortableDeviceMenu", false);
-                }
-                catch { }
-
-                // 创建正确的便携设备菜单
-                using (var key = baseKey.CreateSubKey(@"Drive\shell\PortableDeviceMenu", true))
-                {
-                    key.SetValue("", "作为便携设备打开");
-                }
-
-                using (var commandKey = baseKey.CreateSubKey(@"Drive\shell\PortableDeviceMenu\command", true))
-                {
-                    // 正确的命令格式 - 打开便携设备文件夹
-                    commandKey.SetValue("", "explorer.exe shell:MyComputerFolder", RegistryValueKind.String);
-                }
-
-                Console.WriteLine("[成功] 已恢复便携设备右键菜单");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[错误] 恢复便携设备菜单失败: {ex.Message}");
-            }
-        }
-
         private void RestorePaint3DContextMenu(RegistryKey baseKey)
         {
             try
@@ -723,6 +638,16 @@ namespace ZyperWin__
                 return;
             }
             sw.Active = isEnabled;
+        }
+
+        private void uiButton1_Click(object sender, EventArgs e)
+        {
+            Process.Start(".\\Bin\\explorer11\\右键");
+        }
+
+        private void uiButton2_Click(object sender, EventArgs e)
+        {
+            Process.Start(".\\Bin\\explorer11\\资源管理器");
         }
     }
 

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(xingneng));
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -141,6 +143,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -367,6 +370,8 @@
             this.label44.Size = new System.Drawing.Size(108, 25);
             this.label44.TabIndex = 89;
             this.label44.Text = "关闭广告ID";
+            this.toolTip1.SetToolTip(this.label44, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\",\r\nValueNam" +
+        "e = \"Enabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch53
             // 
@@ -391,6 +396,8 @@
             this.label54.Size = new System.Drawing.Size(140, 25);
             this.label54.TabIndex = 109;
             this.label54.Text = "禁用Game Bar";
+            this.toolTip1.SetToolTip(this.label54, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR\",\r\n值名：\"App" +
+        "CaptureEnabled\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // uiSwitch52
             // 
@@ -415,6 +422,8 @@
             this.label53.Size = new System.Drawing.Size(262, 25);
             this.label53.TabIndex = 107;
             this.label53.Text = "禁用高精度事件定时器(HPET)";
+            this.toolTip1.SetToolTip(this.label53, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\hpet\",\r\n值名：\"Start\",\r\nEnabl" +
+        "eValue = 4, \r\n禁用值：null, ");
             // 
             // label48
             // 
@@ -425,6 +434,8 @@
             this.label48.Size = new System.Drawing.Size(126, 25);
             this.label48.TabIndex = 97;
             this.label48.Text = "优化进程数量";
+            this.toolTip1.SetToolTip(this.label48, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\",\r\n值名：\"SvcHostSplitThreshol" +
+        "dInKB\",\r\n启用值：\"ffffffff\",\r\n禁用值：null, ");
             // 
             // label52
             // 
@@ -435,6 +446,8 @@
             this.label52.Size = new System.Drawing.Size(126, 25);
             this.label52.TabIndex = 105;
             this.label52.Text = "禁用交付优化";
+            this.toolTip1.SetToolTip(this.label52, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\",\r\nVal" +
+        "ueName = \"SystemSettingsDownloadMode\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label50
             // 
@@ -445,6 +458,8 @@
             this.label50.Size = new System.Drawing.Size(183, 25);
             this.label50.TabIndex = 101;
             this.label50.Text = "关闭程序兼容性助手";
+            this.toolTip1.SetToolTip(this.label50, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\PcaSvc\",\r\n值名：\"Start\",\r\nEna" +
+        "bleValue = 4, \r\n禁用值：2,");
             // 
             // label51
             // 
@@ -455,6 +470,8 @@
             this.label51.Size = new System.Drawing.Size(240, 25);
             this.label51.TabIndex = 103;
             this.label51.Text = "关闭微软客户体验改进计划";
+            this.toolTip1.SetToolTip(this.label51, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows\",\r\n值名：\"CEIPEna" +
+        "ble\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label49
             // 
@@ -465,6 +482,8 @@
             this.label49.Size = new System.Drawing.Size(164, 25);
             this.label49.TabIndex = 99;
             this.label49.Text = "关闭诊断策略服务";
+            this.toolTip1.SetToolTip(this.label49, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\DPS\",\r\n值名：\"Start\",\r\nEnable" +
+        "Value = 4, \r\n禁用值：2, ");
             // 
             // label47
             // 
@@ -475,6 +494,8 @@
             this.label47.Size = new System.Drawing.Size(160, 25);
             this.label47.TabIndex = 95;
             this.label47.Text = "关闭TSX漏洞补丁";
+            this.toolTip1.SetToolTip(this.label47, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Kernel\",\r\nValueName " +
+        "= \"DisableTsx\",\r\n启用值：1,\r\n禁用值：null, ");
             // 
             // uiSwitch51
             // 
@@ -499,6 +520,8 @@
             this.label46.Size = new System.Drawing.Size(240, 25);
             this.label46.TabIndex = 93;
             this.label46.Text = "去除搜索页面信息流和热搜";
+            this.toolTip1.SetToolTip(this.label46, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\Explorer\",\r\n值名：\"DisableS" +
+        "earchBoxSuggestions\",\r\n启用值：1,\r\n禁用值：null, ");
             // 
             // label14
             // 
@@ -509,6 +532,8 @@
             this.label14.Size = new System.Drawing.Size(127, 25);
             this.label14.TabIndex = 29;
             this.label14.Text = "禁用SysMain";
+            this.toolTip1.SetToolTip(this.label14, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\SysMain\",\r\n值名：\"Start\",\r\nEn" +
+        "ableValue = 4, \r\n禁用值：2, ");
             // 
             // uiSwitch50
             // 
@@ -533,6 +558,8 @@
             this.label40.Size = new System.Drawing.Size(204, 25);
             this.label40.TabIndex = 81;
             this.label40.Text = "启用硬件加速GPU计划";
+            this.toolTip1.SetToolTip(this.label40, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\",\r\n值名：\"HwSc" +
+        "hMode\",\r\n启用值：2,\r\n禁用值：null, ");
             // 
             // label45
             // 
@@ -543,6 +570,8 @@
             this.label45.Size = new System.Drawing.Size(164, 25);
             this.label45.TabIndex = 91;
             this.label45.Text = "关闭应用启动跟踪";
+            this.toolTip1.SetToolTip(this.label45, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\",\r\nValueN" +
+        "ame = \"Start_TrackProgs\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label28
             // 
@@ -553,6 +582,8 @@
             this.label28.Size = new System.Drawing.Size(259, 25);
             this.label28.TabIndex = 57;
             this.label28.Text = "设备安装禁止创建系统还原点";
+            this.toolTip1.SetToolTip(this.label28, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceInstall\\Settings\",\r\nValueNa" +
+        "me = \"DisableSystemRestore\",\r\n启用值：1,\r\n禁用值：null, ");
             // 
             // label27
             // 
@@ -563,6 +594,8 @@
             this.label27.Size = new System.Drawing.Size(316, 25);
             this.label27.TabIndex = 55;
             this.label27.Text = "将磁盘错误检查等待时间缩短到五秒";
+            this.toolTip1.SetToolTip(this.label27, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\",\r\n值名：\"AutoChkTimeOut\",\r\nEn" +
+        "ableValue = 5,\r\n禁用值：null, ");
             // 
             // label13
             // 
@@ -573,6 +606,8 @@
             this.label13.Size = new System.Drawing.Size(126, 25);
             this.label13.TabIndex = 27;
             this.label13.Text = "禁用诊断服务";
+            this.toolTip1.SetToolTip(this.label13, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\DPS\",\r\n值名：\"Start\",\r\nEnable" +
+        "Value = 4, \r\n禁用值：2, ");
             // 
             // label26
             // 
@@ -583,6 +618,8 @@
             this.label26.Size = new System.Drawing.Size(202, 25);
             this.label26.TabIndex = 53;
             this.label26.Text = "关闭系统自动调试功能";
+            this.toolTip1.SetToolTip(this.label26, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\",\r\n值名：\"" +
+        "Auto\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // label41
             // 
@@ -593,6 +630,7 @@
             this.label41.Size = new System.Drawing.Size(240, 25);
             this.label41.TabIndex = 83;
             this.label41.Text = "优化处理器性能和内存设置";
+            this.toolTip1.SetToolTip(this.label41, resources.GetString("label41.ToolTip"));
             // 
             // label39
             // 
@@ -603,6 +641,8 @@
             this.label39.Size = new System.Drawing.Size(126, 25);
             this.label39.TabIndex = 79;
             this.label39.Text = "禁用保留空间";
+            this.toolTip1.SetToolTip(this.label39, "关闭：DISM.exe /Online /Set-ReservedStorageState /State:Disabled\r\n启用：DISM.exe /Onlin" +
+        "e /Set-ReservedStorageState /State:Enabled");
             // 
             // label43
             // 
@@ -613,6 +653,7 @@
             this.label43.Size = new System.Drawing.Size(212, 25);
             this.label43.TabIndex = 87;
             this.label43.Text = "关闭Exploit Protection";
+            this.toolTip1.SetToolTip(this.label43, resources.GetString("label43.ToolTip"));
             // 
             // label29
             // 
@@ -623,6 +664,8 @@
             this.label29.Size = new System.Drawing.Size(258, 25);
             this.label29.TabIndex = 59;
             this.label29.Text = "弹出USB磁盘后彻底断开电源";
+            this.toolTip1.SetToolTip(this.label29, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\USBSTOR\",\r\n值名：\"DisableOnSo" +
+        "ftRemove\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label30
             // 
@@ -633,6 +676,8 @@
             this.label30.Size = new System.Drawing.Size(126, 25);
             this.label30.TabIndex = 61;
             this.label30.Text = "关闭快速启动";
+            this.toolTip1.SetToolTip(this.label30, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power\",\r\nValueName =" +
+        " \"HiberbootEnabled\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label42
             // 
@@ -643,6 +688,8 @@
             this.label42.Size = new System.Drawing.Size(276, 25);
             this.label42.TabIndex = 85;
             this.label42.Text = "降低Cortana性能减少CPU占用";
+            this.toolTip1.SetToolTip(this.label42, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\",\r\n值名：\"Al" +
+        "lowCortana\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // uiSwitch49
             // 
@@ -681,6 +728,8 @@
             this.label38.Size = new System.Drawing.Size(221, 25);
             this.label38.TabIndex = 77;
             this.label38.Text = "禁用上下文菜单显示延迟";
+            this.toolTip1.SetToolTip(this.label38, "注册表位置：“HKEY_LOCAL_MACHINE\\Control Panel\\Desktop\",\r\n值名：\"MenuShowDelay\",\r\n启用值：" +
+        "\"0\",    \r\n禁用值：\"400\",");
             // 
             // label32
             // 
@@ -691,6 +740,9 @@
             this.label32.Size = new System.Drawing.Size(202, 25);
             this.label32.TabIndex = 65;
             this.label32.Text = "根据语言设置隐藏字体";
+            this.toolTip1.SetToolTip(this.label32, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\MitigationOptions\",\r\nValueName" +
+        " = \"MitigationOptions_FontBocking\",\r\n启用值：\"1000000000000000000000000000" +
+        "0000\",\r\n禁用值：null,");
             // 
             // label33
             // 
@@ -701,6 +753,8 @@
             this.label33.Size = new System.Drawing.Size(240, 25);
             this.label33.TabIndex = 67;
             this.label33.Text = "微软拼音输入法关闭云计算";
+            this.toolTip1.SetToolTip(this.label33, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\InputMethod\\Settings\\CHS\",\r\n值名：\"CloudCand" +
+        "idate\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label31
             // 
@@ -711,6 +765,7 @@
             this.label31.Size = new System.Drawing.Size(88, 25);
             this.label31.TabIndex = 63;
             this.label31.Text = "关闭休眠";
+            this.toolTip1.SetToolTip(this.label31, "关闭：Powercfg -h off\r\n启用：Powercfg -h on");
             // 
             // label37
             // 
@@ -721,6 +776,8 @@
             this.label37.Size = new System.Drawing.Size(216, 25);
             this.label37.TabIndex = 75;
             this.label37.Text = "禁用Installer detection";
+            this.toolTip1.SetToolTip(this.label37, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\",\r\nValueNam" +
+        "e = \"EnableInstallerDetection\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label34
             // 
@@ -731,6 +788,8 @@
             this.label34.Size = new System.Drawing.Size(202, 25);
             this.label34.TabIndex = 69;
             this.label34.Text = "禁用内容传递优化服务";
+            this.toolTip1.SetToolTip(this.label34, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config" +
+        "\",\r\n值名：\"DownloadMode\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // label25
             // 
@@ -741,6 +800,8 @@
             this.label25.Size = new System.Drawing.Size(225, 25);
             this.label25.TabIndex = 51;
             this.label25.Text = "VHD启动时节省磁盘空间";
+            this.toolTip1.SetToolTip(this.label25, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\FsDepends\\Parameters\",\r\nValueName =" +
+        " \"VirtualDiskExpandOnMount\",\r\n启用值：4,\r\n禁用值：null,");
             // 
             // label35
             // 
@@ -751,6 +812,8 @@
             this.label35.Size = new System.Drawing.Size(202, 25);
             this.label35.TabIndex = 71;
             this.label35.Text = "禁用功能更新安全措施";
+            this.toolTip1.SetToolTip(this.label35, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\",\r\n值名：\"IsConvergedUpdate" +
+        "StackEnabled\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // uiSwitch47
             // 
@@ -775,6 +838,8 @@
             this.label36.Size = new System.Drawing.Size(183, 25);
             this.label36.TabIndex = 73;
             this.label36.Text = "禁用蓝屏后自动重启";
+            this.toolTip1.SetToolTip(this.label36, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\CrashControl\",\r\n值名：\"AutoReb" +
+        "oot\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // uiSwitch46
             // 
@@ -855,6 +920,9 @@
             this.label24.Size = new System.Drawing.Size(259, 25);
             this.label24.TabIndex = 49;
             this.label24.Text = "禁用处理器的幽灵和熔断补丁";
+            this.toolTip1.SetToolTip(this.label24, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\",\r" +
+        "\n值名：\"FeatureSettingsOverride\",\r\n启用值：3,\r\n禁用值：null, " +
+        "=");
             // 
             // uiSwitch41
             // 
@@ -907,6 +975,9 @@
             this.label23.Size = new System.Drawing.Size(286, 25);
             this.label23.TabIndex = 47;
             this.label23.Text = "将Windows预读调整为关闭预读";
+            this.toolTip1.SetToolTip(this.label23, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\Pr" +
+        "efetchParameters\",\r\n值名：\"EnablePrefetcher\",\r\n启用值：0,\r\nDisableVa" +
+        "lue = 3,");
             // 
             // uiSwitch38
             // 
@@ -987,6 +1058,8 @@
             this.label22.Size = new System.Drawing.Size(304, 25);
             this.label22.TabIndex = 45;
             this.label22.Text = "将文件管理系统缓存增加至256MB";
+            this.toolTip1.SetToolTip(this.label22, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\",\r" +
+        "\n值名：\"IoPageLockLimit\",\r\n启用值：4194304,\r\n禁用值：null, ");
             // 
             // uiSwitch33
             // 
@@ -1025,6 +1098,8 @@
             this.label21.Size = new System.Drawing.Size(316, 25);
             this.label21.TabIndex = 43;
             this.label21.Text = "禁止系统内核与驱动程序分页到硬盘";
+            this.toolTip1.SetToolTip(this.label21, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\",\r" +
+        "\n值名：\"DisablePagingExecutive\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch31
             // 
@@ -1119,6 +1194,8 @@
             this.label20.Size = new System.Drawing.Size(240, 25);
             this.label20.TabIndex = 41;
             this.label20.Text = "启用大系统缓存以提高性能";
+            this.toolTip1.SetToolTip(this.label20, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\",\r" +
+        "\n值名：\"LargeSystemCache\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch25
             // 
@@ -1171,6 +1248,8 @@
             this.label19.Size = new System.Drawing.Size(164, 25);
             this.label19.TabIndex = 39;
             this.label19.Text = "禁止自动维护计划";
+            this.toolTip1.SetToolTip(this.label19, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Schedule\\Maintenance\",\r\n" +
+        "值名：\"MaintenanceDisabled\",\r\n启用值：1,\r\n禁用值：null, ");
             // 
             // uiSwitch22
             // 
@@ -1251,6 +1330,8 @@
             this.label18.Size = new System.Drawing.Size(211, 25);
             this.label18.TabIndex = 37;
             this.label18.Text = "禁用NTFS链接跟踪服务";
+            this.toolTip1.SetToolTip(this.label18, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\TrkWks\",\r\n值名：\"Start\",\r\nEna" +
+        "bleValue = 4, \r\n禁用值：2, ");
             // 
             // uiSwitch17
             // 
@@ -1345,6 +1426,8 @@
             this.label12.Size = new System.Drawing.Size(183, 25);
             this.label12.TabIndex = 25;
             this.label12.Text = "禁用程序兼容性助手";
+            this.toolTip1.SetToolTip(this.label12, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\PcaSvc\",\r\n值名：\"Start\",\r\nEna" +
+        "bleValue = 4, // 禁用\r\n禁用值：2, // 自动");
             // 
             // uiSwitch11
             // 
@@ -1369,6 +1452,8 @@
             this.label11.Size = new System.Drawing.Size(202, 25);
             this.label11.TabIndex = 23;
             this.label11.Text = "缩短关闭服务等待时间";
+            this.toolTip1.SetToolTip(this.label11, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\",\r\n值名：\"ServicesPipeTimeout\"" +
+        ",\r\n启用值：2000,\r\n禁用值：null, // 删除值\r\nRequiresAdmin = true,");
             // 
             // uiSwitch10
             // 
@@ -1393,6 +1478,8 @@
             this.label10.Size = new System.Drawing.Size(126, 25);
             this.label10.TabIndex = 21;
             this.label10.Text = "加快关机速度";
+            this.toolTip1.SetToolTip(this.label10, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\",\r\n值名：\"WaitToKillServiceTim" +
+        "eout\",\r\n启用值：\"1000\",\r\n禁用值：null, \r\nRequiresAdmin = true,");
             // 
             // uiSwitch9
             // 
@@ -1417,6 +1504,8 @@
             this.label9.Size = new System.Drawing.Size(145, 25);
             this.label9.TabIndex = 19;
             this.label9.Text = "关闭多嘴的小娜";
+            this.toolTip1.SetToolTip(this.label9, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\",\r\n值名：\"Bing" +
+        "SearchEnabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch8
             // 
@@ -1441,6 +1530,8 @@
             this.label8.Size = new System.Drawing.Size(164, 25);
             this.label8.TabIndex = 17;
             this.label8.Text = "关闭游戏录制工具";
+            this.toolTip1.SetToolTip(this.label8, "注册表位置：“HKEY_LOCAL_MACHINE\\System\\GameConfigStore\",\r\n值名：\"GameDVR_Enabled\",\r\nEnableValue" +
+        " = 0,\r\n禁用值：1,");
             // 
             // uiSwitch7
             // 
@@ -1465,6 +1556,8 @@
             this.label7.Size = new System.Drawing.Size(259, 25);
             this.label7.TabIndex = 15;
             this.label7.Text = "禁止自动安装推荐的应用程序";
+            this.toolTip1.SetToolTip(this.label7, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsStore\\WindowsUpdate\"" +
+        ",\r\n值名：\"AutoDownload\",\r\n启用值：2,\r\n禁用值：4,");
             // 
             // uiSwitch6
             // 
@@ -1489,6 +1582,8 @@
             this.label6.Size = new System.Drawing.Size(340, 25);
             this.label6.TabIndex = 13;
             this.label6.Text = "关闭\"使用Windows时获取技巧和建议\"";
+            this.toolTip1.SetToolTip(this.label6, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"SoftLandingEnabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch5
             // 
@@ -1513,6 +1608,8 @@
             this.label5.Size = new System.Drawing.Size(286, 25);
             this.label5.TabIndex = 11;
             this.label5.Text = "关闭锁屏时的Windows聚焦推广";
+            this.toolTip1.SetToolTip(this.label5, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"RotatingLockScreenEnabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch4
             // 
@@ -1537,6 +1634,8 @@
             this.label4.Size = new System.Drawing.Size(164, 25);
             this.label4.TabIndex = 9;
             this.label4.Text = "关闭商店应用推广";
+            this.toolTip1.SetToolTip(this.label4, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"PreInstalledAppsEnabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch3
             // 
@@ -1561,6 +1660,8 @@
             this.label3.Size = new System.Drawing.Size(278, 25);
             this.label3.TabIndex = 7;
             this.label3.Text = "不要在应用商店中查找关联应用";
+            this.toolTip1.SetToolTip(this.label3, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"SilentInstalledAppsEnabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch2
             // 
@@ -1585,6 +1686,9 @@
             this.label2.Size = new System.Drawing.Size(240, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "不允许在开始菜单显示建议";
+            this.toolTip1.SetToolTip(this.label2, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"SubscribedContent-338388Enabled\",\r\n启用值：0,\r\n禁用值：" +
+        "1,");
             // 
             // uiSwitch1
             // 
@@ -1609,6 +1713,9 @@
             this.label55.Size = new System.Drawing.Size(183, 25);
             this.label55.TabIndex = 111;
             this.label55.Text = "禁用远程修改注册表";
+            this.toolTip1.SetToolTip(this.label55, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\winreg\",\r\nValueNam" +
+        "e = \"RemoteRegAccess\",\r\n启用值：0,\r\n禁用值：null, \r\nRequiresAdmin =" +
+        " true,");
             // 
             // label15
             // 
@@ -1619,6 +1726,8 @@
             this.label15.Size = new System.Drawing.Size(202, 25);
             this.label15.TabIndex = 31;
             this.label15.Text = "禁用Windows Search";
+            this.toolTip1.SetToolTip(this.label15, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\WSearch\",\r\n值名：\"Start\",\r\nEn" +
+        "ableValue = 4, \r\n禁用值：2, ");
             // 
             // label16
             // 
@@ -1629,6 +1738,8 @@
             this.label16.Size = new System.Drawing.Size(126, 25);
             this.label16.TabIndex = 33;
             this.label16.Text = "禁用错误报告";
+            this.toolTip1.SetToolTip(this.label16, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting\",\r\n值名：\"Di" +
+        "sabled\",\r\n启用值：1,\r\n禁用值：null, ");
             // 
             // label17
             // 
@@ -1639,6 +1750,8 @@
             this.label17.Size = new System.Drawing.Size(202, 25);
             this.label17.TabIndex = 35;
             this.label17.Text = "禁用客户体验改善计划";
+            this.toolTip1.SetToolTip(this.label17, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\SQMClient\\Windows\",\r\n值名：\"CEIPEna" +
+        "ble\",\r\n启用值：0,\r\n禁用值：null, ");
             // 
             // vScrollBar1
             // 
@@ -1791,5 +1904,6 @@
         private Sunny.UI.UISwitch uiSwitch2;
         private System.Windows.Forms.Label label2;
         private Sunny.UI.UISwitch uiSwitch1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

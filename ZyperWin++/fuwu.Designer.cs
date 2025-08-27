@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label20 = new System.Windows.Forms.Label();
@@ -71,6 +72,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -197,9 +199,10 @@
             this.label20.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.Location = new System.Drawing.Point(6, 597);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(248, 25);
+            this.label20.Size = new System.Drawing.Size(210, 25);
             this.label20.TabIndex = 41;
             this.label20.Text = "Windows事件收集服务";
+            this.toolTip1.SetToolTip(this.label20, "服务名：\"Wecsvc\",\r\n显示名称：\"Windows事件收集服务\",");
             // 
             // uiSwitch19
             // 
@@ -221,9 +224,10 @@
             this.label19.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.Location = new System.Drawing.Point(6, 564);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(202, 25);
+            this.label19.Size = new System.Drawing.Size(164, 25);
             this.label19.TabIndex = 39;
             this.label19.Text = "启用任务计划服务";
+            this.toolTip1.SetToolTip(this.label19, "服务名：\"Schedule\",\r\n显示名称：\"任务计划服务\",");
             // 
             // uiSwitch18
             // 
@@ -245,9 +249,10 @@
             this.label18.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.Location = new System.Drawing.Point(6, 531);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(164, 25);
+            this.label18.Size = new System.Drawing.Size(126, 25);
             this.label18.TabIndex = 37;
             this.label18.Text = "系统防护服务";
+            this.toolTip1.SetToolTip(this.label18, "服务名：\"SgrmBroker\",\r\n显示名称：\"系统防护服务\",");
             // 
             // uiSwitch17
             // 
@@ -269,9 +274,10 @@
             this.label17.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label17.Location = new System.Drawing.Point(6, 498);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(208, 25);
+            this.label17.Size = new System.Drawing.Size(170, 25);
             this.label17.TabIndex = 35;
             this.label17.Text = "启用Shell硬件检测";
+            this.toolTip1.SetToolTip(this.label17, "服务名：\"ShellHWDetection\",\r\n显示名称：\"Shell硬件检测\",");
             // 
             // uiSwitch16
             // 
@@ -293,9 +299,10 @@
             this.label16.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label16.Location = new System.Drawing.Point(6, 465);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(183, 25);
+            this.label16.Size = new System.Drawing.Size(145, 25);
             this.label16.TabIndex = 33;
             this.label16.Text = "程序兼容性助手";
+            this.toolTip1.SetToolTip(this.label16, "服务名：\"PcaSvc\",\r\n显示名称：\"程序兼容性助手\",");
             // 
             // uiSwitch15
             // 
@@ -317,9 +324,10 @@
             this.label15.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label15.Location = new System.Drawing.Point(6, 432);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(186, 25);
+            this.label15.Size = new System.Drawing.Size(148, 25);
             this.label15.TabIndex = 31;
             this.label15.Text = "SMS路由器服务";
+            this.toolTip1.SetToolTip(this.label15, "服务名：\"SmsRouter\",\r\n显示名称：\"SMS路由器服务\",");
             // 
             // uiSwitch14
             // 
@@ -341,9 +349,11 @@
             this.label14.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label14.Location = new System.Drawing.Point(6, 399);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(183, 25);
+            this.label14.Size = new System.Drawing.Size(145, 25);
             this.label14.TabIndex = 29;
             this.label14.Text = "诊断中心收集器";
+            this.toolTip1.SetToolTip(this.label14, "服务名：\"diagnosticshub.standardcollector.service\",\r\n显示名称：\"诊断中心收集器" +
+        "\",");
             // 
             // uiSwitch13
             // 
@@ -365,9 +375,10 @@
             this.label13.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label13.Location = new System.Drawing.Point(6, 366);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(144, 25);
+            this.label13.Size = new System.Drawing.Size(106, 25);
             this.label13.TabIndex = 27;
             this.label13.Text = "IP助手服务";
+            this.toolTip1.SetToolTip(this.label13, "服务名：\"iphlpsvc\",\r\n显示名称：\"IP助手服务\",");
             // 
             // uiSwitch12
             // 
@@ -389,9 +400,10 @@
             this.label12.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label12.Location = new System.Drawing.Point(6, 333);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(164, 25);
+            this.label12.Size = new System.Drawing.Size(126, 25);
             this.label12.TabIndex = 25;
             this.label12.Text = "启用地图服务";
+            this.toolTip1.SetToolTip(this.label12, "服务名：\"MapsBroker\",\r\n显示名称：\"地图服务\",");
             // 
             // uiSwitch11
             // 
@@ -413,9 +425,10 @@
             this.label11.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label11.Location = new System.Drawing.Point(6, 300);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(164, 25);
+            this.label11.Size = new System.Drawing.Size(126, 25);
             this.label11.TabIndex = 23;
             this.label11.Text = "诊断系统主机";
+            this.toolTip1.SetToolTip(this.label11, "服务名：\"WdiSystemHost\",\r\n显示名称：\"诊断系统主机\",");
             // 
             // uiSwitch10
             // 
@@ -437,9 +450,10 @@
             this.label10.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label10.Location = new System.Drawing.Point(6, 267);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(164, 25);
+            this.label10.Size = new System.Drawing.Size(126, 25);
             this.label10.TabIndex = 21;
             this.label10.Text = "诊断服务主机";
+            this.toolTip1.SetToolTip(this.label10, "服务名：\"WdiServiceHost\",\r\n显示名称：\"诊断服务主机\",");
             // 
             // uiSwitch9
             // 
@@ -461,9 +475,10 @@
             this.label9.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label9.Location = new System.Drawing.Point(6, 234);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(164, 25);
+            this.label9.Size = new System.Drawing.Size(126, 25);
             this.label9.TabIndex = 19;
             this.label9.Text = "诊断策略服务";
+            this.toolTip1.SetToolTip(this.label9, "服务名：\"DPS\",\r\n显示名称：\"诊断策略服务\",");
             // 
             // uiSwitch8
             // 
@@ -485,9 +500,10 @@
             this.label8.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label8.Location = new System.Drawing.Point(6, 201);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(126, 25);
+            this.label8.Size = new System.Drawing.Size(88, 25);
             this.label8.TabIndex = 17;
             this.label8.Text = "诊断服务";
+            this.toolTip1.SetToolTip(this.label8, "服务名：\"diagsvc\",\r\n显示名称：\"诊断服务\",");
             // 
             // uiSwitch7
             // 
@@ -509,9 +525,10 @@
             this.label7.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label7.Location = new System.Drawing.Point(6, 168);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(263, 25);
+            this.label7.Size = new System.Drawing.Size(225, 25);
             this.label7.TabIndex = 15;
             this.label7.Text = "Windows Defender服务";
+            this.toolTip1.SetToolTip(this.label7, "服务名：\"WinDefend\",\r\n显示名称：\"Windows Defender服务\",");
             // 
             // uiSwitch6
             // 
@@ -533,9 +550,10 @@
             this.label6.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.Location = new System.Drawing.Point(6, 135);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(221, 25);
+            this.label6.Size = new System.Drawing.Size(183, 25);
             this.label6.TabIndex = 13;
             this.label6.Text = "分布式链接跟踪服务";
+            this.toolTip1.SetToolTip(this.label6, "服务名：\"TrkWks\",\r\n显示名称：\"分布式链接跟踪服务\",");
             // 
             // uiSwitch5
             // 
@@ -557,9 +575,10 @@
             this.label5.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.Location = new System.Drawing.Point(6, 102);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(210, 25);
+            this.label5.Size = new System.Drawing.Size(172, 25);
             this.label5.TabIndex = 11;
             this.label5.Text = "Windows更新服务";
+            this.toolTip1.SetToolTip(this.label5, "服务名：\"UsoSvc\",\r\n显示名称：\"Windows更新服务\",");
             // 
             // uiSwitch4
             // 
@@ -584,6 +603,7 @@
             this.label4.Size = new System.Drawing.Size(172, 25);
             this.label4.TabIndex = 9;
             this.label4.Text = "Windows搜索服务";
+            this.toolTip1.SetToolTip(this.label4, "服务名：\"WSearch\",\r\n显示名称：\"Windows搜索服务\",");
             // 
             // uiSwitch3
             // 
@@ -608,6 +628,7 @@
             this.label3.Size = new System.Drawing.Size(153, 25);
             this.label3.TabIndex = 7;
             this.label3.Text = "SuperFetch服务";
+            this.toolTip1.SetToolTip(this.label3, "服务名：\"SysMain\",\r\n显示名称：\"SuperFetch服务\",");
             // 
             // uiSwitch2
             // 
@@ -632,6 +653,7 @@
             this.label2.Size = new System.Drawing.Size(126, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "安全中心服务";
+            this.toolTip1.SetToolTip(this.label2, "服务名：\"SecurityHealthService\",\r\n显示名称：\"安全健康服务\",");
             // 
             // uiSwitch1
             // 
@@ -739,5 +761,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.VScrollBar vScrollBar1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

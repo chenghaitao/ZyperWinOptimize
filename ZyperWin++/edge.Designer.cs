@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(edge));
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label15 = new System.Windows.Forms.Label();
@@ -61,6 +63,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -146,6 +149,8 @@
             this.label15.Size = new System.Drawing.Size(237, 25);
             this.label15.TabIndex = 31;
             this.label15.Text = "关闭\"由你的组织管理\"提示";
+            this.toolTip1.SetToolTip(this.label15, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"HideManagedBrowserWa" +
+        "rning\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch14
             // 
@@ -170,6 +175,7 @@
             this.label14.Size = new System.Drawing.Size(126, 25);
             this.label14.TabIndex = 29;
             this.label14.Text = "启用效率模式";
+            this.toolTip1.SetToolTip(this.label14, resources.GetString("label14.ToolTip"));
             // 
             // uiSwitch13
             // 
@@ -194,6 +200,8 @@
             this.label13.Size = new System.Drawing.Size(152, 25);
             this.label13.TabIndex = 27;
             this.label13.Text = "关闭Edge自启动";
+            this.toolTip1.SetToolTip(this.label13, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"StartupBoostEnabled\"" +
+        ",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch12
             // 
@@ -218,6 +226,8 @@
             this.label12.Size = new System.Drawing.Size(240, 25);
             this.label12.TabIndex = 25;
             this.label12.Text = "关闭停止支持旧系统的通知";
+            this.toolTip1.SetToolTip(this.label12, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"SuppressUnsupportedO" +
+        "SWarning\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch11
             // 
@@ -242,6 +252,8 @@
             this.label11.Size = new System.Drawing.Size(202, 25);
             this.label11.TabIndex = 23;
             this.label11.Text = "禁用标签页性能检测器";
+            this.toolTip1.SetToolTip(this.label11, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"PerformanceDetectorE" +
+        "nabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch10
             // 
@@ -266,6 +278,8 @@
             this.label10.Size = new System.Drawing.Size(202, 25);
             this.label10.TabIndex = 21;
             this.label10.Text = "禁止发送任何诊断数据";
+            this.toolTip1.SetToolTip(this.label10, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"DiagnosticData\",\r\nEn" +
+        "ableValue = 0,\r\n禁用值：1,");
             // 
             // uiSwitch9
             // 
@@ -290,6 +304,7 @@
             this.label9.Size = new System.Drawing.Size(221, 25);
             this.label9.TabIndex = 19;
             this.label9.Text = "禁用Smartscreen筛选器";
+            this.toolTip1.SetToolTip(this.label9, resources.GetString("label9.ToolTip"));
             // 
             // uiSwitch8
             // 
@@ -314,6 +329,8 @@
             this.label8.Size = new System.Drawing.Size(190, 25);
             this.label8.TabIndex = 17;
             this.label8.Text = "隐藏Edge浏览器边栏";
+            this.toolTip1.SetToolTip(this.label8, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"ShowSidebar\",\r\nEnabl" +
+        "eValue = 0,\r\n禁用值：1,");
             // 
             // uiSwitch7
             // 
@@ -338,6 +355,8 @@
             this.label7.Size = new System.Drawing.Size(278, 25);
             this.label7.TabIndex = 15;
             this.label7.Text = "隐藏新标签页中的默认热门网站";
+            this.toolTip1.SetToolTip(this.label7, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"NewTabPageHideDefaul" +
+        "tTopSites\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch6
             // 
@@ -362,6 +381,8 @@
             this.label6.Size = new System.Drawing.Size(278, 25);
             this.label6.TabIndex = 13;
             this.label6.Text = "禁用新选项卡页面上的微软资讯";
+            this.toolTip1.SetToolTip(this.label6, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"NewTabPageContentEna" +
+        "bled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch5
             // 
@@ -386,6 +407,8 @@
             this.label5.Size = new System.Drawing.Size(278, 25);
             this.label5.TabIndex = 11;
             this.label5.Text = "阻止必应搜索结果中的所有广告";
+            this.toolTip1.SetToolTip(this.label5, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"AdsSettingForIntrusi" +
+        "veAdsSites\",\r\n启用值：2,\r\n禁用值：1,");
             // 
             // uiSwitch4
             // 
@@ -410,6 +433,8 @@
             this.label4.Size = new System.Drawing.Size(259, 25);
             this.label4.TabIndex = 9;
             this.label4.Text = "关闭后禁止继续运行后台应用";
+            this.toolTip1.SetToolTip(this.label4, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"BackgroundModeEnable" +
+        "d\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch3
             // 
@@ -434,6 +459,8 @@
             this.label3.Size = new System.Drawing.Size(239, 25);
             this.label3.TabIndex = 7;
             this.label3.Text = "关闭Adobe Flash即点即用";
+            this.toolTip1.SetToolTip(this.label3, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"RunAllFlashInAllowMo" +
+        "de\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch2
             // 
@@ -458,6 +485,8 @@
             this.label2.Size = new System.Drawing.Size(218, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "禁用\"首次运行\"欢迎页面";
+            this.toolTip1.SetToolTip(this.label2, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Edge\",\r\n值名：\"HideFirstRunExperien" +
+        "ce\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch1
             // 
@@ -555,5 +584,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.VScrollBar vScrollBar1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

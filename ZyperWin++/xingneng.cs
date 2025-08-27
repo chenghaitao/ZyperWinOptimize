@@ -155,8 +155,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.CurrentUser,
                 KeyPath = @"Software\Microsoft\Windows\CurrentVersion\Search",
                 ValueName = "BingSearchEnabled",
-                EnableValue = 0,  // 禁用
-                DisableValue = 1, // 启用
+                EnableValue = 0,
+                DisableValue = 1,
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -168,7 +168,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control",
                 ValueName = "WaitToKillServiceTimeout",
                 EnableValue = "1000",
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.String
             });
@@ -180,7 +180,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control",
                 ValueName = "ServicesPipeTimeout",
                 EnableValue = 2000,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -191,8 +191,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\PcaSvc",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -206,7 +206,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg",
                 ValueName = "RemoteRegAccess",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -217,8 +217,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\DPS",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -231,8 +231,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\SysMain",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -245,8 +245,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\WSearch",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -260,7 +260,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Microsoft\Windows\Windows Error Reporting",
                 ValueName = "Disabled",
                 EnableValue = 1,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -272,7 +272,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\SQMClient\Windows",
                 ValueName = "CEIPEnable",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -283,8 +283,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\TrkWks",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -298,7 +298,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance",
                 ValueName = "MaintenanceDisabled",
                 EnableValue = 1,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -334,7 +334,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management",
                 ValueName = "IoPageLockLimit",
                 EnableValue = 4194304,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -358,7 +358,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management",
                 ValueName = "FeatureSettingsOverride",
                 EnableValue = 3,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -370,7 +370,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\FsDepends\Parameters",
                 ValueName = "VirtualDiskExpandOnMount",
                 EnableValue = 4,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -394,7 +394,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control",
                 ValueName = "AutoChkTimeOut",
                 EnableValue = 5,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -406,7 +406,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings",
                 ValueName = "DisableSystemRestore",
                 EnableValue = 1,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -418,7 +418,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\USBSTOR",
                 ValueName = "DisableOnSoftRemove",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -430,7 +430,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power",
                 ValueName = "HiberbootEnabled",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -455,7 +455,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions",
                 ValueName = "MitigationOptions_FontBocking",
                 EnableValue = "10000000000000000000000000000000",
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.String
             });
@@ -467,7 +467,7 @@ namespace ZyperWin__
                 KeyPath = @"Software\Microsoft\InputMethod\Settings\CHS",
                 ValueName = "CloudCandidate",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -479,7 +479,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config",
                 ValueName = "DownloadMode",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -491,7 +491,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Microsoft\WindowsUpdate\UX",
                 ValueName = "IsConvergedUpdateStackEnabled",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -503,7 +503,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\CrashControl",
                 ValueName = "AutoReboot",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -515,7 +515,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System",
                 ValueName = "EnableInstallerDetection",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -552,7 +552,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\GraphicsDrivers",
                 ValueName = "HwSchMode",
                 EnableValue = 2,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -587,7 +587,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\Windows\Windows Search",
                 ValueName = "AllowCortana",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -599,7 +599,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Kernel",
                 ValueName = "MitigationOptions",
                 EnableValue = new byte[] { 0x22, 0x22, 0x22, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.Binary
             });
@@ -623,7 +623,7 @@ namespace ZyperWin__
                 KeyPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
                 ValueName = "Start_TrackProgs",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -635,7 +635,7 @@ namespace ZyperWin__
                 KeyPath = @"Software\Policies\Microsoft\Windows\Explorer",
                 ValueName = "DisableSearchBoxSuggestions",
                 EnableValue = 1,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -647,7 +647,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Kernel",
                 ValueName = "DisableTsx",
                 EnableValue = 1,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -659,7 +659,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control",
                 ValueName = "SvcHostSplitThresholdInKB",
                 EnableValue = "ffffffff",
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.String
             });
@@ -670,8 +670,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\DPS",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -684,8 +684,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\PcaSvc",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -699,7 +699,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\SQMClient\Windows",
                 ValueName = "CEIPEnable",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -711,7 +711,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization",
                 ValueName = "SystemSettingsDownloadMode",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -722,8 +722,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\hpet",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = null, // 删除值
+                EnableValue = 4, 
+                DisableValue = null, 
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord,
                 IsService = true,
@@ -737,7 +737,7 @@ namespace ZyperWin__
                 KeyPath = @"Software\Microsoft\Windows\CurrentVersion\GameDVR",
                 ValueName = "AppCaptureEnabled",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null, 
                 RequiresAdmin = false,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -1059,7 +1059,7 @@ namespace ZyperWin__
                     string args;
                     if (value == null)
                     {
-                        // 删除值
+                        
                         args = $"-U:T -P:E -ShowWindowMode:Hide reg delete \"{registryPath}\" /v \"{setting.ValueName}\" /f";
                     }
                     else
@@ -1262,12 +1262,12 @@ namespace ZyperWin__
                 ExecuteNsudoCommand(configArgs);
 
                 // 处理服务状态
-                if (startType == 4) // 禁用时停止服务
+                if (startType == 4) 
                 {
                     string stopArgs = $"-U:T -P:E -ShowWindowMode:Hide sc stop \"{serviceName}\"";
                     ExecuteNsudoCommand(stopArgs);
                 }
-                else if (startType == 2) // 自动时启动服务
+                else if (startType == 2) 
                 {
                     string startArgs = $"-U:T -P:E -ShowWindowMode:Hide sc start \"{serviceName}\"";
                     ExecuteNsudoCommand(startArgs);

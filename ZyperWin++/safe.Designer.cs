@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(safe));
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label21 = new System.Windows.Forms.Label();
@@ -73,6 +75,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -204,6 +207,8 @@
             this.label21.Size = new System.Drawing.Size(202, 25);
             this.label21.TabIndex = 43;
             this.label21.Text = "启用不安全的来宾登录";
+            this.toolTip1.SetToolTip(this.label21, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\",\r\nVal" +
+        "ueName = \"AllowInsecureGuestAuth\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch20
             // 
@@ -228,6 +233,8 @@
             this.label20.Size = new System.Drawing.Size(126, 25);
             this.label20.TabIndex = 41;
             this.label20.Text = "关闭远程协助";
+            this.toolTip1.SetToolTip(this.label20, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Remote Assistance\",\r\n值名：\"fA" +
+        "llowToGetHelp\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch19
             // 
@@ -252,6 +259,7 @@
             this.label19.Size = new System.Drawing.Size(126, 25);
             this.label19.TabIndex = 39;
             this.label19.Text = "关闭默认共享";
+            this.toolTip1.SetToolTip(this.label19, resources.GetString("label19.ToolTip"));
             // 
             // uiSwitch18
             // 
@@ -276,6 +284,8 @@
             this.label18.Size = new System.Drawing.Size(107, 25);
             this.label18.TabIndex = 37;
             this.label18.Text = "关闭防火墙";
+            this.toolTip1.SetToolTip(this.label18, "关闭：netsh advfirewall set allprofiles state off\r\n启用：netsh advfirewall set allprofi" +
+        "les state on");
             // 
             // uiSwitch17
             // 
@@ -300,6 +310,8 @@
             this.label17.Size = new System.Drawing.Size(145, 25);
             this.label17.TabIndex = 35;
             this.label17.Text = "禁用代码完整性";
+            this.toolTip1.SetToolTip(this.label17, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\CI\",\r\n值名：\"Enabled\",\r\nEnable" +
+        "Value = 0,\r\n禁用值：1,");
             // 
             // uiSwitch16
             // 
@@ -324,6 +336,8 @@
             this.label16.Size = new System.Drawing.Size(99, 25);
             this.label16.TabIndex = 33;
             this.label16.Text = "禁用AMSI";
+            this.toolTip1.SetToolTip(this.label16, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\",\r\n值名：\"EnableAmsi" +
+        "\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch15
             // 
@@ -348,6 +362,9 @@
             this.label15.Size = new System.Drawing.Size(126, 25);
             this.label15.TabIndex = 31;
             this.label15.Text = "禁用网络保护";
+            this.toolTip1.SetToolTip(this.label15, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit" +
+        " Guard\\Network Protection\",\r\n值名：\"EnableNetworkProtection\",\r\nEnableValue" +
+        " = 0,\r\n禁用值：1,");
             // 
             // uiSwitch14
             // 
@@ -372,6 +389,9 @@
             this.label14.Size = new System.Drawing.Size(183, 25);
             this.label14.TabIndex = 29;
             this.label14.Text = "禁用受控文件夹访问";
+            this.toolTip1.SetToolTip(this.label14, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit" +
+        " Guard\\Controlled Folder Access\",\r\n值名：\"EnableControlledFolderAccess\",\r\n" +
+        "启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch13
             // 
@@ -396,6 +416,8 @@
             this.label13.Size = new System.Drawing.Size(294, 25);
             this.label13.TabIndex = 27;
             this.label13.Text = "禁用凭证保护(Credential Guard)";
+            this.toolTip1.SetToolTip(this.label13, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\CredentialGuar" +
+        "d\",\r\n值名：\"Enabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch12
             // 
@@ -420,6 +442,8 @@
             this.label12.Size = new System.Drawing.Size(193, 25);
             this.label12.TabIndex = 25;
             this.label12.Text = "禁用虚拟化安全(VBS)";
+            this.toolTip1.SetToolTip(this.label12, "关闭：bcdedit /set hypervisorlaunchtype off\r\n启用：bcdedit /set hypervisorlaunchtype au" +
+        "to");
             // 
             // uiSwitch11
             // 
@@ -444,6 +468,7 @@
             this.label11.Size = new System.Drawing.Size(216, 25);
             this.label11.TabIndex = 23;
             this.label11.Text = "禁用UAC(用户账户控制)";
+            this.toolTip1.SetToolTip(this.label11, resources.GetString("label11.ToolTip"));
             // 
             // uiSwitch10
             // 
@@ -468,6 +493,9 @@
             this.label10.Size = new System.Drawing.Size(231, 25);
             this.label10.TabIndex = 21;
             this.label10.Text = "禁用攻击面减少规则(ASR)";
+            this.toolTip1.SetToolTip(this.label10, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit" +
+        " Guard\\ASR\",\r\n值名：\"ExploitGuard_ASR_Rules\",\r\n启用值：0,\r\nDisableVa" +
+        "lue = 1,");
             // 
             // uiSwitch9
             // 
@@ -492,6 +520,8 @@
             this.label9.Size = new System.Drawing.Size(346, 25);
             this.label9.TabIndex = 19;
             this.label9.Text = "禁用Microsoft Store应用SmartScreen";
+            this.toolTip1.SetToolTip(this.label9, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\AppHost\",\r\n值名：\"Ena" +
+        "bleWebContentEvaluation\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch8
             // 
@@ -516,6 +546,8 @@
             this.label8.Size = new System.Drawing.Size(299, 25);
             this.label8.TabIndex = 17;
             this.label8.Text = "禁用文件资源管理器SmartScreen";
+            this.toolTip1.SetToolTip(this.label8, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\",\r\n值名：\"Sm" +
+        "artScreenEnabled\",\r\n启用值：\"off\",\r\n禁用值：\"on\",");
             // 
             // uiSwitch7
             // 
@@ -540,6 +572,8 @@
             this.label7.Size = new System.Drawing.Size(268, 25);
             this.label7.TabIndex = 15;
             this.label7.Text = "禁用Edge浏览器SmartScreen";
+            this.toolTip1.SetToolTip(this.label7, "注册表位置：“HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Edge\",\r\n值名：\"SmartScreenEnabled\",\r\nEnableV" +
+        "alue = 0,\r\n禁用值：1,");
             // 
             // uiSwitch6
             // 
@@ -564,6 +598,8 @@
             this.label6.Size = new System.Drawing.Size(202, 25);
             this.label6.TabIndex = 13;
             this.label6.Text = "禁用驱动程序阻止列表";
+            this.toolTip1.SetToolTip(this.label6, "注册表位置：“HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\CI\\Config\",\r\n值名：\"Vulnerable" +
+        "DriverBlocklistEnable\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch5
             // 
@@ -588,6 +624,7 @@
             this.label5.Size = new System.Drawing.Size(248, 25);
             this.label5.TabIndex = 11;
             this.label5.Text = "禁用Windows安全中心报告";
+            this.toolTip1.SetToolTip(this.label5, resources.GetString("label5.ToolTip"));
             // 
             // uiSwitch4
             // 
@@ -612,6 +649,8 @@
             this.label4.Size = new System.Drawing.Size(223, 25);
             this.label4.TabIndex = 9;
             this.label4.Text = "禁用SmartScreen筛选器";
+            this.toolTip1.SetToolTip(this.label4, "注册表位置：“HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\",\r\n值名：\"EnableSmar" +
+        "tScreen\",\r\n启用值：0,\r\n禁用值：null,");
             // 
             // uiSwitch3
             // 
@@ -636,6 +675,7 @@
             this.label3.Size = new System.Drawing.Size(226, 25);
             this.label3.TabIndex = 7;
             this.label3.Text = "禁用LSA保护(RunAsPPL)";
+            this.toolTip1.SetToolTip(this.label3, resources.GetString("label3.ToolTip"));
             // 
             // uiSwitch2
             // 
@@ -660,6 +700,8 @@
             this.label2.Size = new System.Drawing.Size(192, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "禁用Defender总进程";
+            this.toolTip1.SetToolTip(this.label2, "Type = SecuritySettingType.Defender,\r\n启用值：\"Disable\",\r\n禁用值：\"E" +
+        "nable\",");
             // 
             // uiSwitch1
             // 
@@ -769,5 +811,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.VScrollBar vScrollBar1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

@@ -36,11 +36,6 @@ namespace ZyperWin__
                     string error = p.StandardError.ReadToEnd();
                     p.WaitForExit();
 
-                    if (p.ExitCode != 0)
-                    {
-                        throw new Exception($"CMD 退出码: {p.ExitCode}\n输出: {output}\n错误: {error}");
-                    }
-
                     return true;
                 }
             }

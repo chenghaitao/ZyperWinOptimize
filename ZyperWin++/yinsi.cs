@@ -73,10 +73,10 @@ namespace ZyperWin__
             privacySettings.Add(new PrivacySetting
             {
                 Hive = RegistryHive.CurrentUser,
-                KeyPath = @"Software\Microsoft\Windows\CurrentVersion\Privacy",
-                ValueName = "TailoredExperiencesWithDiagnosticDataEnabled",
-                EnableValue = 0,  // 禁用
-                DisableValue = 1, // 启用
+                KeyPath = @"Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager",
+                ValueName = "SubscribedContent-338388Enabled",
+                EnableValue = 0,
+                DisableValue = 1,
                 RequiresAdmin = true
             });
 
@@ -229,8 +229,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.CurrentUser,
                 KeyPath = @"Software\Microsoft\Windows\CurrentVersion\Search",
                 ValueName = "BingSearchEnabled",
-                EnableValue = 0,  // 禁用
-                DisableValue = 1, // 启用
+                EnableValue = 0,  
+                DisableValue = 1, 
                 RequiresAdmin = false  // 改为不需要管理员权限
             });
 
@@ -262,8 +262,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.CurrentUser,
                 KeyPath = @"Software\Microsoft\Windows\CurrentVersion\SearchSettings",
                 ValueName = "IsDeviceSearchHistoryEnabled",
-                EnableValue = 0,  // 禁用
-                DisableValue = 1, // 启用
+                EnableValue = 0,  
+                DisableValue = 1, 
                 RequiresAdmin = false
             });
 
@@ -350,8 +350,8 @@ namespace ZyperWin__
                 Hive = RegistryHive.LocalMachine,
                 KeyPath = @"SYSTEM\CurrentControlSet\Services\DiagTrack",
                 ValueName = "Start",
-                EnableValue = 4, // 禁用
-                DisableValue = 2, // 自动
+                EnableValue = 4, 
+                DisableValue = 2, 
                 RequiresAdmin = true
             });
 
@@ -439,7 +439,7 @@ namespace ZyperWin__
                 KeyPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter",
                 ValueName = "DEFAULT",
                 EnableValue = 0,
-                DisableValue = 15, // 0xf
+                DisableValue = 15, 
                 RequiresAdmin = true
             });
 

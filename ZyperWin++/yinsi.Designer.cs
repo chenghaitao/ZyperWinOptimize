@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -139,6 +140,7 @@
             this.uiSwitch1 = new Sunny.UI.UISwitch();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -349,6 +351,8 @@
             this.label54.Size = new System.Drawing.Size(204, 25);
             this.label54.TabIndex = 109;
             this.label54.Text = "禁用WfpDiag.ETL日志";
+            this.toolTip1.SetToolTip(this.label54, "注册表位置：“HKEY_CURRENT_USER\\SYSTEM\\CurrentControlSet\\Services\\BFE\\Diagnostics\",\r\n值名：\"Ena" +
+        "bleLog\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch53
             // 
@@ -373,6 +377,8 @@
             this.label53.Size = new System.Drawing.Size(202, 25);
             this.label53.TabIndex = 107;
             this.label53.Text = "禁用账户登录日志报告";
+            this.toolTip1.SetToolTip(this.label53, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\",\r\nValueNam" +
+        "e = \"DisableLogonCacheDisplay\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch52
             // 
@@ -397,6 +403,8 @@
             this.label52.Size = new System.Drawing.Size(221, 25);
             this.label52.TabIndex = 105;
             this.label52.Text = "禁用崩溃时写入调试信息";
+            this.toolTip1.SetToolTip(this.label52, "注册表位置：“HKEY_CURRENT_USER\\SYSTEM\\CurrentControlSet\\Control\\CrashControl\",\r\n值名：\"CrashDu" +
+        "mpEnabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch51
             // 
@@ -421,6 +429,8 @@
             this.label51.Size = new System.Drawing.Size(221, 25);
             this.label51.TabIndex = 103;
             this.label51.Text = "禁用将事件写入系统日志";
+            this.toolTip1.SetToolTip(this.label51, "注册表位置：“HKEY_CURRENT_USER\\SYSTEM\\CurrentControlSet\\Control\\Windows\",\r\n值名：\"NoEventLog\"," +
+        "\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch50
             // 
@@ -445,6 +455,8 @@
             this.label50.Size = new System.Drawing.Size(164, 25);
             this.label50.TabIndex = 101;
             this.label50.Text = "禁用错误报告日志";
+            this.toolTip1.SetToolTip(this.label50, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting\",\r\n值名：\"Lo" +
+        "ggingDisabled\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch49
             // 
@@ -469,6 +481,8 @@
             this.label49.Size = new System.Drawing.Size(202, 25);
             this.label49.TabIndex = 99;
             this.label49.Text = "禁用更新解压模块日志";
+            this.toolTip1.SetToolTip(this.label49, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\WindowsUpdate\\Logging\",\r\n值名：\"EnableLog\",\r" +
+        "\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch48
             // 
@@ -493,6 +507,8 @@
             this.label48.Size = new System.Drawing.Size(164, 25);
             this.label48.TabIndex = 97;
             this.label48.Text = "禁用组件堆栈日志";
+            this.toolTip1.SetToolTip(this.label48, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WINEVT\\Channels\\Microsoft-W" +
+        "indows-CBS/Debug\",\r\n值名：\"Enabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch47
             // 
@@ -517,6 +533,9 @@
             this.label47.Size = new System.Drawing.Size(164, 25);
             this.label47.TabIndex = 95;
             this.label47.Text = "禁用应用访问消息";
+            this.toolTip1.SetToolTip(this.label47, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\chatMessage\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableVal" +
+        "ue = \"Allow\",");
             // 
             // uiSwitch46
             // 
@@ -541,6 +560,9 @@
             this.label46.Size = new System.Drawing.Size(164, 25);
             this.label46.TabIndex = 93;
             this.label46.Text = "禁用应用访问任务";
+            this.toolTip1.SetToolTip(this.label46, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\userDataTasks\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableV" +
+        "alue = \"Allow\",");
             // 
             // uiSwitch45
             // 
@@ -565,6 +587,9 @@
             this.label45.Size = new System.Drawing.Size(202, 25);
             this.label45.TabIndex = 91;
             this.label45.Text = "禁用应用访问电子邮件";
+            this.toolTip1.SetToolTip(this.label45, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\email\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\n禁用值：\"" +
+        "Allow\",");
             // 
             // uiSwitch44
             // 
@@ -589,6 +614,9 @@
             this.label44.Size = new System.Drawing.Size(202, 25);
             this.label44.TabIndex = 89;
             this.label44.Text = "禁用应用访问通话记录";
+            this.toolTip1.SetToolTip(this.label44, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\phoneCallHistory\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisab" +
+        "leValue = \"Allow\",");
             // 
             // uiSwitch43
             // 
@@ -613,6 +641,9 @@
             this.label43.Size = new System.Drawing.Size(202, 25);
             this.label43.TabIndex = 87;
             this.label43.Text = "禁用应用访问诊断信息";
+            this.toolTip1.SetToolTip(this.label43, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\appDiagnostics\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisable" +
+        "Value = \"Allow\",");
             // 
             // uiSwitch42
             // 
@@ -637,6 +668,9 @@
             this.label42.Size = new System.Drawing.Size(164, 25);
             this.label42.TabIndex = 85;
             this.label42.Text = "禁用应用访问同步";
+            this.toolTip1.SetToolTip(this.label42, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\sync\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\n禁用值：\"A" +
+        "llow\",");
             // 
             // uiSwitch41
             // 
@@ -661,6 +695,9 @@
             this.label41.Size = new System.Drawing.Size(202, 25);
             this.label41.TabIndex = 83;
             this.label41.Text = "禁用应用访问信任设备";
+            this.toolTip1.SetToolTip(this.label41, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\bluetoothSync\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableV" +
+        "alue = \"Allow\",");
             // 
             // uiSwitch40
             // 
@@ -685,6 +722,9 @@
             this.label40.Size = new System.Drawing.Size(164, 25);
             this.label40.TabIndex = 81;
             this.label40.Text = "禁用应用访问电话";
+            this.toolTip1.SetToolTip(this.label40, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\phoneCall\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableValue" +
+        " = \"Allow\",");
             // 
             // uiSwitch39
             // 
@@ -709,6 +749,9 @@
             this.label39.Size = new System.Drawing.Size(202, 25);
             this.label39.TabIndex = 79;
             this.label39.Text = "禁用应用访问运动数据";
+            this.toolTip1.SetToolTip(this.label39, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\activity\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableValue " +
+        "= \"Allow\",");
             // 
             // uiSwitch38
             // 
@@ -733,6 +776,9 @@
             this.label38.Size = new System.Drawing.Size(202, 25);
             this.label38.TabIndex = 77;
             this.label38.Text = "禁用应用访问账户信息";
+            this.toolTip1.SetToolTip(this.label38, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\userAccountInformation\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r" +
+        "\n禁用值：\"Allow\",");
             // 
             // uiSwitch37
             // 
@@ -757,6 +803,8 @@
             this.label37.Size = new System.Drawing.Size(164, 25);
             this.label37.TabIndex = 75;
             this.label37.Text = "禁用写入调试信息";
+            this.toolTip1.SetToolTip(this.label37, "注册表位置：“HKEY_CURRENT_USER\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Debug Print Filter\"," +
+        "\r\n值名：\"DEFAULT\",\r\n启用值：0,\r\n禁用值：15, ");
             // 
             // uiSwitch36
             // 
@@ -781,6 +829,8 @@
             this.label36.Size = new System.Drawing.Size(145, 25);
             this.label36.TabIndex = 73;
             this.label36.Text = "禁用步骤记录器";
+            this.toolTip1.SetToolTip(this.label36, "注册表位置：“HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\ProblemReports\",\r\n值名：\"Di" +
+        "sableProblemReports\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch35
             // 
@@ -805,6 +855,8 @@
             this.label35.Size = new System.Drawing.Size(135, 25);
             this.label35.TabIndex = 71;
             this.label35.Text = "禁用Wi-Fi感知";
+            this.toolTip1.SetToolTip(this.label35, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\Local\",\r\n值名：\"fBlo" +
+        "ckNonDomain\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch34
             // 
@@ -829,6 +881,8 @@
             this.label34.Size = new System.Drawing.Size(126, 25);
             this.label34.TabIndex = 69;
             this.label34.Text = "禁用定向广告";
+            this.toolTip1.SetToolTip(this.label34, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\",\r\nValueNam" +
+        "e = \"Enabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch33
             // 
@@ -853,6 +907,8 @@
             this.label33.Size = new System.Drawing.Size(164, 25);
             this.label33.TabIndex = 67;
             this.label33.Text = "禁用搜索数据收集";
+            this.toolTip1.SetToolTip(this.label33, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\",\r\n值名：\"Al" +
+        "lowCortana\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch32
             // 
@@ -877,6 +933,8 @@
             this.label32.Size = new System.Drawing.Size(126, 25);
             this.label32.TabIndex = 65;
             this.label32.Text = "禁用位置服务";
+            this.toolTip1.SetToolTip(this.label32, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\LocationAndSensors\",\r\nValueName =" +
+        " \"DisableLocation\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch31
             // 
@@ -901,6 +959,8 @@
             this.label31.Size = new System.Drawing.Size(211, 25);
             this.label31.TabIndex = 63;
             this.label31.Text = "禁用语音激活(Cortana)";
+            this.toolTip1.SetToolTip(this.label31, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy\",\r\n值名：\"LetApp" +
+        "sActivateWithVoice\",\r\n启用值：2,\r\n禁用值：0,");
             // 
             // uiSwitch30
             // 
@@ -925,6 +985,8 @@
             this.label30.Size = new System.Drawing.Size(179, 25);
             this.label30.TabIndex = 61;
             this.label30.Text = "禁用错误报告(WER)";
+            this.toolTip1.SetToolTip(this.label30, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Error Reporting\",\r\nValueN" +
+        "ame = \"Disabled\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch29
             // 
@@ -949,6 +1011,8 @@
             this.label29.Size = new System.Drawing.Size(126, 25);
             this.label29.TabIndex = 59;
             this.label29.Text = "禁用遥测服务";
+            this.toolTip1.SetToolTip(this.label29, "注册表位置：“HKEY_CURRENT_USER\\SYSTEM\\CurrentControlSet\\Services\\DiagTrack\",\r\n值名：\"Start\",\r\n" +
+        "启用值：4, \r\n禁用值：2, ");
             // 
             // uiSwitch28
             // 
@@ -973,6 +1037,8 @@
             this.label28.Size = new System.Drawing.Size(189, 25);
             this.label28.TabIndex = 57;
             this.label28.Text = "禁用PowerShell遥测";
+            this.toolTip1.SetToolTip(this.label28, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\",\r\n值名：\"Enable" +
+        "PowerShellTelemetry\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch27
             // 
@@ -997,6 +1063,8 @@
             this.label27.Size = new System.Drawing.Size(129, 25);
             this.label27.TabIndex = 55;
             this.label27.Text = "禁用.NET遥测";
+            this.toolTip1.SetToolTip(this.label27, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\",\r\n值名：\"Di" +
+        "sableNetFrameworkTelemetry\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch26
             // 
@@ -1021,6 +1089,8 @@
             this.label26.Size = new System.Drawing.Size(145, 25);
             this.label26.TabIndex = 53;
             this.label26.Text = "禁用预安装应用";
+            this.toolTip1.SetToolTip(this.label26, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\",\r\n值名：\"Di" +
+        "sablePreInstalledApps\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch25
             // 
@@ -1045,6 +1115,8 @@
             this.label25.Size = new System.Drawing.Size(126, 25);
             this.label25.TabIndex = 51;
             this.label25.Text = "禁用键入见解";
+            this.toolTip1.SetToolTip(this.label25, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Input\\Settings\",\r\n值名：\"EnableTypingInsight" +
+        "s\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch24
             // 
@@ -1069,6 +1141,8 @@
             this.label24.Size = new System.Drawing.Size(183, 25);
             this.label24.TabIndex = 49;
             this.label24.Text = "禁用输入数据个性化";
+            this.toolTip1.SetToolTip(this.label24, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Personalization\\Settings\",\r\n值名：\"RestrictI" +
+        "mplicitTextCollection\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch23
             // 
@@ -1093,6 +1167,8 @@
             this.label23.Size = new System.Drawing.Size(164, 25);
             this.label23.TabIndex = 47;
             this.label23.Text = "禁用自动连接热点";
+            this.toolTip1.SetToolTip(this.label23, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\Local\",\r\n值名：\"fBlo" +
+        "ckNonDomain\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch22
             // 
@@ -1117,6 +1193,8 @@
             this.label22.Size = new System.Drawing.Size(183, 25);
             this.label22.TabIndex = 45;
             this.label22.Text = "禁用赞助商应用安装";
+            this.toolTip1.SetToolTip(this.label22, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\",\r\n值名：\"Disa" +
+        "bleThirdPartySuggestions\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch21
             // 
@@ -1141,6 +1219,8 @@
             this.label21.Size = new System.Drawing.Size(126, 25);
             this.label21.TabIndex = 43;
             this.label21.Text = "禁用搜索历史";
+            this.toolTip1.SetToolTip(this.label21, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings\",\r\nValueName" +
+        " = \"IsDeviceSearchHistoryEnabled\",\r\n启用值：0,  \r\n禁用值：1, ");
             // 
             // uiSwitch20
             // 
@@ -1165,6 +1245,8 @@
             this.label20.Size = new System.Drawing.Size(164, 25);
             this.label20.TabIndex = 41;
             this.label20.Text = "禁用键入文本收集";
+            this.toolTip1.SetToolTip(this.label20, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Input\\Settings\",\r\n值名：\"Inking&TypingPerson" +
+        "alization\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch19
             // 
@@ -1189,6 +1271,9 @@
             this.label19.Size = new System.Drawing.Size(145, 25);
             this.label19.TabIndex = 39;
             this.label19.Text = "禁用通讯录收集";
+            this.toolTip1.SetToolTip(this.label19, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\contacts\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableValue " +
+        "= \"Allow\",");
             // 
             // uiSwitch18
             // 
@@ -1213,6 +1298,8 @@
             this.label18.Size = new System.Drawing.Size(167, 25);
             this.label18.TabIndex = 37;
             this.label18.Text = "禁用Bing搜索结果";
+            this.toolTip1.SetToolTip(this.label18, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\",\r\n值名：\"Bing" +
+        "SearchEnabled\",\r\n启用值：0,  \r\n禁用值：1, ");
             // 
             // uiSwitch17
             // 
@@ -1237,6 +1324,9 @@
             this.label17.Size = new System.Drawing.Size(164, 25);
             this.label17.TabIndex = 35;
             this.label17.Text = "禁用设置应用建议";
+            this.toolTip1.SetToolTip(this.label17, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"SubscribedContent-338393Enabled\",\r\n启用值：0,\r\n禁用值：" +
+        "1,");
             // 
             // uiSwitch16
             // 
@@ -1258,9 +1348,11 @@
             this.label16.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label16.Location = new System.Drawing.Point(6, 465);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(170, 25);
+            this.label16.Size = new System.Drawing.Size(164, 25);
             this.label16.TabIndex = 33;
-            this.label16.Text = " 禁用写作习惯跟踪";
+            this.label16.Text = "禁用写作习惯跟踪";
+            this.toolTip1.SetToolTip(this.label16, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Input\\Settings\",\r\n值名：\"Inking&TypingPerson" +
+        "alization\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch15
             // 
@@ -1285,6 +1377,8 @@
             this.label15.Size = new System.Drawing.Size(164, 25);
             this.label15.TabIndex = 31;
             this.label15.Text = "禁用诊断数据收集";
+            this.toolTip1.SetToolTip(this.label15, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\",\r\n值名：\"Al" +
+        "lowTelemetry\",\r\n启用值：0,\r\n禁用值：3,");
             // 
             // uiSwitch14
             // 
@@ -1309,6 +1403,8 @@
             this.label14.Size = new System.Drawing.Size(126, 25);
             this.label14.TabIndex = 29;
             this.label14.Text = "禁用反馈频率";
+            this.toolTip1.SetToolTip(this.label14, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\",\r\n值名：\"Do" +
+        "NotShowFeedbackNotifications\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch13
             // 
@@ -1333,6 +1429,8 @@
             this.label13.Size = new System.Drawing.Size(210, 25);
             this.label13.TabIndex = 27;
             this.label13.Text = "禁用Windows欢迎体验";
+            this.toolTip1.SetToolTip(this.label13, "注册表位置：“HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\",\r\nValueNam" +
+        "e = \"DisableFirstRunAnimate\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch12
             // 
@@ -1357,6 +1455,8 @@
             this.label12.Size = new System.Drawing.Size(164, 25);
             this.label12.TabIndex = 25;
             this.label12.Text = "禁用网站语言跟踪";
+            this.toolTip1.SetToolTip(this.label12, "注册表位置：“HKEY_CURRENT_USER\\Control Panel\\International\\User Profile\",\r\n值名：\"HttpAcceptLa" +
+        "nguageOptOut\",\r\n启用值：1,\r\n禁用值：0,");
             // 
             // uiSwitch11
             // 
@@ -1381,6 +1481,9 @@
             this.label11.Size = new System.Drawing.Size(164, 25);
             this.label11.TabIndex = 23;
             this.label11.Text = "禁用应用访问视频";
+            this.toolTip1.SetToolTip(this.label11, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\videosLibrary\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableV" +
+        "alue = \"Allow\",");
             // 
             // uiSwitch10
             // 
@@ -1405,6 +1508,9 @@
             this.label10.Size = new System.Drawing.Size(183, 25);
             this.label10.TabIndex = 21;
             this.label10.Text = "禁用应用访问联系人";
+            this.toolTip1.SetToolTip(this.label10, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\contacts\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableValue " +
+        "= \"Allow\",");
             // 
             // uiSwitch9
             // 
@@ -1429,6 +1535,9 @@
             this.label9.Size = new System.Drawing.Size(164, 25);
             this.label9.TabIndex = 19;
             this.label9.Text = "禁用应用访问日历";
+            this.toolTip1.SetToolTip(this.label9, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\appointments\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisableVa" +
+        "lue = \"Allow\",");
             // 
             // uiSwitch8
             // 
@@ -1453,6 +1562,9 @@
             this.label8.Size = new System.Drawing.Size(164, 25);
             this.label8.TabIndex = 17;
             this.label8.Text = "禁用应用访问文档";
+            this.toolTip1.SetToolTip(this.label8, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\documentsLibrary\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\nDisab" +
+        "leValue = \"Allow\",");
             // 
             // uiSwitch7
             // 
@@ -1477,6 +1589,9 @@
             this.label7.Size = new System.Drawing.Size(202, 25);
             this.label7.TabIndex = 15;
             this.label7.Text = "禁用应用访问文件系统";
+            this.toolTip1.SetToolTip(this.label7, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\Con" +
+        "sentStore\\broadFileSystemAccess\",\r\n值名：\"Value\",\r\n启用值：\"Deny\",\r\n" +
+        "禁用值：\"Allow\",");
             // 
             // uiSwitch6
             // 
@@ -1501,6 +1616,8 @@
             this.label6.Size = new System.Drawing.Size(145, 25);
             this.label6.TabIndex = 13;
             this.label6.Text = "禁用广告标识符";
+            this.toolTip1.SetToolTip(this.label6, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\",\r\nValueNam" +
+        "e = \"Enabled\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch5
             // 
@@ -1525,6 +1642,8 @@
             this.label5.Size = new System.Drawing.Size(164, 25);
             this.label5.TabIndex = 11;
             this.label5.Text = "禁用应用启动跟踪";
+            this.toolTip1.SetToolTip(this.label5, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\",\r\nValueN" +
+        "ame = \"Start_TrackProgs\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch4
             // 
@@ -1549,6 +1668,9 @@
             this.label4.Size = new System.Drawing.Size(126, 25);
             this.label4.TabIndex = 9;
             this.label4.Text = "禁用活动收集";
+            this.toolTip1.SetToolTip(this.label4, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"SubscribedContent-338388Enabled\",\r\n启用值：0,\r\n禁用值：" +
+        "1,");
             // 
             // uiSwitch3
             // 
@@ -1573,6 +1695,9 @@
             this.label3.Size = new System.Drawing.Size(164, 25);
             this.label3.TabIndex = 7;
             this.label3.Text = "禁用开始屏幕建议";
+            this.toolTip1.SetToolTip(this.label3, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\",\r\nV" +
+        "alueName = \"SubscribedContent-338388Enabled\",\r\n启用值：0,\r\n禁用值：" +
+        "1,");
             // 
             // uiSwitch2
             // 
@@ -1597,6 +1722,8 @@
             this.label2.Size = new System.Drawing.Size(164, 25);
             this.label2.TabIndex = 5;
             this.label2.Text = "禁用页面预测功能";
+            this.toolTip1.SetToolTip(this.label2, "注册表位置：“HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\",\r\n值名：\"Al" +
+        "lowPagePrediction\",\r\n启用值：0,\r\n禁用值：1,");
             // 
             // uiSwitch1
             // 
@@ -1760,5 +1887,6 @@
         private Sunny.UI.UISwitch uiSwitch2;
         private System.Windows.Forms.Label label2;
         private Sunny.UI.UISwitch uiSwitch1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

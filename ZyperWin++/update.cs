@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ZyperWin__
@@ -13,6 +15,9 @@ namespace ZyperWin__
         private List<UISwitch> switches = new List<UISwitch>();
         private List<UpdateSetting> updateSettings = new List<UpdateSetting>();
         private string nsudoPath = @".\Bin\NSudoLG.exe";
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetDesktopWindow();
 
         public update()
         {
@@ -36,10 +41,10 @@ namespace ZyperWin__
 
         private void InitializeComponentReferences()
         {
-            // 添加所有开关控件引用（根据实际控件名称）
+            // 添加所有开关控件引用
             switches.AddRange(new UISwitch[]
             {
-                uiSwitch1, uiSwitch2, uiSwitch3, uiSwitch4, uiSwitch5
+                uiSwitch1, uiSwitch2, uiSwitch4, uiSwitch5
             });
         }
 
@@ -52,7 +57,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate",
                 ValueName = "DisableOSUpgrade",
                 EnableValue = 1,
-                DisableValue = null, // 删除值
+                DisableValue = null,
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -64,21 +69,9 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate",
                 ValueName = "ExcludeWUDriversInQualityUpdate",
                 EnableValue = 1,
-                DisableValue = null, // 删除值
+                DisableValue = null,
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
-            });
-
-            // 3. 禁用Windows更新 停止更新到2999年
-            updateSettings.Add(new UpdateSetting
-            {
-                Hive = RegistryHive.LocalMachine,
-                KeyPath = @"SOFTWARE\Microsoft\WindowsUpdate\UX\Settings",
-                ValueName = "PauseUpdatesExpiryTime",
-                EnableValue = "2999-12-01T09:59:52Z",
-                DisableValue = "", // 空字符串
-                RequiresAdmin = false, // 这个设置不需要提权
-                ValueKind = RegistryValueKind.String
             });
 
             // 4. 禁用自动更新商店应用
@@ -88,7 +81,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\WindowsStore",
                 ValueName = "AutoDownload",
                 EnableValue = 2,
-                DisableValue = null, // 删除值
+                DisableValue = null,
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -100,7 +93,7 @@ namespace ZyperWin__
                 KeyPath = @"SOFTWARE\Policies\Microsoft\Windows\Maps",
                 ValueName = "AutoDownloadAndUpdateMapData",
                 EnableValue = 0,
-                DisableValue = null, // 删除值
+                DisableValue = null,
                 RequiresAdmin = true,
                 ValueKind = RegistryValueKind.DWord
             });
@@ -132,23 +125,9 @@ namespace ZyperWin__
                 bool isEnabled = CheckUpdateSetting(setting);
                 SetSwitchState(sw, isEnabled);
 
-                sw.ValueChanged += (s, ev) =>
-                {
-                    bool value = sw.Active;
-                    try
-                    {
-                        if (value)
-                            ApplyUpdateSetting(setting, setting.EnableValue);
-                        else
-                            ApplyUpdateSetting(setting, setting.DisableValue);
-
-                        Console.WriteLine($"更新开关 {index + 1} 设置为: {value}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"应用更新设置失败 {index + 1}: {ex.Message}");
-                    }
-                };
+                sw.ValueChanged -= Switch_ValueChanged;
+                sw.ValueChanged += Switch_ValueChanged;
+                sw.Tag = index;
             }
             catch (Exception ex)
             {
@@ -157,29 +136,58 @@ namespace ZyperWin__
             }
         }
 
+        private async void Switch_ValueChanged(object sender, bool value)
+        {
+            if (sender is UISwitch sw && sw.Tag is int index)
+            {
+                try
+                {
+                    var setting = updateSettings[index];
+
+                    // 如果是打开文件夹模式，不需要等待操作完成
+                    if (setting.UseOpenFolderMode)
+                    {
+                        ApplySingleSetting(setting, value);
+                        return;
+                    }
+
+                    await ApplyUpdateSettingAsync(setting, value);
+                    Console.WriteLine($"更新开关 {index + 1} 设置为: {value}");
+
+                    // 重新检查状态
+                    bool newState = CheckUpdateSetting(setting);
+                    SetSwitchState(sw, newState);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"应用更新设置失败 {index + 1}: {ex.Message}");
+                    LoadSwitchState(index);
+                }
+            }
+        }
+
         private bool CheckUpdateSetting(UpdateSetting setting)
         {
+            return CheckSingleSetting(setting);
+        }
+
+        private bool CheckSingleSetting(UpdateSetting setting)
+        {
+            // 如果是打开文件夹模式，不需要检查注册表，直接返回 false
+            if (setting.UseOpenFolderMode)
+                return false;
+
             try
             {
                 using (var baseKey = RegistryKey.OpenBaseKey(setting.Hive, RegistryView.Default))
                 {
                     using (var key = baseKey.OpenSubKey(setting.KeyPath, false))
                     {
-                        if (key == null)
-                        {
-                            // 键不存在，检查是否应该返回true（对于某些设置，键不存在表示已启用）
-                            return setting.EnableValue == null;
-                        }
+                        if (key == null) return false;
 
-                        // 检查值是否存在
                         object currentValue = key.GetValue(setting.ValueName, null);
-                        if (currentValue == null)
-                        {
-                            // 值不存在，检查是否应该返回true
-                            return setting.EnableValue == null;
-                        }
+                        if (currentValue == null) return false;
 
-                        // 比较值
                         return CompareValues(currentValue, setting.EnableValue, setting.ValueKind);
                     }
                 }
@@ -200,45 +208,81 @@ namespace ZyperWin__
                 case RegistryValueKind.DWord:
                     return Convert.ToInt32(currentValue) == Convert.ToInt32(expectedValue);
                 case RegistryValueKind.String:
-                    return currentValue.ToString().Equals(expectedValue.ToString(), StringComparison.OrdinalIgnoreCase);
+                    // 对于字符串，进行精确比较
+                    return string.Equals(currentValue.ToString(), expectedValue.ToString(), StringComparison.Ordinal);
                 default:
                     return false;
             }
         }
 
-        private void ApplyUpdateSetting(UpdateSetting setting, object value)
+        private async Task ApplyUpdateSettingAsync(UpdateSetting setting, bool enable)
+        {
+            await Task.Run(() => ApplySingleSetting(setting, enable));
+        }
+
+        private void ApplySingleSetting(UpdateSetting setting, bool enable)
         {
             try
             {
-                string registryPath = $"{GetRegistryPath(setting.Hive)}\\{setting.KeyPath}";
-                string valueType = GetRegistryValueKind(setting.ValueKind);
-                string valueData = GetValueString(value, setting.ValueKind);
+                // 处理打开文件夹模式
+                if (setting.UseOpenFolderMode)
+                {
+                    if (!string.IsNullOrEmpty(setting.FolderPath) && Directory.Exists(setting.FolderPath))
+                    {
+                        Process.Start("explorer.exe", setting.FolderPath);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"文件夹不存在: {setting.FolderPath}");
+                    }
+                    return;
+                }
+
+                // 批处理文件模式
+                if (setting.UseBatFileMode)
+                {
+                    string batFile = enable ? setting.EnableBatFile : setting.DisableBatFile;
+                    if (!string.IsNullOrEmpty(batFile) && File.Exists(batFile))
+                    {
+                        ExecuteCmdHidden($"\"{batFile}\"");
+                        return;
+                    }
+                    Console.WriteLine($"批处理文件不存在: {batFile}");
+                    return;
+                }
+
+                object value = enable ? setting.EnableValue : setting.DisableValue;
 
                 if (setting.RequiresAdmin)
                 {
+                    string registryPath = $"{GetRegistryPath(setting.Hive)}\\{setting.KeyPath}";
+
                     if (value == null)
                     {
-                        // 删除值
                         string args = $"-U:T -P:E -ShowWindowMode:Hide reg delete \"{registryPath}\" /v \"{setting.ValueName}\" /f";
                         ExecuteNsudoCommand(args);
                     }
                     else
                     {
-                        // 添加/修改值
-                        string args = $"-U:T -P:E -ShowWindowMode:Hide reg add \"{registryPath}\" /v \"{setting.ValueName}\" /t {valueType} /d {valueData} /f";
+                        string valueType = GetRegistryValueKind(setting.ValueKind);
+                        string valueData = GetValueString(value, setting.ValueKind);
+                        string args = $"-U:T -P:E -ShowWindowMode:Hide reg add \"{registryPath}\" /v \"{setting.ValueName}\" /t {valueType} /d \"{valueData}\" /f";
                         ExecuteNsudoCommand(args);
                     }
                 }
                 else
                 {
-                    // 普通注册表操作
                     using (var baseKey = RegistryKey.OpenBaseKey(setting.Hive, RegistryView.Default))
                     {
                         using (var key = baseKey.CreateSubKey(setting.KeyPath, true))
                         {
                             if (value == null)
                             {
-                                key.DeleteValue(setting.ValueName, false);
+                                try
+                                {
+                                    key.DeleteValue(setting.ValueName, false);
+                                }
+                                catch (ArgumentException) { }
                             }
                             else
                             {
@@ -252,38 +296,42 @@ namespace ZyperWin__
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"应用更新设置失败: {ex.Message}");
+                Console.WriteLine($"应用更新设置失败 ({setting.ValueName}): {ex.Message}");
+                throw;
             }
         }
 
-        private string GetRegistryPath(RegistryHive hive)
+        private bool ExecuteCmdHidden(string commands)
         {
-            switch (hive)
+            try
             {
-                case RegistryHive.ClassesRoot: return "HKEY_CLASSES_ROOT";
-                case RegistryHive.CurrentUser: return "HKEY_CURRENT_USER";
-                case RegistryHive.LocalMachine: return "HKEY_LOCAL_MACHINE";
-                case RegistryHive.Users: return "HKEY_USERS";
-                case RegistryHive.CurrentConfig: return "HKEY_CURRENT_CONFIG";
-                default: return "HKEY_LOCAL_MACHINE";
-            }
-        }
+                using (Process p = new Process())
+                {
+                    p.StartInfo.FileName = "cmd.exe";
+                    p.StartInfo.Arguments = "/c " + commands;
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.CreateNoWindow = true;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.RedirectStandardError = true;
+                    p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
-        private string GetRegistryValueKind(RegistryValueKind valueKind)
-        {
-            switch (valueKind)
+                    p.Start();
+                    string output = p.StandardOutput.ReadToEnd();
+                    string error = p.StandardError.ReadToEnd();
+                    p.WaitForExit();
+
+                    if (p.ExitCode != 0)
+                    {
+                        throw new Exception($"CMD 退出码: {p.ExitCode}\n输出: {output}\n错误: {error}");
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
             {
-                case RegistryValueKind.DWord: return "REG_DWORD";
-                case RegistryValueKind.String: return "REG_SZ";
-                case RegistryValueKind.Binary: return "REG_BINARY";
-                default: return "REG_SZ";
+                throw new Exception("CMD 执行失败: " + ex.Message);
             }
-        }
-
-        private string GetValueString(object value, RegistryValueKind valueKind)
-        {
-            if (value == null) return "";
-            return value.ToString();
         }
 
         private void ExecuteNsudoCommand(string arguments)
@@ -310,7 +358,36 @@ namespace ZyperWin__
             catch (Exception ex)
             {
                 Console.WriteLine($"执行NSudo命令失败: {ex.Message}");
+                throw;
             }
+        }
+
+        private string GetRegistryPath(RegistryHive hive)
+        {
+            switch (hive)
+            {
+                case RegistryHive.ClassesRoot: return "HKEY_CLASSES_ROOT";
+                case RegistryHive.CurrentUser: return "HKEY_CURRENT_USER";
+                case RegistryHive.LocalMachine: return "HKEY_LOCAL_MACHINE";
+                case RegistryHive.Users: return "HKEY_USERS";
+                case RegistryHive.CurrentConfig: return "HKEY_CURRENT_CONFIG";
+                default: return "HKEY_LOCAL_MACHINE";
+            }
+        }
+
+        private string GetRegistryValueKind(RegistryValueKind valueKind)
+        {
+            switch (valueKind)
+            {
+                case RegistryValueKind.DWord: return "REG_DWORD";
+                case RegistryValueKind.String: return "REG_SZ";
+                default: return "REG_SZ";
+            }
+        }
+
+        private string GetValueString(object value, RegistryValueKind valueKind)
+        {
+            return value?.ToString() ?? "";
         }
 
         private void SetSwitchState(UISwitch sw, bool isEnabled)
@@ -323,10 +400,14 @@ namespace ZyperWin__
             sw.Active = isEnabled;
         }
 
-        // 刷新按钮点击事件
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             LoadAllSwitchStates();
+        }
+
+        private void uiButton1_Click(object sender, EventArgs e)
+        {
+            Process.Start(".\\Bin\\update");
         }
     }
 
@@ -339,5 +420,10 @@ namespace ZyperWin__
         public object DisableValue { get; set; }
         public bool RequiresAdmin { get; set; }
         public RegistryValueKind ValueKind { get; set; }
+        public bool UseBatFileMode { get; set; }
+        public string EnableBatFile { get; set; }
+        public string DisableBatFile { get; set; }
+        public bool UseOpenFolderMode { get; set; }
+        public string FolderPath { get; set; }
     }
 }

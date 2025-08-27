@@ -187,7 +187,7 @@
             this.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
             this.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.Style = Sunny.UI.UIStyle.Custom;
-            this.Text = "ZyperWin++ v3.0";
+            this.Text = "ZyperWin++ v3.1";
             this.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.TitleFont = new System.Drawing.Font("Microsoft YaHei UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TitleHeight = 30;
