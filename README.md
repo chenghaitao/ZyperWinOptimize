@@ -1,6 +1,6 @@
-# ZyperWin++ 3.0
+# ZyperWin++ 3.1
 ZyperWin++是一个轻便的Windows优化工具，适用于Win7-Win11最新版的优化，包括性能优化、服务项优化、垃圾清理等操作，还支持系统激活和Office快速安装。  
-<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/a3ddce18-df58-498e-af5a-3d2a5de29b74" />  
+<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/1246a142-3c34-4e75-bcdb-4bbed936b500" />  
 基于.NET4编写，并引入SunnyUI，外观简洁美观。兼容性强，无需额外安装运行库（Win7需要集成）  
 <img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/bd5f1659-ebc4-4184-8109-e705fe32f841" />  
 快速优化分级别优化，满足不同用户的需求  
