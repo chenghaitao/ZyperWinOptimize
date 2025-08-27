@@ -66,7 +66,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(282, 21);
             this.label3.TabIndex = 2;
-            this.label3.Text = "请在右侧菜单栏选择您需要执行的操作";
+            this.label3.Text = "请在左侧菜单栏选择您需要执行的操作";
             // 
             // label4
             // 

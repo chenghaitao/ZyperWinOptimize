@@ -467,7 +467,6 @@ namespace ZyperWin__
                     // 处理需要删除键/值的设置（右键菜单项）
                     if (setting.EnableValue == null)
                     {
-                        // 启用状态 = 键/值不存在
                         using (var key = baseKey.OpenSubKey(setting.KeyPath, false))
                         {
                             if (key == null)
@@ -475,13 +474,17 @@ namespace ZyperWin__
 
                             if (setting.ValueName == null)
                             {
-                                // 检查整个键是否存在
                                 return false; // 键存在表示未启用
                             }
                             else
                             {
-                                // 检查特定值是否存在
-                                return key.GetValue(setting.ValueName) == null;
+                                object currentValue = key.GetValue(setting.ValueName, null);
+
+                                // 检查是否是有效的右键菜单（有完整的结构）
+                                if (IsValidContextMenu(setting, baseKey))
+                                    return false; // 有效的右键菜单存在，表示未启用
+
+                                return currentValue == null || string.IsNullOrEmpty(currentValue.ToString());
                             }
                         }
                     }
@@ -530,48 +533,85 @@ namespace ZyperWin__
             return true;
         }
 
+        private bool IsValidContextMenu(RegistrySetting setting, RegistryKey baseKey)
+        {
+            // 检查特定的右键菜单是否完整
+            switch (setting.KeyPath)
+            {
+                case @"Drive\shell\BitLocker":
+                    return CheckSubKeyExists(baseKey, @"Drive\shell\BitLocker\command");
+                case @"Drive\shell\PortableDeviceMenu":
+                    return CheckSubKeyExists(baseKey, @"Drive\shell\PortableDeviceMenu\command");
+                case @"SystemFileAssociations\.3mf\Shell\3D Edit":
+                    return CheckSubKeyExists(baseKey, @"SystemFileAssociations\.3mf\Shell\3D Edit\command");
+                default:
+                    return false;
+            }
+        }
+
+        private bool CheckSubKeyExists(RegistryKey baseKey, string subKeyPath)
+        {
+            using (var key = baseKey.OpenSubKey(subKeyPath, false))
+            {
+                return key != null;
+            }
+        }
+
+
         private Task ApplyRegistrySettingAsync(RegistryHive hive, string keyPath, string valueName, object value, int optionIndex)
         {
-            return Task.Run(() => // 这里缺少 => 和 {
+            return Task.Run(() =>
             {
                 try
                 {
-                    // 其他项的原有应用逻辑
                     using (var baseKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
                     {
-                        // 处理需要删除键/值的设置
+                        // 处理需要"禁用"的设置（即 value 为 null）
                         if (value == null)
                         {
-                            try
+                            // 对于特定的右键菜单项，需要恢复完整的注册表结构
+                            switch (optionIndex)
                             {
-                                if (valueName == null)
-                                {
-                                    // 删除整个键
-                                    baseKey.DeleteSubKeyTree(keyPath, false);
-                                    Console.WriteLine($"[成功] 已删除注册表键: {keyPath}");
-                                }
-                                else
-                                {
-                                    // 删除特定值
-                                    using (var key = baseKey.OpenSubKey(keyPath, true))
+                                case 20: // BitLocker
+                                    RestoreBitLockerContextMenu(baseKey);
+                                    break;
+                                case 21: // 便携设备
+                                    RestorePortableDeviceMenu(baseKey);
+                                    break;
+                                case 29: // 画图3D
+                                    RestorePaint3DContextMenu(baseKey);
+                                    break;
+                                default:
+                                    // 其他情况按原逻辑删除
+                                    try
                                     {
-                                        if (key != null)
+                                        if (valueName == null)
                                         {
-                                            key.DeleteValue(valueName, false);
-                                            Console.WriteLine($"[成功] 已删除注册表值: {keyPath}\\{valueName}");
+                                            baseKey.DeleteSubKeyTree(keyPath, false);
+                                            Console.WriteLine($"[成功] 已删除注册表键: {keyPath}");
+                                        }
+                                        else
+                                        {
+                                            using (var key = baseKey.OpenSubKey(keyPath, true))
+                                            {
+                                                if (key != null)
+                                                {
+                                                    key.DeleteValue(valueName, false);
+                                                    Console.WriteLine($"[成功] 已删除注册表值: {keyPath}\\{valueName}");
+                                                }
+                                            }
                                         }
                                     }
-                                }
-                            }
-                            catch (ArgumentException)
-                            {
-                                // 键或值不存在，忽略错误
-                                Console.WriteLine($"[信息] 注册表键或值已不存在: {keyPath}\\{valueName}");
+                                    catch (ArgumentException)
+                                    {
+                                        Console.WriteLine($"[信息] 注册表键或值已不存在: {keyPath}\\{valueName}");
+                                    }
+                                    break;
                             }
                             return;
                         }
 
-                        // 创建或打开键并设置值
+                        // 普通设置：创建或打开键并设置值（保持不变）
                         using (var key = baseKey.CreateSubKey(keyPath, true))
                         {
                             if (value is int intValue)
@@ -596,9 +636,85 @@ namespace ZyperWin__
                 {
                     Console.WriteLine($"[错误] 应用注册表设置失败: {ex.Message}");
                 }
-            }); // 这里缺少结束的括号和分号
+            });
         }
 
+        private void RestoreBitLockerContextMenu(RegistryKey baseKey)
+        {
+            try
+            {
+                // 恢复 BitLocker 右键菜单 - 最简单版本
+                using (var key = baseKey.CreateSubKey(@"Drive\shell\BitLocker", true))
+                {
+                    key.SetValue("", "启用BitLocker...", RegistryValueKind.String);
+                }
+
+                using (var commandKey = baseKey.CreateSubKey(@"Drive\shell\BitLocker\command", true))
+                {
+                    commandKey.SetValue("", "control.exe /name Microsoft.BitLockerDriveEncryption", RegistryValueKind.String);
+                }
+
+                Console.WriteLine("[成功] 已恢复 BitLocker 右键菜单");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[错误] 恢复 BitLocker 菜单失败: {ex.Message}");
+            }
+        }
+
+        private void RestorePortableDeviceMenu(RegistryKey baseKey)
+        {
+            try
+            {
+                // 先删除旧的
+                try
+                {
+                    baseKey.DeleteSubKeyTree(@"Drive\shell\PortableDeviceMenu", false);
+                }
+                catch { }
+
+                // 创建正确的便携设备菜单
+                using (var key = baseKey.CreateSubKey(@"Drive\shell\PortableDeviceMenu", true))
+                {
+                    key.SetValue("", "作为便携设备打开");
+                }
+
+                using (var commandKey = baseKey.CreateSubKey(@"Drive\shell\PortableDeviceMenu\command", true))
+                {
+                    // 正确的命令格式 - 打开便携设备文件夹
+                    commandKey.SetValue("", "explorer.exe shell:MyComputerFolder", RegistryValueKind.String);
+                }
+
+                Console.WriteLine("[成功] 已恢复便携设备右键菜单");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[错误] 恢复便携设备菜单失败: {ex.Message}");
+            }
+        }
+
+        private void RestorePaint3DContextMenu(RegistryKey baseKey)
+        {
+            try
+            {
+                // 恢复画图3D右键菜单 - 最简单版本
+                using (var key = baseKey.CreateSubKey(@"SystemFileAssociations\.3mf\Shell\3D Edit", true))
+                {
+                    key.SetValue("", "在画图3D中编辑", RegistryValueKind.String);
+                }
+
+                using (var commandKey = baseKey.CreateSubKey(@"SystemFileAssociations\.3mf\Shell\3D Edit\command", true))
+                {
+                    commandKey.SetValue("", "mspaint.exe \"%1\"", RegistryValueKind.String);
+                }
+
+                Console.WriteLine("[成功] 已恢复画图3D右键菜单");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[错误] 恢复画图3D菜单失败: {ex.Message}");
+            }
+        }
         private void SetSwitchState(UISwitch sw, bool isEnabled)
         {
             if (sw.InvokeRequired)
