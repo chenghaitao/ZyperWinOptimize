@@ -4,8 +4,9 @@ ZyperWin++是一个轻便的Windows优化工具，适用于Win7-Win11最新版�
 基于.NET4编写，并引入SunnyUI，外观简洁美观。兼容性强，无需额外安装运行库（Win7需要集成）  
 <img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/bd5f1659-ebc4-4184-8109-e705fe32f841" />  
 快速优化分级别优化，满足不同用户的需求  
-<img width="1654" height="2339" alt="基本优化 1 of 2" src="https://github.com/user-attachments/assets/212d8d78-1a86-40f3-88a5-fcc46dad5dee" />
-<img width="1654" height="2339" alt="基本优化 2 of 2" src="https://github.com/user-attachments/assets/4ef02097-1928-4d1f-b8e5-e39692d1940f" />
+<img width="2339" height="1654" alt="基本优化 1 of 3" src="https://github.com/user-attachments/assets/60c9f6af-10ca-478d-89c0-2bd378dc77d5" />  
+<img width="2339" height="1654" alt="基本优化 2 of 3" src="https://github.com/user-attachments/assets/b070cd60-f1c1-4f6a-a1bd-71c729b92f7c" />  
+<img width="2339" height="1654" alt="基本优化 3 of 3" src="https://github.com/user-attachments/assets/a0b5fb6d-33d5-44ae-be7e-27e0d1d53487" />  
 先上快速优化分别优化的内容，避免有小伙伴认为我搞阴的，“最怕快速优化”，做这种就光明正大的做，没必要乱折腾人，况且都开源了可以查属性🥰  
 <img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/a1b25fa8-2e63-4b99-950c-af5738e01791" />  
 <img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/0ab7cd2f-6373-4f64-b697-c2e18c69a837" />  
