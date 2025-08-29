@@ -22,6 +22,19 @@ namespace ZyperWin__
         public appx f14;
         public recover f15;
         public static UITreeView SharedTreeView;
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                if (DesignMode)
+                {
+                    return base.CreateParams;
+                }
+                CreateParams paras = base.CreateParams;
+                paras.ExStyle |= 0x02000000;
+                return paras;
+            }
+        }
         public MainWindow()
         {
             this.AutoScaleMode = AutoScaleMode.Dpi;
