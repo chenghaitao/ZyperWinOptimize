@@ -21,6 +21,8 @@ ZyperWin++是一个轻便的Windows优化工具，适用于Win7-Win11最新版�
 <img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/6c393ff7-9947-4750-a3a8-6a76109f6a26" />  
 此脚本还添加了Appx管理功能，方便管理卸载您的Appx应用，支持卸载用户已安装的应用  
 <img width="1085" height="1018" alt="image" src="https://github.com/user-attachments/assets/14485df4-aeae-427e-8455-25a2e0785a7d" />  
+查毒网扫描情况：https://www.virscan.org/report/3b0511382fb6b0344d79305271c5c08bd72d1f857815a91e3c89ffff563247d9  
+不信任的可以不采用。  
 软件包占用小，可以方便给个人电脑或者班级电脑快速优化  
 本优化软件秉持着轻量无捆绑的原则，提供给有需要的用户。  
 若出现问题请及时反馈！  
