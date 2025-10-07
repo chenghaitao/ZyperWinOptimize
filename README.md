@@ -22,8 +22,8 @@ ZyperWin++是一个轻便的Windows优化工具，适用于Win7-Win11最新版�
 此工具还支持快速安装Office，基本是全自动安装，不过这个需要联网操作安装，等待片刻后安装完毕。同时也支持C2R强力卸载  
 <img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/20398339-1ffd-40d5-8560-1023f1352762" />  
 此脚本还添加了Appx管理功能，方便管理卸载您的Appx应用，支持卸载用户已安装的应用  
-<img width="860" height="540" alt="image" src="https://github.com/user-attachments/assets/b411534b-2d48-4ba4-a3df-eb29ba0caddc" />  
 查毒网扫描情况：https://www.virscan.org/report/6c177185ba50804b1bbe3754a0698941435611a78c149bc4a4291bc345ad0052  
+<img width="1131" height="1446" alt="image" src="https://github.com/user-attachments/assets/fc3ae866-336e-4873-80ed-9fec866eeeed" />  
 不信任的可以不采用。  
 软件包占用小，可以方便给个人电脑或者班级电脑快速优化  
 本优化软件秉持着轻量无捆绑的原则，提供给有需要的用户。  
