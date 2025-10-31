@@ -48,7 +48,7 @@ namespace ZyperWin__
                 {"WinSxS临时文件", new CleanupCommand { Command = "del /f /s /q \"%SystemRoot%\\WinSxS\\Temp\\*\" >nul 2>&1" }},
                 {"系统临时文件", new CleanupCommand { Command = "del /f /s /q \"%SystemRoot%\\Temp\\*\" >nul 2>&1" }},
                 {"系统dmp文件", new CleanupCommand { Command = "del /f /s /q \"%SystemDrive%\\*.dmp\" >nul 2>&1" }},
-                {"回收站", new CleanupCommand { Command = "rd /s /q \"%SystemDrive%\\$Recycle.bin\" >nul 2>&1" }},
+                {"回收站", new CleanupCommand { Command = "powershell -command \"$shell = New-Object -ComObject Shell.Application; $shell.EmptyRecycleBin(0);\"" }},
                 {"所有临时文件", new CleanupCommand { Command = "del /f /s /q \"%SystemDrive%\\Windows\\Temp\\*\" >nul 2>&1 & del /f /s /q \"%SystemRoot%\\Temp\\*\" >nul 2>&1 & del /f /s /q \"%TEMP%\\*\" >nul 2>&1" }},
                 {"预读取文件", new CleanupCommand { Command = "del /f /s /q \"%SystemRoot%\\Prefetch\\*\" >nul 2>&1" }}
             };
@@ -315,4 +315,5 @@ namespace ZyperWin__
             return selectedItems;
         }
     }
+
 }
