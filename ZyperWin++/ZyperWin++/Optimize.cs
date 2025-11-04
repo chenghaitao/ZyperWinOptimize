@@ -2016,6 +2016,10 @@ namespace ZyperWin__
                         ExecuteCommandLine("DISM.exe /Online /Set-ReservedStorageState /State:Disabled >nul 2>&1");
                         // 继续执行XML配置
                         break;
+                    case "35、禁用高精度事件定时器（HPET）":
+                        ExecuteCommandLine("bcdedit /set useplatformclock no >nul 2>&1");
+                        // 继续执行XML配置
+                        break;
                     default:
                         // 其他项目直接执行XML配置
                         break;
@@ -2032,6 +2036,10 @@ namespace ZyperWin__
                         break;
                     case "31、禁用保留的存储":
                         ExecuteCommandLine("DISM.exe /Online /Set-ReservedStorageState /State:Enabled >nul 2>&1");
+                        // 继续执行XML配置
+                        break;
+                    case "35、禁用高精度事件定时器（HPET）":
+                        ExecuteCommandLine("bcdedit /set useplatformclock yes >nul 2>&1");
                         // 继续执行XML配置
                         break;
                     default:
@@ -3167,3 +3175,4 @@ namespace ZyperWin__
         }
     }
 }
+
